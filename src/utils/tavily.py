@@ -15,7 +15,7 @@ from config import cfg  # noqa: E402
 
 class TavilyResearchTool:
     def __init__(self) -> None:
-        # initiate tavily client
+        # sync tavily client
         self.tavily_async_client = AsyncTavilyClient(api_key=cfg.TAVILY_API_KEY)
 
     async def search(

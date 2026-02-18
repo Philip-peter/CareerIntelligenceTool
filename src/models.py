@@ -143,12 +143,3 @@ class JobRoleContextModels(BaseModel):
         "Examples: Routine data entry (high automation risk); "
         "Complex AI systems engineering (low automation risk)."
     )
-
-
-# models for the reseach class
-class Research(BaseModel):
-    industry: IndustryContextModels
-    finance: FinancialContextModels
-    workforce: WorkforceContextModels
-    leadership: LeadershipContextModels
-    job: JobRoleContextModels

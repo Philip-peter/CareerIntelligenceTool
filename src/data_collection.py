@@ -1,4 +1,6 @@
+import asyncio
 import copy
+from typing import Any, Dict, List
 
 from langchain_core.runnables import RunnableConfig
 
@@ -15,7 +17,7 @@ class FinancialData:
 
 class IndustryContext:
     def __init__(self) -> None:
-        self.queries = [
+        self.queries_template = [
             {
                 "topic": "cyclic_or_defensive",
                 "query": "[Company Name] is it cyclical or defensive analyst commentary recession sensitivity operating margin volatility",
@@ -34,20 +36,37 @@ class IndustryContext:
             },
         ]
 
-    def run_research(self, state: State, config: RunnableConfig):
-        # make new copy of queries dict
-        new_queries = copy.deepcopy(self.queries)
+    async def run_research(
+        self, state: State, config: RunnableConfig
+    ) -> Dict[str, Any]:
+        # make new copy of queries template
+        working_queries: List[Dict[str, Any]] = copy.deepcopy(self.queries_template)
         web_research_tool = config.get("configurable", {}).get("web_search_tool")
+        if not web_research_tool:
+            raise ValueError("web search tool is not configured")
 
-        # run tavily search for each query
-        for i in range(len(new_queries)):
-            current_query = new_queries[i].get("query")
-            response = web_research_tool.search(query=current_query, topic="news")
-            # add researched urls to the new_queries dict
-            aggregate_discovered_urls = [r["url"] for r in response]
-            new_queries[i]["relevant_urls"] = aggregate_discovered_urls  # type: ignore
+        async def process_query(item: Dict[str, Any]):
+            query = item.get("query")
+            # search
+            search_result = await web_research_tool.search(query=query, topic="news")
+            researched_urls = [r["url"] for r in search_result]
+            # extract
+            research_data = await web_research_tool.extract(
+                query=query, researched_urls=researched_urls
+            )
+            item["researched_urls"] = researched_urls
+            item["researched_data"] = research_data
+            return item
 
-        # extract relevant data
+        task = [process_query(q) for q in working_queries]
+        asyncio.gather(*task)
+
+        new_data = {r["topic"]: r["researched_data"] for r in working_queries}
+
+        updated_industry_research = state["industry_research"].model_copy(
+            update=new_data
+        )
+        return {"industry_research": updated_industry_research}
 
 
 class WorkforceSignals:

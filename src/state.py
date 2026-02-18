@@ -5,7 +5,13 @@ from langgraph.graph import END, START, StateGraph
 # from langgraph.graph.message import add_messages
 from candidate_input import Candidate, TargetCompany
 from config import cfg
-from models import Research
+from models import (
+    FinancialContextModels,
+    IndustryContextModels,
+    JobRoleContextModels,
+    LeadershipContextModels,
+    WorkforceContextModels,
+)
 from utils.tavily import TavilyResearchTool
 
 
@@ -13,7 +19,11 @@ class State(TypedDict):
     # messages: Annotated[list, add_messages]
     candidate: Candidate
     target_company: TargetCompany
-    research: Research
+    industry_research: IndustryContextModels
+    finance_research: FinancialContextModels
+    workforce_research: WorkforceContextModels
+    leadership_research: LeadershipContextModels
+    job_research: JobRoleContextModels
 
 
 class Workflow:
