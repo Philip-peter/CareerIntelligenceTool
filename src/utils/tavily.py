@@ -40,7 +40,11 @@ class TavilyResearchTool:
             )
 
             # filter relevance based on content score
-            relevant_result = [res for res in response["result"] if res["score"] >= 0.6]
+            relevant_result = [
+                res
+                for res in response["result"]
+                if res["score"] >= cfg.TAVILY_CONTENT_RELEVANCE_SCORE
+            ]
 
             # select response with highest relevant score only if relevant_result is empty
             if len(relevant_result) == 0:
