@@ -1,10 +1,16 @@
 import asyncio
 import copy
+import os
+import sys
 from typing import Any, Dict, List
 
 from langchain_core.runnables import RunnableConfig
 
-from state import State
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
+sys.path.append(root_dir)
+
+from src.state import State  # noqa: E402
 
 
 class FinancialData:
@@ -12,7 +18,7 @@ class FinancialData:
         pass
 
     def run_research(self, state, config):
-        return """"""
+        pass
 
 
 class IndustryContext:
