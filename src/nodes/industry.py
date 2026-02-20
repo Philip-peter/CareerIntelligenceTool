@@ -13,32 +13,28 @@ sys.path.append(root_dir)
 from src.state import State  # noqa: E402
 
 
-class FinancialData:
+class Industry:
     def __init__(self) -> None:
         pass
 
-    def run_research(self, state, config):
-        pass
-
-
-class IndustryContext:
-    def __init__(self) -> None:
-        self.queries_template = [
+    @staticmethod
+    def queries_template(company_name):
+        return [
             {
                 "topic": "cyclic_or_defensive",
-                "query": "[Company Name] is it cyclical or defensive analyst commentary recession sensitivity operating margin volatility",
+                "query": f"[{company_name}] is it cyclical or defensive analyst commentary recession sensitivity operating margin volatility",
             },
             {
                 "topic": "regulatory_environment",
-                "query": "[Company Name] regulatory risks 10-K risk factors site:sec.gov compliance requirements government oversight industry regulation impact on revenue",
+                "query": f"[{company_name}] regulatory risks 10-K risk factors site:sec.gov compliance requirements government oversight industry regulation impact on revenue",
             },
             {
                 "topic": "ai_distruption",
-                "query": "[Company Name] AI integration strategy R&D spending AI capex competitive positioning",
+                "query": f"[{company_name}] AI integration strategy R&D spending AI capex competitive positioning",
             },
             {
                 "topic": "competition",
-                "query": "[Company Name] gross margin trend vs competitors pricing power switching costs network effects",
+                "query": f"[{company_name}] gross margin trend vs competitors pricing power switching costs network effects",
             },
         ]
 
@@ -46,7 +42,9 @@ class IndustryContext:
         self, state: State, config: RunnableConfig
     ) -> Dict[str, Any]:
         # make new copy of queries template
-        working_queries: List[Dict[str, Any]] = copy.deepcopy(self.queries_template)
+        working_queries: List[Dict[str, Any]] = copy.deepcopy(
+            self.queries_template(company_name=state["target_company"])
+        )
         web_research_tool = config.get("configurable", {}).get("web_search_tool")
         if not web_research_tool:
             raise ValueError("web search tool is not configured")
@@ -73,15 +71,3 @@ class IndustryContext:
             update=new_data
         )
         return {"industry_research": updated_industry_research}
-
-
-class WorkforceSignals:
-    pass
-
-
-class Leadership:
-    pass
-
-
-class RoleContext:
-    pass

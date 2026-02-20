@@ -4,6 +4,12 @@ from pydantic import BaseModel, Field, HttpUrl, model_validator
 
 
 class Candidate(BaseModel):
+    target_company: str = Field(
+        ..., min_length=1, description="The legal name of the target organization"
+    )
+    job_posting: HttpUrl = Field(
+        ..., description="A valid URL to the specific job listing"
+    )
     currently_employed: bool = Field(
         ..., description="Whether the candidate is currently working"
     )
@@ -38,12 +44,3 @@ class Candidate(BaseModel):
             self.current_role = None
             self.current_job_tenure = None
         return self
-
-
-class TargetCompany(BaseModel):
-    company_name: str = Field(
-        ..., min_length=1, description="The legal name of the target organization"
-    )
-    job_posting: HttpUrl = Field(
-        ..., description="A valid URL to the specific job listing"
-    )
