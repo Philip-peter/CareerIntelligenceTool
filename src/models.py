@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-# models for the reseach context
+# models for the research context
 class IndustryContextModels(BaseModel):
     cyclic_or_defensive: str = Field(
         description="Classify whether the company operates in a cyclical industry (sensitive to economic cycles) or defensive industry (stable during recessions). "

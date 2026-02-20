@@ -3,7 +3,7 @@ from typing import Annotated, List, TypedDict
 from langgraph.graph import END, START, StateGraph
 
 # from langgraph.graph.message import add_messages
-from candidate_input import Candidate, TargetCompany
+from candidate_input import Candidate
 from config import cfg
 from models import (
     FinancialContextModels,
@@ -18,12 +18,12 @@ from utils.tavily import TavilyResearchTool
 class State(TypedDict):
     # messages: Annotated[list, add_messages]
     candidate: Candidate
-    target_company: TargetCompany
+    target_company: str  # update the company name after grounding
     industry_research: IndustryContextModels
     finance_research: FinancialContextModels
     workforce_research: WorkforceContextModels
     leadership_research: LeadershipContextModels
-    job_research: JobRoleContextModels
+    job_role_research: JobRoleContextModels
 
 
 class Workflow:
