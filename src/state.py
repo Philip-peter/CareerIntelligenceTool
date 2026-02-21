@@ -1,11 +1,13 @@
-from typing import Annotated, List, TypedDict
+import os
+import sys
+from typing import TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
 # from langgraph.graph.message import add_messages
-from candidate_input import Candidate
 from config import cfg
 from models import (
+    CandidateModel,
     FinancialContextModels,
     IndustryContextModels,
     JobRoleContextModels,
@@ -14,11 +16,17 @@ from models import (
 )
 from utils.tavily import TavilyResearchTool
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
+sys.path.append(root_dir)
+
+from src.nodes import finance, industry, jobrole, leadership, workforce  # noqa: E402
+
 
 class State(TypedDict):
-    # messages: Annotated[list, add_messages]
-    candidate: Candidate
-    target_company: str  # update the company name after grounding
+    candidate: CandidateModel
+    target_company: str
+    job_posting_link: str
     industry_research: IndustryContextModels
     finance_research: FinancialContextModels
     workforce_research: WorkforceContextModels
@@ -32,10 +40,16 @@ class Workflow:
         # initiate tavily research tool
         self.tavily_research_tool = TavilyResearchTool()
 
+        # initiate nodes
+        self.industry_obj = industry.Industry()
+        self.leadership_obj = leadership.Leadership()
+
         # workflow
         workflow = StateGraph(State)
 
         # add nodes
+        workflow.add_node("industry_researcher", self.industry_obj.run_research)
+        workflow.add_node("leadership_researcher", self.leadership_obj.run_research)
 
         # add edges
 
