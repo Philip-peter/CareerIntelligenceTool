@@ -45,7 +45,7 @@ class Industry:
         working_queries: List[Dict[str, Any]] = copy.deepcopy(
             self.queries_template(company_name=state["target_company"])
         )
-        web_research_tool = config.get("configurable", {}).get("web_search_tool")
+        web_research_tool = config.get("configurable", {}).get("web_research_tool")
         if not web_research_tool:
             raise ValueError("web search tool is not configured")
 
@@ -63,9 +63,13 @@ class Industry:
             return item
 
         task = [process_query(q) for q in working_queries]
-        asyncio.gather(*task)
+        result = await asyncio.gather(*task, return_exceptions=True)
 
-        new_data = {r["topic"]: r["researched_data"] for r in working_queries}
+        new_data = {
+            r["topic"]: r["researched_data"]
+            for r in result
+            if not isinstance(r, (Exception, BaseException))
+        }
 
         updated_industry_research = state["industry_research"].model_copy(
             update=new_data
