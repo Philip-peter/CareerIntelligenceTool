@@ -15,7 +15,7 @@ from config import cfg  # noqa: E402
 
 class TavilyResearchTool:
     def __init__(self) -> None:
-        # sync tavily client
+        # async tavily client
         self.tavily_async_client = AsyncTavilyClient(api_key=cfg.TAVILY_API_KEY)
 
     async def search(
@@ -24,9 +24,9 @@ class TavilyResearchTool:
         topic: Literal["news", "general", "finance"] = "general",
         include_raw_content: bool = False,
         include_answer: bool = False,
-        search_depth: Literal["basic", "advanced", "fast", "ultra-fast"] = "basic",
+        search_depth: Literal["basic", "advanced", "fast", "ultra-fast"] = "advanced",
         max_results: int = cfg.TAVILY_SEARCH_MAX_RESULT,
-        include_domains: List[str] = [],
+        # include_domains = None,
     ) -> List[Dict[str, Any]]:
         try:
             response = await self.tavily_async_client.search(
@@ -36,20 +36,28 @@ class TavilyResearchTool:
                 include_answer=include_answer,
                 include_raw_content=include_raw_content,
                 max_results=max_results,
-                include_domains=include_domains,
+                # include_domains=include_domains,
             )
 
-            # filter relevance based on content score
+            # filter result based on content relevance score
             relevant_result = [
                 res
-                for res in response["result"]
+                for res in response["results"]
                 if res["score"] >= cfg.TAVILY_CONTENT_RELEVANCE_SCORE
             ]
+
+            # print(relevant_result)
+
+            # adjust search if no result
+            # if not relevant_result:
+            #     relevant_result = await self.tavily_async_client.search(
+            #         query=query, search_depth="advanced"
+            #     )
 
             # select response with highest relevant score only if relevant_result is empty
             if len(relevant_result) == 0:
                 max_score = 0.0
-                for res in response["result"]:
+                for res in response["results"]:
                     if res["score"] >= max_score:
                         max_score = res["score"]
                         relevant_result = [res]

@@ -59,7 +59,27 @@ class Workflow:
         # compile agent
         self.agent = workflow.compile()
 
-    def run(self, target_company: str):
+    def run(
+        self,
+        target_company,
+        current_company,
+        currently_employed,
+        current_role,
+        current_job_tenure,
+        risk_tolerance,
+        career_stage,
+        career_priority,
+    ):
+        # initiate candidate
+        candidate = CandidateModel(
+            currently_employed=currently_employed,
+            current_role=current_role,
+            current_company=current_company,
+            current_job_tenure=current_job_tenure,
+            risk_tolerance=risk_tolerance,
+            career_stage=career_stage,
+            career_priority=career_priority,
+        )
 
         if not target_company:
             raise ValueError("Target Company not configured")
@@ -68,19 +88,17 @@ class Workflow:
         initial_state = cast(
             State,
             {
-                "candidate": CandidateModel,
+                "candidate": candidate,
                 "target_company": target_company,
-                "job_posting_link": str,
-                "industry_research": IndustryContextModels,
-                "finance_research": FinancialContextModels,
-                "workforce_research": WorkforceContextModels,
-                "leadership_research": LeadershipContextModels,
-                "job_role_research": JobRoleContextModels,
-                "final_report": str,
+                "job_posting_link": "",
+                "industry_research": IndustryContextModels(),
+                "finance_research": FinancialContextModels(),
+                "workforce_research": WorkforceContextModels(),
+                "leadership_research": LeadershipContextModels(),
+                "job_role_research": JobRoleContextModels(),
+                "final_report": "",
             },
         )
-
-        # initial_state = cast(State, {"target_company": target_company})
 
         # set runnable config
         config = cast(
