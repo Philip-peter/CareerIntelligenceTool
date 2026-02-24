@@ -56,7 +56,7 @@ class Industry:
             researched_urls = [r["url"] for r in search_result]
             # extract
             research_data = await web_research_tool.extract(
-                query=query, researched_urls=researched_urls
+                query=query, research_urls=researched_urls
             )
             item["researched_urls"] = researched_urls
             item["researched_data"] = research_data

@@ -24,7 +24,7 @@ class TavilyResearchTool:
         topic: Literal["news", "general", "finance"] = "general",
         include_raw_content: bool = False,
         include_answer: bool = False,
-        search_depth: Literal["basic", "advanced", "fast", "ultra-fast"] = "advanced",
+        search_depth: Literal["basic", "advanced", "fast", "ultra-fast"] = "basic",
         max_results: int = cfg.TAVILY_SEARCH_MAX_RESULT,
         # include_domains = None,
     ) -> List[Dict[str, Any]]:
@@ -43,10 +43,8 @@ class TavilyResearchTool:
             relevant_result = [
                 res
                 for res in response["results"]
-                if res["score"] >= cfg.TAVILY_CONTENT_RELEVANCE_SCORE
+                # if res["score"] >= cfg.TAVILY_CONTENT_RELEVANCE_SCORE
             ]
-
-            # print(relevant_result)
 
             # adjust search if no result
             # if not relevant_result:

@@ -81,9 +81,6 @@ class Workflow:
             career_priority=career_priority,
         )
 
-        if not target_company:
-            raise ValueError("Target Company not configured")
-
         # set initial state
         initial_state = cast(
             State,
