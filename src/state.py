@@ -19,6 +19,7 @@ from src.models import (  # noqa: E402
 class State(TypedDict):
     candidate: CandidateModel
     target_company: str
+    target_company_profile: str
     job_posting_link: str
     industry_research: IndustryContextModels
     finance_research: FinancialContextModels
