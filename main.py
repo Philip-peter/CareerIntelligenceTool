@@ -1,7 +1,6 @@
 import asyncio
 
 from src import agent
-from src.state import State
 
 
 async def main():
@@ -9,7 +8,7 @@ async def main():
     my_agent = agent.Workflow()
 
     while True:
-        # get target company
+        # get inputs
         target_company = input("TARGET COMPANY: ")
         current_company = input("CURRENT COMPANY: ")
         currently_employed = input("CURRENTLY EMPLOYED: ")
