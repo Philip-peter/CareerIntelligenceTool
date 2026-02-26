@@ -12,12 +12,17 @@ from src.state import State  # noqa: E402
 
 
 class CompanyGrounding:
+    def __init__(self):
+        pass
+
     @staticmethod
     def queries_template(company_name):
         return f"Find comprehensive company profile for [{company_name}] including official website, industry classification and core business overview."
 
     async def research_company(self, state: State, config: RunnableConfig):
-        working_query = copy.deepcopy(self.queries_template(state["target_company"]))
+        working_query = copy.deepcopy(
+            self.queries_template(company_name=state["target_company"])
+        )
         web_research_tool = config.get("configurable", {}).get("web_research_tool")
         if not web_research_tool:
             raise ValueError("web search tool is not configured")
