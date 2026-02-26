@@ -2,7 +2,7 @@
 
 import os
 import sys
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List, Literal, Union
 
 from tavily import AsyncTavilyClient
 
@@ -68,7 +68,7 @@ class TavilyResearchTool:
     async def extract(
         self,
         query,
-        research_urls: List[str] = [],
+        research_urls: Union[str, List[str]],
         extract_depth: Literal["basic", "advanced"] = "basic",
         chunks_per_source: int = cfg.TAVILY_METHOD_CHUNK_SIZE,
     ) -> List[Dict[str, Any]]:
