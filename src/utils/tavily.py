@@ -70,7 +70,7 @@ class TavilyResearchTool:
         query,
         research_urls: Union[str, List[str]],
         extract_depth: Literal["basic", "advanced"] = "basic",
-        chunks_per_source: int = cfg.TAVILY_METHOD_CHUNK_SIZE,
+        chunks_per_source: int = cfg.TAVILY_CHUNK_SIZE,
     ) -> List[Dict[str, Any]]:
         try:
             response = await self.tavily_async_client.extract(
@@ -82,4 +82,18 @@ class TavilyResearchTool:
             return response["results"]
         except Exception as e:
             print(f"Encountered error during taviliy search: {e}")
+            return []
+
+    async def crawl(
+        self, url: str, instructions: str, chunks_per_source: int
+    ) -> List[Dict[str, Any]]:
+        try:
+            response = await self.tavily_async_client.crawl(
+                url=url,
+                instructions=instructions,
+                chunks_per_source=cfg.TAVILY_CHUNK_SIZE,
+            )
+            return response["results"]
+        except Exception as e:
+            print(f"Encountered error during taviliy crawl: {e}")
             return []

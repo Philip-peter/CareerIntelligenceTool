@@ -19,12 +19,13 @@ from src.models import (  # noqa: E402
     WorkforceContextModels,
 )
 from src.nodes import (  # noqa: E402
+    company_grounding,
+    # workforce,
     # finance,
     industry,
     # jobrole,
     leadership,
     report,
-    # workforce,
 )
 from src.state import State  # noqa: E402
 from src.utils.tavily import TavilyResearchTool  # noqa: E402
@@ -40,18 +41,21 @@ class Workflow:
         self.industry_obj = industry.Industry()
         self.leadership_obj = leadership.Leadership()
         self.report_obj = report.GenerateReport()
+        self.company_grounding = company_grounding.CompanyGrounding()
 
         # workflow
         workflow = StateGraph(State)
 
         # add nodes
+        workflow.add_node("company_grounding", self.company_grounding.research_company)
         workflow.add_node("industry_researcher", self.industry_obj.run_research)
         workflow.add_node("leadership_researcher", self.leadership_obj.run_research)
         workflow.add_node("report_generator", self.report_obj.summarize)
 
         # add edges
-        workflow.add_edge(START, "industry_researcher")
-        workflow.add_edge(START, "leadership_researcher")
+        workflow.add_edge(START, "report_generator")
+        workflow.add_edge("report_generator", "industry_researcher")
+        workflow.add_edge("report_generator", "leadership_researcher")
         workflow.add_edge("industry_researcher", "report_generator")
         workflow.add_edge("leadership_researcher", "report_generator")
         workflow.add_edge("report_generator", END)
@@ -87,6 +91,7 @@ class Workflow:
             {
                 "candidate": candidate,
                 "target_company": target_company,
+                "target_company_profile": "",
                 "job_posting_link": "",
                 "industry_research": IndustryContextModels(),
                 "finance_research": FinancialContextModels(),

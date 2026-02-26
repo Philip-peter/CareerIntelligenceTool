@@ -1,3 +1,4 @@
+import copy
 import os
 import sys
 
@@ -13,19 +14,17 @@ from src.state import State  # noqa: E402
 class CompanyGrounding:
     @staticmethod
     def queries_template(company_name):
-        pass
+        return f"Find comprehensive company profile for [{company_name}] including official website, industry classification and core business overview."
 
     async def research_company(self, state: State, config: RunnableConfig):
+        working_query = copy.deepcopy(self.queries_template(state["target_company"]))
         web_research_tool = config.get("configurable", {}).get("web_research_tool")
         if not web_research_tool:
             raise ValueError("web search tool is not configured")
 
-        query = ""
-        company_url = state["job_posting_link"]
-
         # extract company details
         company_details = await web_research_tool.extract(
-            query=query, research_urls=company_url
+            query=working_query, research_urls=state["job_posting_link"]
         )
 
-        return company_details
+        return {"target_company_profile": company_details}
