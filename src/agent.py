@@ -11,12 +11,12 @@ sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
 from src.models import (  # noqa: E402
-    CandidateModel,
-    FinancialContextModels,
+    # CandidateModel,
+    # FinancialContextModels,
     IndustryContextModels,
-    JobRoleContextModels,
+    # JobRoleContextModels,
     LeadershipContextModels,
-    WorkforceContextModels,
+    # WorkforceContextModels,
 )
 from src.nodes import (  # noqa: E402
     company_grounding,
@@ -65,39 +65,40 @@ class Workflow:
 
     def run(
         self,
+        job_link,
         target_company,
         current_company,
-        currently_employed,
-        current_role,
-        current_job_tenure,
-        risk_tolerance,
-        career_stage,
-        career_priority,
+        # currently_employed,
+        # current_role,
+        # current_job_tenure,
+        # risk_tolerance,
+        # career_stage,
+        # career_priority,
     ):
         # initiate candidate
-        candidate = CandidateModel(
-            currently_employed=currently_employed,
-            current_role=current_role,
-            current_company=current_company,
-            current_job_tenure=current_job_tenure,
-            risk_tolerance=risk_tolerance,
-            career_stage=career_stage,
-            career_priority=career_priority,
-        )
+        # candidate = CandidateModel(
+        #     currently_employed=currently_employed,
+        #     current_role=current_role,
+        #     current_company=current_company,
+        #     current_job_tenure=current_job_tenure,
+        #     risk_tolerance=risk_tolerance,
+        #     career_stage=career_stage,
+        #     career_priority=career_priority,
+        # )
 
         # set initial state
         initial_state = cast(
             State,
             {
-                "candidate": candidate,
+                # "candidate": candidate,
                 "target_company": target_company,
                 "target_company_profile": "",
-                "job_posting_link": "",
+                "job_posting_link": job_link,
                 "industry_research": IndustryContextModels(),
-                "finance_research": FinancialContextModels(),
-                "workforce_research": WorkforceContextModels(),
+                # "finance_research": FinancialContextModels(),
+                # "workforce_research": WorkforceContextModels(),
                 "leadership_research": LeadershipContextModels(),
-                "job_role_research": JobRoleContextModels(),
+                # "job_role_research": JobRoleContextModels(),
                 "final_report": "",
             },
         )

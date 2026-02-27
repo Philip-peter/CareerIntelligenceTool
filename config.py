@@ -13,6 +13,7 @@ class Config:
         self.TAVILY_SEARCH_MAX_RESULT = 3
         self.TAVILY_CHUNK_SIZE = 3
         self.TAVILY_SEARCH_CONTENT_RELEVANCE_SCORE = 0.6
+        self.TAVILY_ASYNC_RATE_LIMIT = 3
 
         # SerpAPI
         self.SERP_API_URL = "https://www.searchapi.io/api/v1/search"
