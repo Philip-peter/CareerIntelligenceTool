@@ -11,7 +11,7 @@ async def main():
         # get inputs
         job_link = input("JOB LINK: ")
         target_company = input("TARGET COMPANY: ")
-        current_company = input("CURRENT COMPANY: ")
+        # current_company = input("CURRENT COMPANY: ")
         # currently_employed = input("CURRENTLY EMPLOYED: ")
         # current_role = input("CURRENT ROLE: ")
         # current_job_tenure = input("CURRENT JOB TENURE: ")
@@ -23,7 +23,7 @@ async def main():
         research = await my_agent.run(
             job_link=job_link,
             target_company=target_company,
-            current_company=current_company,
+            # current_company=current_company,
             # currently_employed=currently_employed,
             # current_role=current_role,
             # current_job_tenure=current_job_tenure,
@@ -33,7 +33,7 @@ async def main():
         )
 
         # print(research["industry_research"])
-        print(research["target_company_profile"])
+        print(research["job_posting_details"])
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ class TavilyResearchTool:
     def __init__(self) -> None:
         # async tavily client
         self.tavily_async_client = AsyncTavilyClient(api_key=cfg.TAVILY_API_KEY)
-        # set async ratelimit
+        # set async ratelimit thresold
         self.async_ratelimit = asyncio.Semaphore(cfg.TAVILY_ASYNC_RATE_LIMIT)
 
     async def search(

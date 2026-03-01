@@ -10,24 +10,26 @@ root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
-from src.models import (  # noqa: E402
-    # CandidateModel,
-    # FinancialContextModels,
-    IndustryContextModels,
-    # JobRoleContextModels,
-    LeadershipContextModels,
-    # WorkforceContextModels,
-)
+
+# from src.models import (  # noqa: E402
+#     CandidateModel,
+#     FinancialContextModels,
+#     IndustryContextModels,
+#     JobRoleContextModels,
+#     LeadershipContextModels,
+#     WorkforceContextModels,
+# )
 from src.nodes import (  # noqa: E402
-    company_grounding,
+    job_posting_analysis,
     # workforce,
     # finance,
-    industry,
+    # industry,
     # jobrole,
-    leadership,
-    report,
+    # leadership,
+    # report,
 )
 from src.state import State  # noqa: E402
+from src.utils.llm_summarizer import LlmSummarizer  # noqa: E402
 from src.utils.tavily import TavilyResearchTool  # noqa: E402
 
 
@@ -37,28 +39,29 @@ class Workflow:
         # initiate tavily research tool
         self.tavily_research_tool = TavilyResearchTool()
 
+        # initiate llm summarizer tool
+        self.llm_summarizer_tool = LlmSummarizer()
+
         # initiate nodes
-        self.industry_obj = industry.Industry()
-        self.leadership_obj = leadership.Leadership()
-        self.report_obj = report.GenerateReport()
-        self.company_grounding = company_grounding.CompanyGrounding()
+        # self.industry_obj = industry.Industry()
+        # self.leadership_obj = leadership.Leadership()
+        # self.report_obj = report.GenerateReport()
+        self.job_posting_analysis_obj = job_posting_analysis.JobPostingAnalysis()
 
         # workflow
         workflow = StateGraph(State)
 
         # add nodes
-        workflow.add_node("company_grounding", self.company_grounding.research_company)
-        workflow.add_node("industry_researcher", self.industry_obj.run_research)
-        workflow.add_node("leadership_researcher", self.leadership_obj.run_research)
-        workflow.add_node("report_generator", self.report_obj.summarize)
+        workflow.add_node(
+            "job_posting_analysis", self.job_posting_analysis_obj.extract_job
+        )
+        # workflow.add_node("industry_researcher", self.industry_obj.run_research)
+        # workflow.add_node("leadership_researcher", self.leadership_obj.run_research)
+        # workflow.add_node("report_generator", self.report_obj.summarize)
 
         # add edges
-        workflow.add_edge(START, "report_generator")
-        workflow.add_edge("report_generator", "industry_researcher")
-        workflow.add_edge("report_generator", "leadership_researcher")
-        workflow.add_edge("industry_researcher", "report_generator")
-        workflow.add_edge("leadership_researcher", "report_generator")
-        workflow.add_edge("report_generator", END)
+        workflow.add_edge(START, "job_posting_analysis")
+        workflow.add_edge("job_posting_analysis", END)
 
         # compile agent
         self.agent = workflow.compile()
@@ -67,7 +70,7 @@ class Workflow:
         self,
         job_link,
         target_company,
-        current_company,
+        # current_company,
         # currently_employed,
         # current_role,
         # current_job_tenure,
@@ -94,12 +97,13 @@ class Workflow:
                 "target_company": target_company,
                 "target_company_profile": "",
                 "job_posting_link": job_link,
-                "industry_research": IndustryContextModels(),
+                "job_posting_details": "",
+                # "industry_research": IndustryContextModels(),
                 # "finance_research": FinancialContextModels(),
                 # "workforce_research": WorkforceContextModels(),
-                "leadership_research": LeadershipContextModels(),
+                # "leadership_research": LeadershipContextModels(),
                 # "job_role_research": JobRoleContextModels(),
-                "final_report": "",
+                # "final_report": "",
             },
         )
 
@@ -110,6 +114,7 @@ class Workflow:
                 "configurable": {
                     "shared_config": cfg,
                     "web_research_tool": self.tavily_research_tool,
+                    "llm_summarizer": self.llm_summarizer_tool,
                 }
             },
         )
