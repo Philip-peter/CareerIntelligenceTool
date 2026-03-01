@@ -21,6 +21,7 @@ class Config:
 
         # OpenAI
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+        self.LLM_MAX_RETRIES = 2
 
 
 # initialize config

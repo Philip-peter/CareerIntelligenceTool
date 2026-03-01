@@ -21,9 +21,10 @@ class State(TypedDict):
     target_company: str
     target_company_profile: str
     job_posting_link: str
+    job_posting_details: str
+    job_role_research: JobRoleContextModels
     industry_research: IndustryContextModels
     finance_research: FinancialContextModels
     workforce_research: WorkforceContextModels
     leadership_research: LeadershipContextModels
-    job_role_research: JobRoleContextModels
     final_report: str
