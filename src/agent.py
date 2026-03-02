@@ -53,14 +53,18 @@ class Workflow:
 
         # add nodes
         workflow.add_node(
-            "job_posting_analysis", self.job_posting_analysis_obj.extract_job
+            "job_posting_extract", self.job_posting_analysis_obj.extract_job
+        )
+        workflow.add_node(
+            "job_posting_analysis", self.job_posting_analysis_obj.analyze_job
         )
         # workflow.add_node("industry_researcher", self.industry_obj.run_research)
         # workflow.add_node("leadership_researcher", self.leadership_obj.run_research)
         # workflow.add_node("report_generator", self.report_obj.summarize)
 
         # add edges
-        workflow.add_edge(START, "job_posting_analysis")
+        workflow.add_edge(START, "job_posting_extract")
+        workflow.add_edge("job_posting_extract", "job_posting_analysis")
         workflow.add_edge("job_posting_analysis", END)
 
         # compile agent
@@ -97,6 +101,7 @@ class Workflow:
                 "target_company": target_company,
                 "target_company_profile": "",
                 "job_posting_link": job_link,
+                "job_posting_raw": "",
                 "job_posting_details": "",
                 # "industry_research": IndustryContextModels(),
                 # "finance_research": FinancialContextModels(),
