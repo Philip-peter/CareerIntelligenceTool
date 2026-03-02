@@ -23,5 +23,38 @@ class JobPostingAnalysis:
         extracted_job_details = await web_research_tool.extract(
             query=query, research_urls=state["job_posting_link"]
         )
+        # print(extracted_job_details)
 
-        return {"job_posting_details": extracted_job_details}
+        return {"job_posting_raw": extracted_job_details[0]["raw_content"]}
+
+    async def analyze_job(self, state: State, config: RunnableConfig):
+
+        llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
+        if not llm_analyzer_tool:
+            raise ValueError("llm analyzer tool is not configured")
+
+        system_prompt = """
+        You are an expert HR Data Analyst specializing in structured information extraction. Your task is to parse raw job posting text and map it into a clean, structured format.
+
+        Rules:
+
+        Fidelity: Extract text exactly as it appears; do not summarize unless necessary for clarity.
+
+        Exclusion: If a specific field (like Salary or Benefits) is not mentioned in the text, return 'Not Specified' or null.
+
+        Requirements: Clearly separate 'Minimum Qualifications' from 'Preferred Qualifications' if the text allows.
+
+        Tone: Maintain a professional, objective tone.
+        """
+
+        user_prompt = f"""
+        Please analyze the following job posting and extract the key details: Job Title, Job Description, Job Requirements (including skills and experience), and any mentioned Benefits or Salary information.
+
+        Job Posting Content:
+        {state["job_posting_raw"]}
+        """
+
+        llm_response = await llm_analyzer_tool.run(
+            system_prompt=system_prompt, user_prompt=user_prompt, output_schema=None
+        )
+        return {"job_posting_details": llm_response}

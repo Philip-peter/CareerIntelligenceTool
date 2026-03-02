@@ -22,15 +22,21 @@ class LlmSummarizer:
             model="gpt-4o", api_key=SecretStr(api_key), max_retries=cfg.LLM_MAX_RETRIES
         )
 
-    def run(self, raw_message, output_schema: Optional[Type[BaseModel]]):
+    async def run(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        output_schema: Optional[Type[BaseModel]],
+    ):
         try:
+            messages = [("system", system_prompt), ("user", user_prompt)]
             if output_schema is None:
-                response = self.llm.invoke(raw_message)
+                response = await self.llm.ainvoke(messages)
             else:
                 llm_structured_output = self.llm.with_structured_output(
                     output_schema, strict=True
                 )
-                response = llm_structured_output.invoke(raw_message)
+                response = await llm_structured_output.ainvoke(messages)
             return response
         except Exception as e:
             print(f"Encountered Error during LLM Summarization: {e}")

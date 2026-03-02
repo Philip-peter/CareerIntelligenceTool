@@ -21,6 +21,7 @@ class State(TypedDict):
     target_company: str
     target_company_profile: str
     job_posting_link: str
+    job_posting_raw: str
     job_posting_details: str
     job_role_research: JobRoleContextModels
     industry_research: IndustryContextModels
