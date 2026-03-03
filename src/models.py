@@ -203,3 +203,49 @@ class JobRoleContextModels(BaseModel):
         "Examples: Routine data entry (high automation risk); "
         "Complex AI systems engineering (low automation risk).",
     )
+
+
+class TargetJobDetails(BaseModel):
+    job_title: str = Field(
+        default="No data available",
+        description="The formal title of the position.",
+        examples=["Senior Data Scientist", "Product Manager"],
+    )
+
+    job_description: str = Field(
+        default="No data available",
+        description="A high-level overview of the role's responsibilities and goals.",
+        examples=[
+            "You will lead the frontend team in migrating our legacy stack to Next.js."
+        ],
+    )
+
+    minimum_qualifications: str = Field(
+        default="No data available",
+        description="The baseline requirements a candidate must meet to be considered.",
+        examples=["3+ years of experience with Python and SQL."],
+    )
+
+    preferred_qualifications: str = Field(
+        default="No data available",
+        description="Non-essential traits that make a candidate stand out.",
+        examples=["Master's degree in AI/ML or contributions to open-source projects."],
+    )
+
+    skills_experience: str = Field(
+        default="No data available",
+        description="Specific technical or soft skills required for the daily tasks.",
+        examples=["Expertise in React, TypeScript, and Tailwind CSS."],
+    )
+
+    benefits: str = Field(
+        default="No data available",
+        description="Perks and compensation beyond the base salary.",
+        examples=["Unlimited PTO, annual learning stipend, and gym membership."],
+    )
+
+    salary: float = Field(
+        default=100000.0,
+        description="The annual gross base salary for the position.",
+        examples=[125000.50, 95000.0],
+    )

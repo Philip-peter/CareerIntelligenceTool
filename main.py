@@ -32,8 +32,7 @@ async def main():
             # career_priority=career_priority,
         )
 
-        # print(research["industry_research"])
-        print(research["job_posting_details"])
+        print(research["final_report"])
 
 
 if __name__ == "__main__":
