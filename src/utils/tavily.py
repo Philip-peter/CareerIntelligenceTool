@@ -72,7 +72,7 @@ class TavilyResearchTool:
         self,
         query,
         research_urls: Union[str, List[str]],
-        extract_depth: Literal["basic", "advanced"] = "basic",
+        extract_depth: Literal["basic", "advanced"] = "advanced",
         chunks_per_source: int = cfg.TAVILY_CHUNK_SIZE,
     ) -> List[Dict[str, Any]]:
         try:

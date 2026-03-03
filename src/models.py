@@ -244,8 +244,8 @@ class TargetJobDetails(BaseModel):
         examples=["Unlimited PTO, annual learning stipend, and gym membership."],
     )
 
-    salary: float = Field(
-        default=100000.0,
+    salary: str = Field(
+        default="No data available",
         description="The annual gross base salary for the position.",
-        examples=[125000.50, 95000.0],
+        examples=["100-120k"],
     )

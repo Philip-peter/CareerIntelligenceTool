@@ -24,9 +24,8 @@ class JobPostingAnalysis:
         extracted_job_details = await web_research_tool.extract(
             query=query, research_urls=state["job_posting_link"]
         )
-        # print(extracted_job_details)
 
-        return {"job_posting_raw": extracted_job_details[0]["raw_content"]}
+        return {"job_posting_raw": extracted_job_details[0].get("raw_content", "")}
 
     async def analyze_job(self, state: State, config: RunnableConfig):
 
@@ -49,7 +48,14 @@ class JobPostingAnalysis:
         """
 
         user_prompt = f"""
-        Please analyze the following job posting and extract the key details: Job Title, Job Description, Job Requirements (including skills and experience), and any mentioned Benefits or Salary information.
+        Please analyze the job posting below and extract these specific fields:
+        - job_title
+        - job_description
+        - minimum_qualifications
+        - preferred_qualifications
+        - skills_experience
+        - benefits
+        - salary (as a number only)
 
         Job Posting Content:
         {state["job_posting_raw"]}

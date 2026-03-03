@@ -11,7 +11,7 @@ class Config:
         # Tavily
         self.TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
         self.TAVILY_SEARCH_MAX_RESULT = 3
-        self.TAVILY_CHUNK_SIZE = 4
+        self.TAVILY_CHUNK_SIZE = 5
         self.TAVILY_SEARCH_CONTENT_RELEVANCE_SCORE = 0.6
         self.TAVILY_ASYNC_RATE_LIMIT = 3
 

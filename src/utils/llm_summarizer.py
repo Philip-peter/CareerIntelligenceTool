@@ -34,7 +34,7 @@ class LlmSummarizer:
                 response = await self.llm.ainvoke(messages)
             else:
                 llm_structured_output = self.llm.with_structured_output(
-                    output_schema, strict=True
+                    output_schema, strict=False
                 )
                 response = await llm_structured_output.ainvoke(messages)
             return response

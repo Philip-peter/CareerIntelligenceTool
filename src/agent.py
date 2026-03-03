@@ -45,7 +45,7 @@ class Workflow:
         # initiate nodes
         # self.industry_obj = industry.Industry()
         # self.leadership_obj = leadership.Leadership()
-        # self.report_obj = report.GenerateReport()
+        self.report_obj = report.GenerateReport()
         self.job_posting_analysis_obj = job_posting_analysis.JobPostingAnalysis()
 
         # workflow
@@ -60,12 +60,13 @@ class Workflow:
         )
         # workflow.add_node("industry_researcher", self.industry_obj.run_research)
         # workflow.add_node("leadership_researcher", self.leadership_obj.run_research)
-        # workflow.add_node("report_generator", self.report_obj.summarize)
+        workflow.add_node("report_generator", self.report_obj.run)
 
         # add edges
         workflow.add_edge(START, "job_posting_extract")
         workflow.add_edge("job_posting_extract", "job_posting_analysis")
-        workflow.add_edge("job_posting_analysis", END)
+        workflow.add_edge("job_posting_analysis", "report_generator")
+        workflow.add_edge("report_generator", END)
 
         # compile agent
         self.agent = workflow.compile()
