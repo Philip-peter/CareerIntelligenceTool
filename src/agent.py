@@ -10,15 +10,15 @@ root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
-
-# from src.models import (  # noqa: E402
-#     CandidateModel,
-#     FinancialContextModels,
-#     IndustryContextModels,
-#     JobRoleContextModels,
-#     LeadershipContextModels,
-#     WorkforceContextModels,
-# )
+from src.models import (  # noqa: E402
+    #     CandidateModel,
+    #     FinancialContextModels,
+    #     IndustryContextModels,
+    #     JobRoleContextModels,
+    #     LeadershipContextModels,
+    #     WorkforceContextModels,
+    TargetJobDetails,
+)
 from src.nodes import (  # noqa: E402
     job_posting_analysis,
     # workforce,
@@ -26,7 +26,7 @@ from src.nodes import (  # noqa: E402
     # industry,
     # jobrole,
     # leadership,
-    # report,
+    report,
 )
 from src.state import State  # noqa: E402
 from src.utils.llm_summarizer import LlmSummarizer  # noqa: E402
@@ -102,13 +102,13 @@ class Workflow:
                 "target_company_profile": "",
                 "job_posting_link": job_link,
                 "job_posting_raw": "",
-                "job_posting_details": "",
+                "job_posting_details": TargetJobDetails(),
                 # "industry_research": IndustryContextModels(),
                 # "finance_research": FinancialContextModels(),
                 # "workforce_research": WorkforceContextModels(),
                 # "leadership_research": LeadershipContextModels(),
                 # "job_role_research": JobRoleContextModels(),
-                # "final_report": "",
+                "final_report": "",
             },
         )
 

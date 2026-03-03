@@ -12,6 +12,7 @@ from src.models import (  # noqa: E402
     IndustryContextModels,
     JobRoleContextModels,
     LeadershipContextModels,
+    TargetJobDetails,
     WorkforceContextModels,
 )
 
@@ -22,7 +23,7 @@ class State(TypedDict):
     target_company_profile: str
     job_posting_link: str
     job_posting_raw: str
-    job_posting_details: str
+    job_posting_details: TargetJobDetails
     job_role_research: JobRoleContextModels
     industry_research: IndustryContextModels
     finance_research: FinancialContextModels
