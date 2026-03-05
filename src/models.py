@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Self
+from typing import List, Literal, Optional, Self
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -248,4 +248,31 @@ class TargetJobDetails(BaseModel):
         default="No data available",
         description="The annual gross base salary for the position.",
         examples=["100-120k"],
+    )
+
+
+class CompanyProfile(BaseModel):
+    industry: str = Field(
+        ...,
+        description="The primary sector the company operates in (e.g., Fintech, SaaS, Healthcare).",
+    )
+    company_type: str = Field(
+        ...,
+        description="Whether the company is 'Public', 'Private', 'Non-Profit', or a 'Government Agency'.",
+    )
+    core_products: List[str] = Field(
+        ...,
+        description="A list of the main products, services, or platforms the company offers.",
+    )
+    ticker_symbol: Optional[str] = Field(
+        None,
+        description="The stock ticker symbol if the company is Public (e.g., 'MSFT').",
+    )
+    target_audience: Optional[str] = Field(
+        None,
+        description="Who the company primarily sells to (e.g., B2B, B2C, Enterprise, Small Business).",
+    )
+    recent_news_summary: Optional[str] = Field(
+        None,
+        description="A 1-2 sentence summary of recent major events like funding, layoffs, or acquisitions.",
     )
