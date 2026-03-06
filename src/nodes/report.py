@@ -28,6 +28,12 @@ class GenerateReport:
         **Salary:** {state["job_posting_details"].salary}
 
         ---
+
+        ### Company Profile
+        **Job Profile:** {state["target_company_profile"]}
+
+        ---
+
         *Report generated on: {datetime.now().strftime("%Y-%m-%d")}*
         """
 

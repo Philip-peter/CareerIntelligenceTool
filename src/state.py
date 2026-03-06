@@ -20,7 +20,9 @@ from src.models import (  # noqa: E402
 class State(TypedDict):
     candidate: CandidateModel
     target_company: str
+    target_company_url: str
     target_company_profile: str
+    target_company_research_raw: str
     job_posting_link: str
     job_posting_raw: str
     job_posting_details: TargetJobDetails

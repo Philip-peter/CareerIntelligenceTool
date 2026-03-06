@@ -87,9 +87,7 @@ class TavilyResearchTool:
             print(f"Encountered error during taviliy extract: {e}")
             return []
 
-    async def crawl(
-        self, url: str, instructions: str, chunks_per_source: int
-    ) -> List[Dict[str, Any]]:
+    async def crawl(self, url: str, instructions: str) -> List[Dict[str, Any]]:
         try:
             response = await self.tavily_async_client.crawl(
                 url=url,
