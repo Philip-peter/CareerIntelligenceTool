@@ -1,6 +1,7 @@
 import os
 import sys
-from typing import TypedDict
+from operator import add
+from typing import Annotated, Dict, List, TypedDict
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
@@ -22,9 +23,8 @@ class State(TypedDict):
     target_company: str
     target_company_url: str
     target_company_profile: str
-    target_company_research_raw: str
     job_posting_link: str
-    job_posting_raw: str
+    raw_research: Annotated[List[Dict[str, str]], add]
     job_posting_details: TargetJobDetails
     job_role_research: JobRoleContextModels
     industry_research: IndustryContextModels

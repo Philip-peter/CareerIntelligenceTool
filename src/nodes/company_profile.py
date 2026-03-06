@@ -1,8 +1,6 @@
-import asyncio
 import copy
 import os
 import sys
-from typing import Any, Dict, List
 
 from langchain_core.runnables import RunnableConfig
 
@@ -29,9 +27,9 @@ class CompanyProfile:
         if not web_research_tool:
             return ValueError("web search tool is not configured")
 
-        response = await web_research_tool.search(query=working_query)
-        print(response)
-        return {"target_company_research_raw": response}
+        research = await web_research_tool.search(query=working_query)
+        result = {"target_company_research_raw": research}
+        return {"raw_research": result}
 
     async def run_llm_analysis(self, state: State, config: RunnableConfig):
 
@@ -56,7 +54,7 @@ class CompanyProfile:
         Analyze the following extracted data to build a concise profile for {state["target_company"]}.
 
         Data Sources:
-        - Web Search Results: {state["target_company_research_raw"]}
+        - Web Search Results: {state["raw_research"][0].get("target_company_research_raw")}
 
         Please extract and map the following:
         1. Industry: (The specific market sector)

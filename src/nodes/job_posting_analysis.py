@@ -25,7 +25,8 @@ class JobPostingAnalysis:
             query=query, research_urls=state["job_posting_link"]
         )
 
-        return {"job_posting_raw": extracted_job_details[0].get("raw_content", "")}
+        result = {"job_posting_raw": extracted_job_details[0].get("raw_content", "")}
+        return {"raw_research": result}
 
     async def analyze_job(self, state: State, config: RunnableConfig):
 
@@ -58,7 +59,7 @@ class JobPostingAnalysis:
         - salary (as a number only)
 
         Job Posting Content:
-        {state["job_posting_raw"]}
+        {state["raw_research"][0].get("job_posting_raw")}
         """
 
         llm_response = await llm_analyzer_tool.run(
