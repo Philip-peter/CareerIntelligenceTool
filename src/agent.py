@@ -20,6 +20,7 @@ from src.models import (  # noqa: E402
     TargetJobDetails,
 )
 from src.nodes import (  # noqa: E402
+    company_profile,
     job_posting_analysis,
     # workforce,
     # finance,
@@ -47,6 +48,7 @@ class Workflow:
         # self.leadership_obj = leadership.Leadership()
         self.report_obj = report.GenerateReport()
         self.job_posting_analysis_obj = job_posting_analysis.JobPostingAnalysis()
+        self.company_profile = company_profile.CompanyProfile()
 
         # workflow
         workflow = StateGraph(State)
@@ -58,14 +60,21 @@ class Workflow:
         workflow.add_node(
             "job_posting_analysis", self.job_posting_analysis_obj.analyze_job
         )
+        workflow.add_node("company_profile_research", self.company_profile.run_research)
+        workflow.add_node(
+            "company_profile_analysis", self.company_profile.run_llm_analysis
+        )
         # workflow.add_node("industry_researcher", self.industry_obj.run_research)
         # workflow.add_node("leadership_researcher", self.leadership_obj.run_research)
         workflow.add_node("report_generator", self.report_obj.run)
 
         # add edges
         workflow.add_edge(START, "job_posting_extract")
+        workflow.add_edge(START, "company_profile_research")
         workflow.add_edge("job_posting_extract", "job_posting_analysis")
+        workflow.add_edge("company_profile_research", "company_profile_analysis")
         workflow.add_edge("job_posting_analysis", "report_generator")
+        workflow.add_edge("company_profile_analysis", "report_generator")
         workflow.add_edge("report_generator", END)
 
         # compile agent
@@ -101,6 +110,7 @@ class Workflow:
                 # "candidate": candidate,
                 "target_company": target_company,
                 "target_company_profile": "",
+                "target_company_research_raw": "",
                 "job_posting_link": job_link,
                 "job_posting_raw": "",
                 "job_posting_details": TargetJobDetails(),
