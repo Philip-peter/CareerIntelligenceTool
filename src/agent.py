@@ -110,7 +110,7 @@ class Workflow:
                 # "candidate": candidate,
                 "target_company": target_company,
                 "target_company_profile": "",
-                "raw_research": [],
+                "raw_research": {},
                 "job_posting_link": job_link,
                 "job_posting_details": TargetJobDetails(),
                 # "industry_research": IndustryContextModels(),

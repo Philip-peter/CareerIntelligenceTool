@@ -1,4 +1,5 @@
-from typing import List, Literal, Optional, Self
+from enum import Enum
+from typing import Literal, Optional, Self
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -251,28 +252,19 @@ class TargetJobDetails(BaseModel):
     )
 
 
-class CompanyProfile(BaseModel):
+class CompanyProfileModel(BaseModel):
     industry: str = Field(
-        ...,
-        description="The primary sector the company operates in (e.g., Fintech, SaaS, Healthcare).",
+        description="The specific market sector the company operates in."
+    )
+    core_product_service: str = Field(
+        description="The main offering provided by the company.",
     )
     company_type: str = Field(
-        ...,
-        description="Whether the company is 'Public', 'Private', 'Non-Profit', or a 'Government Agency'.",
+        description="Whether the company is Public, Private or Unknown company type"
     )
-    core_products: List[str] = Field(
-        ...,
-        description="A list of the main products, services, or platforms the company offers.",
+    company_maturity: str = Field(
+        description="Whether the company is startup or established company"
     )
-    ticker_symbol: Optional[str] = Field(
-        None,
-        description="The stock ticker symbol if the company is Public (e.g., 'MSFT').",
-    )
-    target_audience: Optional[str] = Field(
-        None,
-        description="Who the company primarily sells to (e.g., B2B, B2C, Enterprise, Small Business).",
-    )
-    recent_news_summary: Optional[str] = Field(
-        None,
-        description="A 1-2 sentence summary of recent major events like funding, layoffs, or acquisitions.",
+    primary_revenue_model: str = Field(
+        description="The primary way the company makes money (e.g., B2B SaaS, E-commerce)."
     )
