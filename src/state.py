@@ -1,7 +1,7 @@
 import os
 import sys
-from operator import add
-from typing import Annotated, Dict, List, TypedDict
+from operator import or_
+from typing import Annotated, Dict, TypedDict
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
@@ -9,6 +9,7 @@ sys.path.append(root_dir)
 
 from src.models import (  # noqa: E402
     CandidateModel,
+    CompanyProfileModel,
     FinancialContextModels,
     IndustryContextModels,
     JobRoleContextModels,
@@ -22,9 +23,9 @@ class State(TypedDict):
     candidate: CandidateModel
     target_company: str
     target_company_url: str
-    target_company_profile: str
+    target_company_profile: CompanyProfileModel
     job_posting_link: str
-    raw_research: Annotated[List[Dict[str, str]], add]
+    raw_research: Annotated[Dict, or_]
     job_posting_details: TargetJobDetails
     job_role_research: JobRoleContextModels
     industry_research: IndustryContextModels

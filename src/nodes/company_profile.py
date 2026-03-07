@@ -1,4 +1,3 @@
-import copy
 import os
 import sys
 
@@ -8,6 +7,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
+from src.models import CompanyProfileModel  # noqa: E402
 from src.state import State  # noqa: E402
 
 
@@ -20,14 +20,14 @@ class CompanyProfile:
         return f"'{target_company}' (site:linkedin.com/company OR site:crunchbase.com) 'about' 'industry' 'headquarters'"
 
     async def run_research(self, state: State, config: RunnableConfig):
-        working_query = copy.deepcopy(
-            self.queries_template(target_company=state["target_company"])
-        )
+        working_query = self.queries_template(target_company=state["target_company"])
+
         web_research_tool = config.get("configurable", {}).get("web_research_tool")
         if not web_research_tool:
-            return ValueError("web search tool is not configured")
+            raise ValueError("web search tool is not configured")
 
         research = await web_research_tool.search(query=working_query)
+        # print(f"✨ DEBUG: {type(research)}")
         result = {"target_company_research_raw": research}
         return {"raw_research": result}
 
@@ -38,23 +38,33 @@ class CompanyProfile:
             raise ValueError("llm analyzer tool is not configured")
 
         system_prompt = """
-        You are an expert Business Intelligence Analyst specializing in corporate taxonomy. Your task is to analyze raw search results to provide a high-fidelity classification of a company.
+        You are an expert Business Intelligence Analyst specializing in corporate taxonomy.
+        Your task is to analyze raw search results and provide a high-fidelity classification
+        following these exact string conventions:
 
-        Rules:
-        1. Industry: Use standard professional categories (e.g., "Fintech," "SaaS," "Biotechnology," "Renewable Energy"). Avoid generic terms like "Business" or "Tech."
-        2. Core Product/Service: Identify the primary revenue generator. What do they actually sell? (e.g., "AI-driven fraud detection platform" vs. just "Software").
-        3. Company Type:
-            - Identify as 'Public' if a stock ticker (e.g., NASDAQ: AMZN) exists.
-            - Identify as 'Startup/In-Funding' if Series A-E or Venture Capital is mentioned.
-            - Identify as 'Private/Established' if it is a mature firm without a ticker or recent venture funding.
-        4. Evidence-Based: Only use the provided text. If the industry is ambiguous.
+        ### Classification Rules:
+
+        1. **Industry**: Use specific professional categories (e.g., "Fintech," "SaaS," "Biotechnology").
+        2. **Core Product/Service**: Identify the primary offering (e.g., "AI-driven fraud detection platform").
+        3. **Company Type**: You must choose exactly one of these strings:
+            - "Public" (if a stock ticker exists)
+            - "Private" (if privately held)
+            - "Unknown" (if no ownership data is found)
+        4. **Company Maturity**: You must choose exactly one of these strings:
+            - "Startup" (mentions of venture capital, Series A-E, or 'early-stage')
+            - "Established" (operating 10+ years, stable non-venture firm, or mature public entity)
+        5. **Primary Revenue Model**: Describe the monetization strategy (e.g., "B2B SaaS," "Marketplace Commission," "Direct Sales").
+
+        ### Operational Constraints:
+        - **Evidence-Based**: Only use provided text. Do not hallucinate.
+        - **Strict Formatting**: Ensure the values for 'Company Type' and 'Company Maturity' match the options provided above exactly.
         """
 
         user_prompt = f"""
         Analyze the following extracted data to build a concise profile for {state["target_company"]}.
 
         Data Sources:
-        - Web Search Results: {state["raw_research"][0].get("target_company_research_raw")}
+        - Web Search Results: {state["raw_research"].get("target_company_research_raw")}
 
         Please extract and map the following:
         1. Industry: (The specific market sector)
@@ -68,6 +78,6 @@ class CompanyProfile:
         llm_response = await llm_analyzer_tool.run(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
-            output_schema=None,
+            output_schema=CompanyProfileModel,
         )
         return {"target_company_profile": llm_response}
