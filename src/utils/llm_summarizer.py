@@ -1,9 +1,15 @@
 import os
 import sys
+import warnings
 from typing import Optional, Type
 
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, SecretStr
+
+# ignore Pydantic serializer warnings
+warnings.filterwarnings(
+    "ignore", message="Pydantic serializer warnings:", category=UserWarning
+)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
