@@ -48,6 +48,12 @@ class GenerateReport:
         {state["job_posting_details"].benefits.replace(";", "\n* ")}
 
         ---
+
+        ### Industry Analysis
+        * **Industry:** {state["industry_research"]}
+
+        ---
+
         *Report generated on: {datetime.now().strftime("%Y-%m-%d")}*"""
 
         return {"final_report": textwrap.dedent(summary).strip()}
