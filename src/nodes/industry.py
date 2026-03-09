@@ -74,4 +74,5 @@ class Industry:
         updated_industry_research = state["industry_research"].model_copy(
             update=new_data
         )
+        print(f"⚡ DEBUG --> {updated_industry_research}")
         return {"industry_research": updated_industry_research}

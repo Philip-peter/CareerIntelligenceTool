@@ -13,7 +13,7 @@ from config import cfg  # noqa: E402
 from src.models import (  # noqa: E402
     #     CandidateModel,
     #     FinancialContextModels,
-    #     IndustryContextModels,
+    IndustryContextModels,
     #     JobRoleContextModels,
     #     LeadershipContextModels,
     #     WorkforceContextModels,
@@ -21,10 +21,10 @@ from src.models import (  # noqa: E402
 )
 from src.nodes import (  # noqa: E402
     company_profile,
-    job_posting_analysis,
     # workforce,
     # finance,
-    # industry,
+    industry,
+    job_posting_analysis,
     # jobrole,
     # leadership,
     report,
@@ -44,7 +44,7 @@ class Workflow:
         self.llm_summarizer_tool = LlmSummarizer()
 
         # initiate nodes
-        # self.industry_obj = industry.Industry()
+        self.industry_obj = industry.Industry()
         # self.leadership_obj = leadership.Leadership()
         self.report_obj = report.GenerateReport()
         self.job_posting_analysis_obj = job_posting_analysis.JobPostingAnalysis()
@@ -64,15 +64,17 @@ class Workflow:
         workflow.add_node(
             "company_profile_analysis", self.company_profile.run_llm_analysis
         )
-        # workflow.add_node("industry_researcher", self.industry_obj.run_research)
+        workflow.add_node("industry_researcher", self.industry_obj.run_research)
         # workflow.add_node("leadership_researcher", self.leadership_obj.run_research)
         workflow.add_node("report_generator", self.report_obj.run)
 
         # add edges
         workflow.add_edge(START, "job_posting_extract")
         workflow.add_edge(START, "company_profile_research")
+        workflow.add_edge(START, "industry_researcher")
         workflow.add_edge("job_posting_extract", "job_posting_analysis")
         workflow.add_edge("company_profile_research", "company_profile_analysis")
+        workflow.add_edge("industry_researcher", "report_generator")
         workflow.add_edge("job_posting_analysis", "report_generator")
         workflow.add_edge("company_profile_analysis", "report_generator")
         workflow.add_edge("report_generator", END)
@@ -113,7 +115,7 @@ class Workflow:
                 "raw_research": {},
                 "job_posting_link": job_link,
                 "job_posting_details": TargetJobDetails(),
-                # "industry_research": IndustryContextModels(),
+                "industry_research": IndustryContextModels(),
                 # "finance_research": FinancialContextModels(),
                 # "workforce_research": WorkforceContextModels(),
                 # "leadership_research": LeadershipContextModels(),
