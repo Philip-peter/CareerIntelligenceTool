@@ -52,15 +52,18 @@ class Industry:
         async def process_query(item: Dict[str, Any]):
             query = item.get("query")
             # search
-            search_result = await web_research_tool.search(query=query, topic="news")
-            researched_urls = [r["url"] for r in search_result]
-            # extract
-            research_data = await web_research_tool.extract(
-                query=query, research_urls=researched_urls
-            )
-            item["researched_urls"] = researched_urls
-            item["researched_data"] = research_data
+            web_search = await web_research_tool.search(query=query, topic="general")
+            aggregate_search_content = ", ".join([r["content"] for r in web_search])
+            item["researched_data"] = aggregate_search_content
             return item
+            # researched_urls = [r["url"] for r in search_result]
+            # extract
+            # research_data = await web_research_tool.extract(
+            #     query=query, research_urls=researched_urls
+            # )
+            # item["researched_urls"] = researched_urls
+            # item["researched_data"] = research_data
+            # return item
 
         task = [process_query(q) for q in working_queries]
         result = await asyncio.gather(*task, return_exceptions=True)
@@ -74,5 +77,5 @@ class Industry:
         updated_industry_research = state["industry_research"].model_copy(
             update=new_data
         )
-        print(f"⚡ DEBUG --> {updated_industry_research}")
+        # print(f"⚡ DEBUG --> {updated_industry_research}")
         return {"industry_research": updated_industry_research}

@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Literal, Optional, Self
 
 from pydantic import BaseModel, Field, model_validator

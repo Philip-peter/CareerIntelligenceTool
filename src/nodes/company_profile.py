@@ -27,7 +27,6 @@ class CompanyProfile:
             raise ValueError("web search tool is not configured")
 
         research = await web_research_tool.search(query=working_query)
-        # print(f"✨ DEBUG: {type(research)}")
         result = {"target_company_research_raw": research}
         return {"raw_research": result}
 
@@ -80,4 +79,7 @@ class CompanyProfile:
             user_prompt=user_prompt,
             output_schema=CompanyProfileModel,
         )
+
+        print(llm_response)
+
         return {"target_company_profile": llm_response}
