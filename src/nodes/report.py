@@ -17,6 +17,8 @@ class GenerateReport:
     def run(self, state: State):
 
         # print(f"* **Industry:** {state}")
+        print(f"\nDEBUG: Type of profile is {type(state['target_company_profile'])}")
+        print(f"DEBUG: Content: {state['target_company_profile']}\n")
 
         summary = f"""# Target Company: {state["target_company"]}
         ---

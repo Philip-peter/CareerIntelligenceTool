@@ -28,6 +28,7 @@ class CompanyProfile:
 
         research = await web_research_tool.search(query=working_query)
         result = {"target_company_research_raw": research}
+
         return {"raw_research": result}
 
     async def run_llm_analysis(self, state: State, config: RunnableConfig):
@@ -80,6 +81,6 @@ class CompanyProfile:
             output_schema=CompanyProfileModel,
         )
 
-        print(llm_response)
+        print("I got here bro")
 
         return {"target_company_profile": llm_response}

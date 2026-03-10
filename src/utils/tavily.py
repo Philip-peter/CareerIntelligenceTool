@@ -28,7 +28,7 @@ class TavilyResearchTool:
         search_depth: Literal["basic", "advanced", "fast", "ultra-fast"] = "basic",
         max_results: int = cfg.TAVILY_SEARCH_MAX_RESULT,
         # include_domains = None,
-    ) -> List[Dict[str, Any]]:
+    ):
 
         async with self.async_ratelimit:
             try:
@@ -63,7 +63,9 @@ class TavilyResearchTool:
                             max_score = res["score"]
                             relevant_result = [res]
 
+                relevant_result = ", ".join([r["content"] for r in relevant_result])
                 return relevant_result
+
             except Exception as e:
                 print(f"Encountered error during taviliy search: {e}")
                 return []
