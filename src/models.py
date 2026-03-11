@@ -253,17 +253,22 @@ class TargetJobDetails(BaseModel):
 
 class CompanyProfileModel(BaseModel):
     industry: str = Field(
-        description="The specific market sector the company operates in."
+        default="Unknown",
+        description="The specific market sector the company operates in.",
     )
     core_product_service: str = Field(
+        default="Unknown",
         description="The main offering provided by the company.",
     )
     company_type: str = Field(
-        description="Whether the company is Public, Private or Unknown company type"
+        default="Unknown",
+        description="Whether the company is Public, Private or Unknown company type",
     )
     company_maturity: str = Field(
-        description="Whether the company is startup or established company"
+        default="Unknown",
+        description="Whether the company is startup or established company",
     )
     primary_revenue_model: str = Field(
-        description="The primary way the company makes money (e.g., B2B SaaS, E-commerce)."
+        default="Unknown",
+        description="The primary way the company makes money (e.g., B2B SaaS, E-commerce).",
     )
