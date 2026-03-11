@@ -37,20 +37,26 @@ class LlmSummarizer:
 
         try:
             messages = [("system", system_prompt), ("user", user_prompt)]
+
+            # return string when output_schema is None
             if output_schema is None:
                 response = await self.llm.ainvoke(messages)
+                return response.content
 
-            else:
-                llm_structured_output = self.llm.with_structured_output(
-                    output_schema, strict=True, method="json_schema"
-                )
+            # structured llm output
+            llm_structured_output = self.llm.with_structured_output(
+                schema=output_schema, strict=True, method="json_schema"
+            )
+            response = await llm_structured_output.ainvoke(messages)
 
-                if llm_structured_output is None:
-                    print("⚡DEBUG: LLM returned nothing")
-
-                response = await llm_structured_output.ainvoke(messages)
+            # return default schema values if llm returned nothing
+            if not response:
+                print("⚡DEBUG: LLM returned nothing")
+                return output_schema()
 
             return response
         except Exception as e:
             print(f"Encountered Error during LLM Summarization: {e}")
+            if output_schema:
+                return output_schema()
             return ""

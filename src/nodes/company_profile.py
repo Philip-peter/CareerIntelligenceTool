@@ -81,6 +81,4 @@ class CompanyProfile:
             output_schema=CompanyProfileModel,
         )
 
-        print("I got here bro")
-
         return {"target_company_profile": llm_response}

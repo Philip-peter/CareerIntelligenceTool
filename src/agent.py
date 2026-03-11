@@ -11,6 +11,7 @@ sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
 from src.models import (  # noqa: E402
+    CompanyProfileModel,
     #     CandidateModel,
     #     FinancialContextModels,
     IndustryContextModels,
@@ -111,7 +112,7 @@ class Workflow:
             {
                 # "candidate": candidate,
                 "target_company": target_company,
-                "target_company_profile": "",
+                "target_company_profile": CompanyProfileModel(),
                 "raw_research": {},
                 "job_posting_link": job_link,
                 "job_posting_details": TargetJobDetails(),
