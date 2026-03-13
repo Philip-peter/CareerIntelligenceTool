@@ -49,12 +49,6 @@ class TavilyResearchTool:
                     # if res["score"] >= cfg.TAVILY_CONTENT_RELEVANCE_SCORE
                 ]
 
-                # adjust search if no result
-                # if not relevant_result:
-                #     relevant_result = await self.tavily_async_client.search(
-                #         query=query, search_depth="advanced"
-                #     )
-
                 # select response with highest relevant score only if relevant_result is empty
                 if len(relevant_result) == 0:
                     max_score = 0.0

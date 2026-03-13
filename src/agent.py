@@ -56,28 +56,32 @@ class Workflow:
 
         # add nodes
         workflow.add_node(
-            "job_posting_extract", self.job_posting_analysis_obj.extract_job
+            "job_posting_web_search", self.job_posting_analysis_obj.extract_job
         )
         workflow.add_node(
-            "job_posting_analysis", self.job_posting_analysis_obj.analyze_job
+            "job_posting_llm_analysis", self.job_posting_analysis_obj.analyze_job
         )
-        workflow.add_node("company_profile_research", self.company_profile.run_research)
         workflow.add_node(
-            "company_profile_analysis", self.company_profile.run_llm_analysis
+            "company_profile_web_search", self.company_profile.run_research
         )
-        workflow.add_node("industry_researcher", self.industry_obj.run_research)
+        workflow.add_node(
+            "company_profile_llm_analysis", self.company_profile.run_llm_analysis
+        )
+        workflow.add_node("industry_web_search", self.industry_obj.run_research)
+        workflow.add_node("industry_llm_analysis", self.industry_obj.run_llm_analysis)
         # workflow.add_node("leadership_researcher", self.leadership_obj.run_research)
         workflow.add_node("report_generator", self.report_obj.run)
 
         # add edges
-        workflow.add_edge(START, "job_posting_extract")
-        workflow.add_edge(START, "company_profile_research")
-        workflow.add_edge(START, "industry_researcher")
-        workflow.add_edge("job_posting_extract", "job_posting_analysis")
-        workflow.add_edge("company_profile_research", "company_profile_analysis")
-        workflow.add_edge("industry_researcher", "report_generator")
-        workflow.add_edge("job_posting_analysis", "report_generator")
-        workflow.add_edge("company_profile_analysis", "report_generator")
+        workflow.add_edge(START, "job_posting_web_search")
+        workflow.add_edge(START, "company_profile_web_search")
+        workflow.add_edge(START, "industry_web_search")
+        workflow.add_edge("job_posting_web_search", "job_posting_llm_analysis")
+        workflow.add_edge("company_profile_web_search", "company_profile_llm_analysis")
+        workflow.add_edge("industry_web_search", "industry_llm_analysis")
+        workflow.add_edge("job_posting_llm_analysis", "report_generator")
+        workflow.add_edge("company_profile_llm_analysis", "report_generator")
+        workflow.add_edge("industry_llm_analysis", "report_generator")
         workflow.add_edge("report_generator", END)
 
         # compile agent
