@@ -247,7 +247,7 @@ class TargetJobDetails(BaseModel):
     salary: str = Field(
         default="No data available",
         description="The annual gross base salary for the position.",
-        examples=["100-120k"],
+        examples=["100-120k", "$150,025—$194,150 CAD"],
     )
 
 

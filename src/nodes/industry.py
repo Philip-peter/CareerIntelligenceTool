@@ -88,7 +88,7 @@ class Industry:
 
         user_prompt = f"""
         ### Task
-        Analyze the following search results for the company: [INSERT COMPANY NAME].
+        Analyze the following search results for the company: {state["target_company"]}.
         Extract and synthesize information into the JSON format specified by the IndustryContextModels schema.
 
         ### Schema Fields to Populate:

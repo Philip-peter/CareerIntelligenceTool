@@ -16,19 +16,19 @@ class GenerateReport:
 
     def run(self, state: State):
 
-        summary = f"""# Target Company: {state["target_company"]}
-        ---
+        summary = f"""# TARGET COMPANY: {state["target_company"]}
+        ====================================================================================
 
-        ### Company Profile
+        ### COMPANY PROFILE
         * **Industry:** {state["target_company_profile"].industry}
         * **Core Product/Service:** {state["target_company_profile"].core_product_service}
         * **Company Type:** {state["target_company_profile"].company_type}
         * **Company Maturity:** {state["target_company_profile"].company_maturity}
         * **Primary Revenue Model:** {state["target_company_profile"].primary_revenue_model}
 
-        ---
+        ====================================================================================
 
-        ### Job Details
+        ### JOB DETAILS
         * **Job Title:** {state["job_posting_details"].job_title}
         * **Salary:** {state["job_posting_details"].salary}
 
@@ -47,15 +47,31 @@ class GenerateReport:
         **Benefits:**
         {state["job_posting_details"].benefits.replace(";", "\n* ")}
 
-        ---
+        ====================================================================================
 
-        ### Industry Analysis
+        ### INDUSTRY ANALYSIS
         * **Cyclic or Defensive:** {state["industry_research"].cyclic_or_defensive}
         * **AI destruption:** {state["industry_research"].ai_distruption}
         * **Competition:** {state["industry_research"].competition}
         * **Regulatory environment:** {state["industry_research"].regulatory_environment}
 
-        ---
+        ====================================================================================
+
+        ### LEADERSHIP ANALYSIS
+        * **CEO Tenure:** {state["leadership_research"].ceo_tenure}
+        * **Founder Involvement:** {state["leadership_research"].founder_involvement}
+        * **Strategic Pivots:** {state["leadership_research"].strategic_pivots}
+        * **Insider Behavior:** {state["leadership_research"].insider_behavior}
+
+        ====================================================================================
+
+        ### WORKFORCE ANALYSIS
+        * **Layoff History:** {state["workforce_research"].layoff_history}
+        * **Hiring Trends:** {state["workforce_research"].hiring_trends}
+        * **Executive Turnover:** {state["workforce_research"].executive_turnover}
+        * **Employee Sentiments:** {state["workforce_research"].employee_sentiments}
+
+        ====================================================================================
 
         *Report generated on: {datetime.now().strftime("%Y-%m-%d")}*"""
 
