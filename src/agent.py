@@ -13,7 +13,7 @@ from config import cfg  # noqa: E402
 from src.models import (  # noqa: E402
     CompanyProfileModel,
     #     CandidateModel,
-    #     FinancialContextModels,
+    FinancialContextModels,
     IndustryContextModels,
     #     JobRoleContextModels,
     LeadershipContextModels,
@@ -22,7 +22,7 @@ from src.models import (  # noqa: E402
 )
 from src.nodes import (  # noqa: E402
     company_profile,
-    # finance,
+    finance,
     industry,
     job_posting_analysis,
     # jobrole,
@@ -48,6 +48,7 @@ class Workflow:
         self.industry_obj = industry.Industry()
         self.leadership_obj = leadership.Leadership()
         self.workforce_obj = workforce.Workforce()
+        self.finance_obj = finance.FinancialData()
         self.report_obj = report.GenerateReport()
         self.job_posting_analysis_obj = job_posting_analysis.JobPostingAnalysis()
         self.company_profile = company_profile.CompanyProfile()
@@ -70,6 +71,8 @@ class Workflow:
         )
         workflow.add_node("industry_web_search", self.industry_obj.run_research)
         workflow.add_node("industry_llm_analysis", self.industry_obj.run_llm_analysis)
+        workflow.add_node("finance_web_search", self.finance_obj.run_research)
+        workflow.add_node("finance_llm_analysis", self.finance_obj.run_llm_analysis)
         workflow.add_node("workforce_web_search", self.workforce_obj.run_research)
         workflow.add_node("workforce_llm_analysis", self.workforce_obj.run_llm_analysis)
         workflow.add_node("leadership_web_search", self.leadership_obj.run_research)
@@ -85,15 +88,17 @@ class Workflow:
         workflow.add_edge(START, "leadership_web_search")
         workflow.add_edge(START, "workforce_web_search")
         workflow.add_edge("job_posting_web_search", "job_posting_llm_analysis")
-        workflow.add_edge("company_profile_web_search", "company_profile_llm_analysis")
-        workflow.add_edge("industry_web_search", "industry_llm_analysis")
         workflow.add_edge("job_posting_llm_analysis", "report_generator")
+        workflow.add_edge("company_profile_web_search", "company_profile_llm_analysis")
         workflow.add_edge("company_profile_llm_analysis", "report_generator")
+        workflow.add_edge("industry_web_search", "industry_llm_analysis")
         workflow.add_edge("industry_llm_analysis", "report_generator")
         workflow.add_edge("leadership_web_search", "leadership_llm_analysis")
         workflow.add_edge("leadership_llm_analysis", "report_generator")
         workflow.add_edge("workforce_web_search", "workforce_llm_analysis")
         workflow.add_edge("workforce_llm_analysis", "report_generator")
+        workflow.add_edge("finance_web_search", "finance_llm_analysis")
+        workflow.add_edge("finance_llm_analysis", "report_generator")
         workflow.add_edge("report_generator", END)
 
         # compile agent
@@ -133,7 +138,7 @@ class Workflow:
                 "job_posting_link": job_link,
                 "job_posting_details": TargetJobDetails(),
                 "industry_research": IndustryContextModels(),
-                # "finance_research": FinancialContextModels(),
+                "finance_research": FinancialContextModels(),
                 "workforce_research": WorkforceContextModels(),
                 "leadership_research": LeadershipContextModels(),
                 # "job_role_research": JobRoleContextModels(),

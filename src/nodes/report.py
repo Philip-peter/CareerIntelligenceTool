@@ -73,6 +73,15 @@ class GenerateReport:
 
         ====================================================================================
 
+        ### FINANCE ANALYSIS
+        * **Revenue Growth:** {state["finance_research"].revenue_growth}
+        * **Profitability:** {state["finance_research"].profitability}
+        * **Debt:** {state["finance_research"].debt}
+        * **Cash Flow:** {state["finance_research"].cash_flow}
+        * **Revenue Concentration:** {state["finance_research"].revenue_concentration}
+
+        ====================================================================================
+
         *Report generated on: {datetime.now().strftime("%Y-%m-%d")}*"""
 
         return {"final_report": textwrap.dedent(summary).strip()}
