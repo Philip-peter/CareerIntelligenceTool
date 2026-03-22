@@ -16,7 +16,8 @@ class GenerateReport:
 
     def run(self, state: State):
 
-        summary = f"""# TARGET COMPANY: {state["target_company"]}
+        summary = f"""====================================================================================
+        # TARGET COMPANY: {state["target_company"]}
         ====================================================================================
 
         ### COMPANY PROFILE

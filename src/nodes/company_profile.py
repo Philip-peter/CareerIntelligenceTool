@@ -53,7 +53,9 @@ class CompanyProfile:
         4. **Company Maturity**: You must choose exactly one of these strings:
             - "Startup" (mentions of venture capital, Series A-E, or 'early-stage')
             - "Established" (operating 10+ years, stable non-venture firm, or mature public entity)
-        5. **Primary Revenue Model**: Describe the monetization strategy (e.g., "B2B SaaS," "Marketplace Commission," "Direct Sales").
+        5. **Primary Revenue Driver**: Identify the specific product line, business unit, or service category that contributes
+        the majority of the firm's operating income or represents its core growth engine (e.g., "Public Cloud Infrastructure (AWS),"
+        "Membership Ecosystem (Prime)," or "Digital Advertising Services").
 
         ### Operational Constraints:
         - **Evidence-Based**: Only use provided text. Do not hallucinate.
