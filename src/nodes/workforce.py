@@ -99,7 +99,7 @@ class Workforce:
         4. employee_sentiments: Glassdoor/public sentiment (e.g., 'Low morale complaints during restructuring')
 
         ### Raw Search Results:
-        {state["raw_research"].get("industry_research_raw")}
+        {state["raw_research"].get("workforce_research_raw")}
         """
 
         llm_response = await llm_analyzer_tool.run(

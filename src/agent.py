@@ -87,6 +87,7 @@ class Workflow:
         workflow.add_edge(START, "industry_web_search")
         workflow.add_edge(START, "leadership_web_search")
         workflow.add_edge(START, "workforce_web_search")
+        workflow.add_edge(START, "finance_web_search")
         workflow.add_edge("job_posting_web_search", "job_posting_llm_analysis")
         workflow.add_edge("job_posting_llm_analysis", "report_generator")
         workflow.add_edge("company_profile_web_search", "company_profile_llm_analysis")
