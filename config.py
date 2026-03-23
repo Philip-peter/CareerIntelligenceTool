@@ -23,6 +23,10 @@ class Config:
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
         self.LLM_MAX_RETRIES = 2
 
+        # TheirStack
+        self.THEIRSTACK_API_URL = "https://api.theirstack.com/v1/jobs/search"
+        self.THEIRSTACK_API_KEY = os.getenv("THEIRSTACK_API_KEY")
+
 
 # initialize config
 cfg = Config()
