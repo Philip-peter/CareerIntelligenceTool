@@ -1,11 +1,16 @@
 import asyncio
 
 from src import agent
+from src.nodes.job_listing.theirstack import theirstack_provider
 
 
 async def main():
     # initialize agent
     my_agent = agent.Workflow()
+
+    # Test their stack job listing
+    job_listing = theirstack_provider.fetch_jobs()
+    print(job_listing)
 
     while True:
         # get inputs
