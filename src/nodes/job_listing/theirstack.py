@@ -29,6 +29,19 @@ class TheirStack(job_provider_interface.JobProviderInterface):
         self.preferred_location = [
             "CA",
         ]
+        self.job_seniority = [
+            "staff",
+            "senior",
+            "mid-level",
+        ]
+        self.minimum_salary = 120000
+        self.preferred_job_board = ["linkedin.com"]
+        self.preferred_employment_status = [
+            "full_time",
+            "part_time",
+            "temporary",
+            "contract",
+        ]
 
     def fetch_jobs(self):
         payload = {
@@ -37,6 +50,10 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "job_title_or": self.preferred_jobs,
             "job_country_code_or": self.preferred_location,
             "posted_at_max_age_days": 7,
+            "job_seniority_or": self.job_seniority,
+            "min_salary_usd": self.minimum_salary,
+            "url_domain_or": self.preferred_job_board,
+            "employment_statuses_or": self.preferred_employment_status,
         }
 
         headers = {
