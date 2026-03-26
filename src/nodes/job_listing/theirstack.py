@@ -10,7 +10,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../../"))
 sys.path.append(root_dir)
 
-# from job_provider_interface import JobProviderInterface  # noqa: E402
 from config import cfg  # noqa: E402
 
 from . import job_provider_interface  # noqa: E402
@@ -49,9 +48,9 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "limit": 25,
             "job_title_or": self.preferred_jobs,
             "job_country_code_or": self.preferred_location,
-            "posted_at_max_age_days": 7,
-            "job_seniority_or": self.job_seniority,
-            "min_salary_usd": self.minimum_salary,
+            "posted_at_max_age_days": 3,
+            # "job_seniority_or": self.job_seniority, <--returns 422 error
+            # "min_salary_usd": self.minimum_salary, <--returns 422 error
             "url_domain_or": self.preferred_job_board,
             "employment_statuses_or": self.preferred_employment_status,
         }
@@ -70,9 +69,21 @@ class TheirStack(job_provider_interface.JobProviderInterface):
                 verify=False,
             )
             response.raise_for_status()
-            return response.json()
+            data = response.json()
+            job_listings = data.get("data")
+
+            if not job_listings:
+                print("No job listing found!")
+                return []
+            else:
+                print(f"Found {len(job_listings)} matching jobs")
+                return job_listings
+
         except Exception as e:
             print(f"Encountered error during 'fetch_jobs' operation. Error: {e}")
+
+    def extract_job_data(self, *raw_job_listing):
+        pass
 
 
 theirstack_provider = TheirStack()
