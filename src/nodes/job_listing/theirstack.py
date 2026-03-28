@@ -25,6 +25,7 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "security engineer",
             "detection and response",
             "cloud security",
+            "infrastructure security",
         ]
         self.preferred_location = [
             "CA",
@@ -50,8 +51,8 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "job_title_or": self.preferred_jobs,
             "job_country_code_or": self.preferred_location,
             "posted_at_max_age_days": 7,
-            "job_seniority_or": self.job_seniority,
-            "min_salary_usd": self.minimum_salary,
+            # "job_seniority_or": self.job_seniority,
+            # "min_salary_usd": self.minimum_salary,
             "url_domain_or": self.preferred_job_board,
             "employment_statuses_or": self.preferred_employment_status,
         }
