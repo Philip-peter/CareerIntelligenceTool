@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Self
+from typing import Any, Literal, Optional, Self
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -39,6 +39,76 @@ class CandidateModel(BaseModel):
             self.current_role = None
             self.current_job_tenure = None
         return self
+
+
+# model for the job
+class JobPostingModel(BaseModel):
+    # # --- DERIVED FIELDS ---
+    # industry: str = Field(
+    #     default="Unknown",
+    #     description="The specific market sector the company operates in.",
+    # )
+    # core_product_service: str = Field(
+    #     default="Unknown",
+    #     description="The main offering provided by the company.",
+    # )
+    # company_type: str = Field(
+    #     default="Unknown",
+    #     description="Whether the company is Public, Private or Unknown company type",
+    # )
+    # company_maturity: str = Field(
+    #     default="Unknown",
+    #     description="Whether the company is startup or established company",
+    # )
+    # primary_revenue_driver: str = Field(
+    #     default="Unknown",
+    #     description="The primary way the company makes money (e.g., Public Cloud Infrastructure (AWS), Membership Ecosystem (Prime), or Digital Advertising Services)",
+    # )
+
+    # --- MANDATORY FIELDS ---
+    job_title: str = Field(
+        ..., description="The official title of the position. REQUIRED."
+    )
+    job_posting_link: str = Field(
+        ..., description="The direct URL to the job advertisement. REQUIRED."
+    )
+    job_description: str = Field(
+        ..., description="The full text content of the job posting. REQUIRED."
+    )
+
+    # --- OPTIONAL FIELDS (Defaulted to "No data available") ---
+    employment_statuses: Any = Field(
+        default="No data available",
+        description="List of employment types (e.g., Full-time, Contract).",
+    )
+    job_city: str = Field(default="No data available")
+    job_state: str = Field(default="No data available")
+    country: str = Field(default="No data available")
+    salary: str = Field(default="No data available")
+    minimum_salary: str = Field(default="No data available")
+
+    company: str = Field(default="No data available")
+    company_name: str = Field(default="No data available")
+    company_domain: str = Field(default="No data available")
+    company_url: str = Field(default="No data available")
+    company_linkedin_url: str = Field(default="No data available")
+
+    company_industry: str = Field(default="No data available")
+    company_employee_count: str = Field(default="No data available")
+    company_num_jobs: str = Field(default="No data available")
+    company_founded_year: str = Field(default="No data available")
+    is_recruiting_agency: str = Field(default="No data available")
+
+    publicly_traded_symbol: str = Field(default="No data available")
+    yc_batch: str = Field(default="No data available")
+    total_funding_usd: str = Field(default="No data available")
+    last_funding_round_date: str = Field(default="No data available")
+    last_funding_round_amount_readable: str = Field(default="No data available")
+
+    hiring_team: Any = Field(
+        default="No data available",
+        description="Names or roles of the individuals involved in the hiring process.",
+    )
 
 
 # models for the research context
@@ -248,27 +318,4 @@ class TargetJobDetails(BaseModel):
         default="No data available",
         description="The annual gross base salary for the position.",
         examples=["100-120k", "$150,025—$194,150 CAD"],
-    )
-
-
-class CompanyProfileModel(BaseModel):
-    industry: str = Field(
-        default="Unknown",
-        description="The specific market sector the company operates in.",
-    )
-    core_product_service: str = Field(
-        default="Unknown",
-        description="The main offering provided by the company.",
-    )
-    company_type: str = Field(
-        default="Unknown",
-        description="Whether the company is Public, Private or Unknown company type",
-    )
-    company_maturity: str = Field(
-        default="Unknown",
-        description="Whether the company is startup or established company",
-    )
-    primary_revenue_model: str = Field(
-        default="Unknown",
-        description="The primary way the company makes money (e.g., B2B SaaS, E-commerce).",
     )
