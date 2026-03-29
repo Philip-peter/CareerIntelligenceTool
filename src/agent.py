@@ -24,7 +24,7 @@ from src.nodes import (  # noqa: E402
     company_profile,
     finance,
     industry,
-    job_posting_analysis,
+    job_posting_researcher,
     # jobrole,
     leadership,
     report,
@@ -50,7 +50,7 @@ class Workflow:
         self.workforce_obj = workforce.Workforce()
         self.finance_obj = finance.FinancialData()
         self.report_obj = report.GenerateReport()
-        self.job_posting_analysis_obj = job_posting_analysis.JobPostingAnalysis()
+        self.job_posting_analysis_obj = job_posting_researcher.JobPostingResearch()
         self.company_profile = company_profile.CompanyProfile()
 
         # workflow
