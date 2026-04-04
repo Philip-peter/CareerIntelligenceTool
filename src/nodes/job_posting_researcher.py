@@ -1,6 +1,5 @@
 import os
 import sys
-from typing import cast
 
 from langchain_core.runnables import RunnableConfig
 
@@ -87,7 +86,7 @@ class JobPostingResearch:
                 "company_object", {}
             ).get("last_funding_round_amount_readable", "")
 
-            job_data = cast(JobPostingModel, extracted_jobs_fields)
+            job_data = JobPostingModel(**extracted_jobs_fields)
             list_of_jobs.append(job_data)
 
-            return {"normalized_jobs": list_of_jobs}
+            return {"job_queue": list_of_jobs}

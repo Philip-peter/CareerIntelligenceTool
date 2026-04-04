@@ -10,8 +10,8 @@ root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
+from src.applicant_profile import my_applicant_profile  # noqa: E402
 from src.models import (  # noqa: E402
-    #     CandidateModel,
     FinancialContextModels,
     IndustryContextModels,
     #     JobPostingModel,
@@ -104,30 +104,16 @@ class Workflow:
         self,
         job_link,
         target_company,
-        # current_company,
-        # currently_employed,
-        # current_role,
-        # current_job_tenure,
-        # risk_tolerance,
-        # career_stage,
-        # career_priority,
     ):
-        # initiate candidate
-        # candidate = CandidateModel(
-        #     currently_employed=currently_employed,
-        #     current_role=current_role,
-        #     current_company=current_company,
-        #     current_job_tenure=current_job_tenure,
-        #     risk_tolerance=risk_tolerance,
-        #     career_stage=career_stage,
-        #     career_priority=career_priority,
-        # )
+        # init applicant profile
+        # TODO: Add persist where we check if applicant profile already exist before init
+        candidate_profile = my_applicant_profile.init_candidate_profile()
 
         # set initial state
         initial_state = cast(
             State,
             {
-                # "candidate": candidate,
+                "applicant_profile": candidate_profile,
                 "target_company": target_company,
                 "raw_research": {},
                 "normalized_jobs": [],
