@@ -13,16 +13,8 @@ async def main():
     print(job_listing)
 
     while True:
-        # get inputs
         job_link = input("JOB LINK: ")
         target_company = input("TARGET COMPANY: ")
-        # current_company = input("CURRENT COMPANY: ")
-        # currently_employed = input("CURRENTLY EMPLOYED: ")
-        # current_role = input("CURRENT ROLE: ")
-        # current_job_tenure = input("CURRENT JOB TENURE: ")
-        # risk_tolerance = int(input("RISK TOLERANCE: "))
-        # career_stage = input("CAREER STAGE: ")
-        # career_priority = input("CAREER PRIORITY: ")
 
         # run agent
         research = await my_agent.run(

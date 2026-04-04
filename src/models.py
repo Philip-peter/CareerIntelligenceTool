@@ -1,13 +1,10 @@
-from typing import Any, Literal, Optional, Self
+from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
 
 # model for the candidate
-class CandidateModel(BaseModel):
-    currently_employed: bool = Field(
-        ..., description="Whether the candidate is currently working"
-    )
+class ApplicantModel(BaseModel):
     current_company: Optional[str] = Field(
         description="The name of the candidate's current employer",
         examples=["Google", "Amazon"],
@@ -25,20 +22,6 @@ class CandidateModel(BaseModel):
     career_priority: Literal["compensation", "stability"] = Field(
         ..., description="The primary driver for the candidate's next move"
     )
-
-    @model_validator(mode="after")
-    def check_employment_details(self) -> Self:
-        if self.currently_employed and not all(
-            [self.current_company, self.current_role, self.current_job_tenure]
-        ):
-            raise ValueError(
-                "Encountered Error: Incomplete employment details, complete current_company, current_role and current_job_tenure"
-            )
-        if not self.currently_employed:
-            self.current_company = None
-            self.current_role = None
-            self.current_job_tenure = None
-        return self
 
 
 # model for the job
