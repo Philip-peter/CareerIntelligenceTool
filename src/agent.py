@@ -17,17 +17,16 @@ from src.models import (  # noqa: E402
     #     JobPostingModel,
     #     JobRoleContextModels,
     LeadershipContextModels,
-    TargetJobDetails,
     WorkforceContextModels,
 )
 from src.nodes import (  # noqa: E402
-    finance,
-    industry,
+    # finance,
+    # industry,
     job_posting_researcher,
     # jobrole,
-    leadership,
-    report,
-    workforce,
+    # leadership,
+    # report,
+    # workforce,
 )
 from src.state import State  # noqa: E402
 from src.utils.llm_summarizer import LlmSummarizer  # noqa: E402
@@ -44,11 +43,11 @@ class Workflow:
         self.llm_summarizer_tool = LlmSummarizer()
 
         # initiate nodes
-        self.industry_obj = industry.Industry()
-        self.leadership_obj = leadership.Leadership()
-        self.workforce_obj = workforce.Workforce()
-        self.finance_obj = finance.FinancialData()
-        self.report_obj = report.GenerateReport()
+        # self.industry_obj = industry.Industry()
+        # self.leadership_obj = leadership.Leadership()
+        # self.workforce_obj = workforce.Workforce()
+        # self.finance_obj = finance.FinancialData()
+        # self.report_obj = report.GenerateReport()
         self.job_posting_obj = job_posting_researcher.JobPostingResearch()
 
         # workflow
@@ -62,68 +61,62 @@ class Workflow:
         workflow.add_node(
             "job_posting_normalize_jobs", self.job_posting_obj.normalize_job
         )
-        workflow.add_node("industry_web_search", self.industry_obj.run_research)
-        workflow.add_node("industry_llm_analysis", self.industry_obj.run_llm_analysis)
-        workflow.add_node("finance_web_search", self.finance_obj.run_research)
-        workflow.add_node("finance_llm_analysis", self.finance_obj.run_llm_analysis)
-        workflow.add_node("workforce_web_search", self.workforce_obj.run_research)
-        workflow.add_node("workforce_llm_analysis", self.workforce_obj.run_llm_analysis)
-        workflow.add_node("leadership_web_search", self.leadership_obj.run_research)
-        workflow.add_node(
-            "leadership_llm_analysis", self.leadership_obj.run_llm_analysis
-        )
-        workflow.add_node("report_generator", self.report_obj.run)
+        # workflow.add_node("industry_web_search", self.industry_obj.run_research)
+        # workflow.add_node("industry_llm_analysis", self.industry_obj.run_llm_analysis)
+        # workflow.add_node("finance_web_search", self.finance_obj.run_research)
+        # workflow.add_node("finance_llm_analysis", self.finance_obj.run_llm_analysis)
+        # workflow.add_node("workforce_web_search", self.workforce_obj.run_research)
+        # workflow.add_node("workforce_llm_analysis", self.workforce_obj.run_llm_analysis)
+        # workflow.add_node("leadership_web_search", self.leadership_obj.run_research)
+        # workflow.add_node(
+        #     "leadership_llm_analysis", self.leadership_obj.run_llm_analysis
+        # )
+        # workflow.add_node("report_generator", self.report_obj.run)
 
         # add edges
         workflow.add_edge(START, "job_posting_fetch_recent_jobs")
 
         workflow.add_edge("job_posting_fetch_recent_jobs", "job_posting_normalize_jobs")
 
-        workflow.add_edge("job_posting_normalize_jobs", "industry_web_search")
-        workflow.add_edge("industry_web_search", "industry_llm_analysis")
-        workflow.add_edge("industry_llm_analysis", "report_generator")
+        # workflow.add_edge("job_posting_normalize_jobs", "industry_web_search")
+        # workflow.add_edge("industry_web_search", "industry_llm_analysis")
+        # workflow.add_edge("industry_llm_analysis", "report_generator")
 
-        workflow.add_edge("job_posting_normalize_jobs", "leadership_web_search")
-        workflow.add_edge("leadership_web_search", "leadership_llm_analysis")
-        workflow.add_edge("leadership_llm_analysis", "report_generator")
+        # workflow.add_edge("job_posting_normalize_jobs", "leadership_web_search")
+        # workflow.add_edge("leadership_web_search", "leadership_llm_analysis")
+        # workflow.add_edge("leadership_llm_analysis", "report_generator")
 
-        workflow.add_edge("job_posting_normalize_jobs", "workforce_web_search")
-        workflow.add_edge("workforce_web_search", "workforce_llm_analysis")
-        workflow.add_edge("workforce_llm_analysis", "report_generator")
+        # workflow.add_edge("job_posting_normalize_jobs", "workforce_web_search")
+        # workflow.add_edge("workforce_web_search", "workforce_llm_analysis")
+        # workflow.add_edge("workforce_llm_analysis", "report_generator")
 
-        workflow.add_edge("job_posting_normalize_jobs", "finance_web_search")
-        workflow.add_edge("finance_web_search", "finance_llm_analysis")
-        workflow.add_edge("finance_llm_analysis", "report_generator")
+        # workflow.add_edge("job_posting_normalize_jobs", "finance_web_search")
+        # workflow.add_edge("finance_web_search", "finance_llm_analysis")
+        # workflow.add_edge("finance_llm_analysis", "report_generator")
 
-        workflow.add_edge("report_generator", END)
+        # workflow.add_edge("report_generator", END)
 
         # compile agent
         self.agent = workflow.compile()
 
-    def run(
-        self,
-        job_link,
-        target_company,
-    ):
+    def run(self):
         # init applicant profile
         # TODO: Add persist where we check if applicant profile already exist before init
-        candidate_profile = my_applicant_profile.init_candidate_profile()
+        # candidate_profile = my_applicant_profile.init_candidate_profile()
 
         # set initial state
         initial_state = cast(
             State,
             {
-                "applicant_profile": candidate_profile,
-                "target_company": target_company,
+                # "applicant_profile": candidate_profile,
+                "job_queue": [],
                 "raw_research": {},
-                "normalized_jobs": [],
-                "job_posting_details": TargetJobDetails(),
-                "industry_research": IndustryContextModels(),
-                "finance_research": FinancialContextModels(),
-                "workforce_research": WorkforceContextModels(),
-                "leadership_research": LeadershipContextModels(),
+                # "industry_research": IndustryContextModels(),
+                # "finance_research": FinancialContextModels(),
+                # "workforce_research": WorkforceContextModels(),
+                # "leadership_research": LeadershipContextModels(),
                 # "job_role_research": JobRoleContextModels(),
-                "final_report": "",
+                # "final_report": "",
             },
         )
 
