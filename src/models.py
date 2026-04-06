@@ -1,6 +1,6 @@
-from typing import Any, Literal, Optional
+from typing import Any, Literal, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 # model for the candidate
@@ -24,30 +24,7 @@ class ApplicantModel(BaseModel):
     )
 
 
-# model for the job
 class JobPostingModel(BaseModel):
-    # # --- DERIVED FIELDS ---
-    # industry: str = Field(
-    #     default="Unknown",
-    #     description="The specific market sector the company operates in.",
-    # )
-    # core_product_service: str = Field(
-    #     default="Unknown",
-    #     description="The main offering provided by the company.",
-    # )
-    # company_type: str = Field(
-    #     default="Unknown",
-    #     description="Whether the company is Public, Private or Unknown company type",
-    # )
-    # company_maturity: str = Field(
-    #     default="Unknown",
-    #     description="Whether the company is startup or established company",
-    # )
-    # primary_revenue_driver: str = Field(
-    #     default="Unknown",
-    #     description="The primary way the company makes money (e.g., Public Cloud Infrastructure (AWS), Membership Ecosystem (Prime), or Digital Advertising Services)",
-    # )
-
     # --- MANDATORY FIELDS ---
     job_title: str = Field(
         ..., description="The official title of the position. REQUIRED."
@@ -59,39 +36,61 @@ class JobPostingModel(BaseModel):
         ..., description="The full text content of the job posting. REQUIRED."
     )
 
-    # --- OPTIONAL FIELDS (Defaulted to "No data available") ---
-    employment_statuses: Any = Field(
-        default="No data available",
-        description="List of employment types (e.g., Full-time, Contract).",
+    # --- OPTIONAL FIELDS ---
+    employment_statuses: Any = Field(default="No data available")
+    job_city: Optional[str] = Field(default="No data available")
+    job_state: Optional[str] = Field(default="No data available")
+    country: Optional[str] = Field(default="No data available")
+    salary: Optional[Union[str, int, float]] = Field(default="No data available")
+    minimum_salary: Optional[Union[str, int, float]] = Field(
+        default="No data available"
     )
-    job_city: str = Field(default="No data available")
-    job_state: str = Field(default="No data available")
-    country: str = Field(default="No data available")
-    salary: str = Field(default="No data available")
-    minimum_salary: str = Field(default="No data available")
-
-    company: str = Field(default="No data available")
-    company_name: str = Field(default="No data available")
-    company_domain: str = Field(default="No data available")
-    company_url: str = Field(default="No data available")
-    company_linkedin_url: str = Field(default="No data available")
-
-    company_industry: str = Field(default="No data available")
-    company_employee_count: str = Field(default="No data available")
-    company_num_jobs: str = Field(default="No data available")
-    company_founded_year: str = Field(default="No data available")
-    is_recruiting_agency: str = Field(default="No data available")
-
-    publicly_traded_symbol: str = Field(default="No data available")
-    yc_batch: str = Field(default="No data available")
-    total_funding_usd: str = Field(default="No data available")
-    last_funding_round_date: str = Field(default="No data available")
-    last_funding_round_amount_readable: str = Field(default="No data available")
-
-    hiring_team: Any = Field(
-        default="No data available",
-        description="Names or roles of the individuals involved in the hiring process.",
+    company: Optional[str] = Field(default="No data available")
+    company_founded_year: Optional[Union[int, str]] = Field(default="No data available")
+    company_name: Optional[str] = Field(default="No data available")
+    company_domain: Optional[str] = Field(default="No data available")
+    company_url: Optional[str] = Field(default="No data available")
+    company_linkedin_url: Optional[str] = Field(default="No data available")
+    company_industry: Optional[str] = Field(default="No data available")
+    company_employee_count: Optional[Union[int, str]] = Field(
+        default="No data available"
     )
+    company_num_jobs: Optional[Union[int, str]] = Field(default="No data available")
+    publicly_traded_symbol: Optional[str] = Field(default="No data available")
+    yc_batch: Optional[str] = Field(default="No data available")
+    total_funding_usd: Optional[Union[float, int, str]] = Field(
+        default="No data available"
+    )
+    last_funding_round_date: Optional[str] = Field(default="No data available")
+    last_funding_round_amount_readable: Optional[str] = Field(
+        default="No data available"
+    )
+    hiring_team: Any = Field(default="No data available")
+    is_recruiting_agency: Optional[Union[bool, str]] = Field(
+        default="No data available"
+    )
+
+    # --- MAGIC CONVERSION ---
+    @field_validator("*", mode="before")
+    @classmethod
+    def convert_none_to_default(cls, v: Any, info):
+        # If the field is not mandatory and the value is None, return the default string
+        if v is None:
+            return "No data available"
+
+        # If it's a boolean string "True"/"False"
+        # only if the field is expected to be a string
+        if (
+            isinstance(v, bool)
+            and cls.model_fields[info.field_name].annotation == Optional[str]
+        ):
+            return str(v)
+
+        return v
+
+    class Config:
+        # Automatically convert numbers to string
+        coerce_numbers_to_str = True
 
 
 # models for the research context
@@ -255,50 +254,4 @@ class JobRoleContextModels(BaseModel):
         description="Assess likelihood that the role could be automated or augmented by AI. "
         "Examples: Routine data entry (high automation risk); "
         "Complex AI systems engineering (low automation risk).",
-    )
-
-
-class TargetJobDetails(BaseModel):
-    job_title: str = Field(
-        default="No data available",
-        description="The formal title of the position.",
-        examples=["Senior Data Scientist", "Product Manager"],
-    )
-
-    job_description: str = Field(
-        default="No data available",
-        description="A high-level overview of the role's responsibilities and goals.",
-        examples=[
-            "You will lead the frontend team in migrating our legacy stack to Next.js."
-        ],
-    )
-
-    minimum_qualifications: str = Field(
-        default="No data available",
-        description="The baseline requirements a candidate must meet to be considered.",
-        examples=["3+ years of experience with Python and SQL."],
-    )
-
-    preferred_qualifications: str = Field(
-        default="No data available",
-        description="Non-essential traits that make a candidate stand out.",
-        examples=["Master's degree in AI/ML or contributions to open-source projects."],
-    )
-
-    skills_experience: str = Field(
-        default="No data available",
-        description="Specific technical or soft skills required for the daily tasks.",
-        examples=["Expertise in React, TypeScript, and Tailwind CSS."],
-    )
-
-    benefits: str = Field(
-        default="No data available",
-        description="Perks and compensation beyond the base salary.",
-        examples=["Unlimited PTO, annual learning stipend, and gym membership."],
-    )
-
-    salary: str = Field(
-        default="No data available",
-        description="The annual gross base salary for the position.",
-        examples=["100-120k", "$150,025—$194,150 CAD"],
     )

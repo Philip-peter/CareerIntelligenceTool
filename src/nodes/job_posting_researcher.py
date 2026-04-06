@@ -17,7 +17,15 @@ class JobPostingResearch:
     async def fetch_recent_jobs(self, state: State, config: RunnableConfig):
         # fetch recent jobs
         recent_jobs = theirstack_provider.fetch_jobs()
-        result = {"job_posting_raw": recent_jobs}
+
+        if not recent_jobs:
+            print("No recent jobs found")
+            # return empty list
+            return {"raw_research": {"job_posting_raw": []}}
+
+        data = recent_jobs.get("data", [])
+
+        result = {"job_posting_raw": data}
         return {"raw_research": result}
 
     async def normalize_job(self, state: State, config: RunnableConfig):
@@ -26,6 +34,11 @@ class JobPostingResearch:
 
         if not raw_jobs:
             raise ValueError("No jobs found, halting further processing")
+
+        # Debug
+        # print(raw_jobs)
+        # print("*" * 50)
+        # print()
 
         for job in raw_jobs:
             extracted_jobs_fields = {}
@@ -86,7 +99,10 @@ class JobPostingResearch:
                 "company_object", {}
             ).get("last_funding_round_amount_readable", "")
 
+            # create JobPostingModel instance
             job_data = JobPostingModel(**extracted_jobs_fields)
+
+            # append to list_of_jobs
             list_of_jobs.append(job_data)
 
-            return {"job_queue": list_of_jobs}
+        return {"job_queue": list_of_jobs}
