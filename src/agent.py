@@ -55,9 +55,13 @@ class Workflow:
 
         # add nodes
         workflow.add_node(
-            "job_posting_fetch_recent_jobs",
-            self.job_posting_obj.fetch_recent_jobs,
+            "job_posting_fetch_dummy_jobs",
+            self.job_posting_obj.fetch_dummy_jobs,
         )
+        # workflow.add_node(
+        #     "job_posting_fetch_recent_jobs",
+        #     self.job_posting_obj.fetch_recent_jobs,
+        # )
         workflow.add_node(
             "job_posting_normalize_jobs", self.job_posting_obj.normalize_job
         )
@@ -74,9 +78,11 @@ class Workflow:
         # workflow.add_node("report_generator", self.report_obj.run)
 
         # add edges
-        workflow.add_edge(START, "job_posting_fetch_recent_jobs")
+        # workflow.add_edge(START, "job_posting_fetch_recent_jobs")
+        workflow.add_edge(START, "job_posting_fetch_dummy_jobs")
 
-        workflow.add_edge("job_posting_fetch_recent_jobs", "job_posting_normalize_jobs")
+        workflow.add_edge("job_posting_fetch_dummy_jobs", "job_posting_normalize_jobs")
+        # workflow.add_edge("job_posting_fetch_recent_jobs", "job_posting_normalize_jobs")
 
         # workflow.add_edge("job_posting_normalize_jobs", "industry_web_search")
         # workflow.add_edge("industry_web_search", "industry_llm_analysis")
@@ -111,6 +117,7 @@ class Workflow:
                 # "applicant_profile": candidate_profile,
                 "job_queue": [],
                 "raw_research": {},
+                "agent_analysis": [],
                 # "industry_research": IndustryContextModels(),
                 # "finance_research": FinancialContextModels(),
                 # "workforce_research": WorkforceContextModels(),
