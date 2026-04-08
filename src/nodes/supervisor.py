@@ -17,8 +17,8 @@ class Supervisor:
         job_queue = state["job_queue"]
 
         for job in job_queue:
-            sends.append(Send("industry_web_search"), {"job": job})
-            sends.append(Send("leadership_web_search"), {"job": job})
-            sends.append(Send("workforce_web_search"), {"job": job})
-            sends.append(Send("finance_web_search"), {"job": job})
+            sends.append(Send("industry_web_search", {"job": job}))
+            sends.append(Send("leadership_web_search", {"job": job}))
+            sends.append(Send("workforce_web_search", {"job": job}))
+            sends.append(Send("finance_web_search", {"job": job}))
         return sends

@@ -23,6 +23,7 @@ from src.nodes import (  # noqa: E402
     # finance,
     # industry,
     job_posting_researcher,
+    supervisor,
     # jobrole,
     # leadership,
     # report,
@@ -49,6 +50,7 @@ class Workflow:
         # self.finance_obj = finance.FinancialData()
         # self.report_obj = report.GenerateReport()
         self.job_posting_obj = job_posting_researcher.JobPostingResearch()
+        self.supervisor_obj = supervisor.Supervisor()
 
         # workflow
         workflow = StateGraph(State)
@@ -65,6 +67,9 @@ class Workflow:
         workflow.add_node(
             "job_posting_normalize_jobs", self.job_posting_obj.normalize_job
         )
+        # workflow.add_node(
+        #     "supervisor_process_jobs", self.supervisor_obj.process_jobs
+        # )
         # workflow.add_node("industry_web_search", self.industry_obj.run_research)
         # workflow.add_node("industry_llm_analysis", self.industry_obj.run_llm_analysis)
         # workflow.add_node("finance_web_search", self.finance_obj.run_research)
@@ -82,6 +87,16 @@ class Workflow:
         workflow.add_edge(START, "job_posting_fetch_dummy_jobs")
 
         workflow.add_edge("job_posting_fetch_dummy_jobs", "job_posting_normalize_jobs")
+        workflow.add_conditional_edges(
+            "job_posting_normalize_jobs",
+            self.supervisor_obj.process_jobs,
+            [
+                "industry_web_search",
+                "leadership_web_search",
+                "workforce_web_search",
+                "finance_web_search",
+            ],
+        )
         # workflow.add_edge("job_posting_fetch_recent_jobs", "job_posting_normalize_jobs")
 
         # workflow.add_edge("job_posting_normalize_jobs", "industry_web_search")
