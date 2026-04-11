@@ -25,7 +25,9 @@ class State(TypedDict):
     # applicant_profile: ApplicantModel
     job_queue: List[JobPostingModel]
     raw_research: Annotated[Dict, or_]
-    agent_analysis: Annotated[List[Dict], operator.add]
+    agent_analysis: Annotated[
+        List[Dict], operator.add
+    ]  # [{job_id:"", "job_title":"", "industry_analysis":""}]
     # industry_research: IndustryContextModels
     # finance_research: FinancialContextModels
     # workforce_research: WorkforceContextModels

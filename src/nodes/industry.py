@@ -18,33 +18,46 @@ class Industry:
     def __init__(self) -> None:
         pass
 
-    @staticmethod
-    def queries_template(company_name):
+    def _generate_queries_template(self, grounding_data):
+        name = grounding_data["company_name"]
+        domain = grounding_data["company_domain"]
+        industry = grounding_data["company_industry"]
+
+        # Clean domain (remove http/www)
+        clean_domain = (
+            domain.replace("https://", "").replace("http://", "").split("/")[0]
+        )
+
         return [
             {
                 "topic": "cyclic_or_defensive",
-                "query": f"[{company_name}] is it cyclical or defensive analyst commentary recession sensitivity operating margin volatility",
+                # We add the industry to the query to help the search engine contextualize the 'cyclical' nature
+                "query": f'"{name}" {industry} analyst commentary "cyclical or defensive" recession sensitivity operating margin',
             },
             {
                 "topic": "regulatory_environment",
-                "query": f"[{company_name}] regulatory risks 10-K risk factors site:sec.gov compliance requirements government oversight industry regulation impact on revenue",
+                # Still using site:sec.gov but adding the specific company name for 10-K extraction
+                "query": f'site:sec.gov "{name}" regulatory risks risk factors compliance "government oversight"',
             },
             {
-                "topic": "ai_distruption",
-                "query": f"[{company_name}] AI integration strategy R&D spending AI capex competitive positioning",
+                "topic": "ai_disruption",
+                # Prioritize the official domain to see what THEY say about AI vs what news says
+                "query": f'site:{clean_domain} AI integration strategy R&D spending "AI capex"',
             },
             {
                 "topic": "competition",
-                "query": f"[{company_name}] gross margin trend vs competitors pricing power switching costs network effects",
+                # Search for the company name and industry keywords specifically focused on pricing power
+                "query": f'"{name}" {industry} "gross margin trend" competitors pricing power switching costs',
             },
         ]
 
-    async def run_research(
-        self, state: State, config: RunnableConfig
+    async def _run_web_search(
+        self, grounding_data: Dict, state: State, config: RunnableConfig
     ) -> Dict[str, Any]:
+
         # make new copy of queries template
         working_queries: List[Dict[str, Any]] = copy.deepcopy(
-            self.queries_template(company_name=state["target_company"])
+            self._generate_queries_template(grounding_data=grounding_data)
         )
         web_research_tool = config.get("configurable", {}).get("web_research_tool")
         if not web_research_tool:
@@ -70,7 +83,16 @@ class Industry:
 
         return {"raw_research": result}
 
-    async def run_llm_analysis(self, state: State, config: RunnableConfig):
+    async def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
+
+        # extract grounding and job data from supervisor Send payload
+        job = inputs["job_data"]
+        grounding = inputs["grounding_data"]
+
+        # run web search
+        web_search_result = self._run_web_search(
+            grounding_data=grounding, state=state, config=config
+        )
 
         llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
         if not llm_analyzer_tool:
