@@ -1,8 +1,7 @@
 import asyncio
-import copy
 import os
 import sys
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from langchain_core.runnables import RunnableConfig
 
@@ -15,38 +14,53 @@ from src.state import State  # noqa: E402
 
 
 class Workforce:
-    def __init__(self) -> None:
-        pass
+    def _generate_queries_template(self, grounding_data):
+        name = grounding_data["company_name"]
+        domain = grounding_data["company_domain"]
+        industry = grounding_data["company_industry"]
 
-    @staticmethod
-    def queries_template(company_name):
+        # Clean domain for site filtering
+        clean_domain = (
+            domain.replace("https://", "").replace("http://", "").split("/")[0]
+            if domain
+            else ""
+        )
+
         return [
             {
                 "topic": "layoff_history",
-                "query": f"{company_name} layoffs headcount reduction 2024 2025 2026 history",
+                # Focuses on news and layoff trackers like 'layoffs.fyi' or 'Warn Act' notices
+                "query": f'"{name}" (layoff OR "headcount reduction" OR "RIF" OR "restructuring") 2024..2026',
             },
             {
                 "topic": "hiring_trends",
-                "query": f"{company_name} hiring trends job openings expansion or hiring freeze 2026",
+                # site: search on their careers page and LinkedIn to gauge growth velocity
+                "query": f'site:{clean_domain}/careers OR site:linkedin.com/jobs "{name}" "hiring" expansion',
             },
             {
                 "topic": "executive_turnover",
-                "query": f"{company_name} executive departures turnover CFO CTO COO leadership changes",
+                # Targeting press releases and professional news regarding C-suite exits
+                "query": f'"{name}" "executive departure" OR "resignation" (CFO OR CTO OR COO OR CMO) 2025 2026',
             },
             {
                 "topic": "employee_sentiments",
-                "query": f"{company_name} employee reviews glassdoor sentiment CEO approval rating 2026",
+                # Forcing exact matches on review platforms for current sentiment
+                "query": f'site:glassdoor.com OR site:indeed.com "{name}" "reviews" "CEO approval" 2025 2026',
             },
+            # // TODO: Update pydantic model
+            # {
+            #     "topic": "labor_disputes",
+            #     # Helpful for industrial/workforce grounding: unions and legal friction
+            #     "query": f'"{name}" {industry} "union" OR "strike" OR "labor dispute" OR "unfair labor practice"',
+            # }
         ]
 
-    async def run_research(self, state: State, config: RunnableConfig):
-        # make new copy of queries template
-        working_queries: List[Dict[str, Any]] = copy.deepcopy(
-            self.queries_template(company_name=state["target_company"])
-        )
-        web_research_tool = config.get("configurable", {}).get("web_research_tool")
-        if not web_research_tool:
-            raise ValueError("web search tool is not configured")
+    async def _run_web_research(
+        self, grounding_data, web_research_tool
+    ) -> Dict[str, Any]:
+
+        # generate web search query
+        working_queries = self._generate_queries_template(grounding_data=grounding_data)
 
         async def process_query(item: Dict[str, Any]):
             query = item.get("query")
@@ -64,12 +78,25 @@ class Workforce:
             if not isinstance(r, (Exception, BaseException))
         }
 
-        result = {"workforce_research_raw": researched_data_by_topic}
+        return researched_data_by_topic
 
-        return {"raw_research": result}
+    async def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
 
-    async def run_llm_analysis(self, state: State, config: RunnableConfig):
+        # extract grounding and job data from supervisor Send payload
+        # job = inputs["job_data"]
+        grounding = inputs["grounding_data"]
 
+        # initiate web search tool
+        web_research_tool = config.get("configurable", {}).get("web_research_tool")
+        if not web_research_tool:
+            raise ValueError("web search tool is not configured")
+
+        # run web search
+        web_research = self._run_web_research(
+            grounding_data=grounding, web_research_tool=web_research_tool
+        )
+
+        # initiate llm analysis
         llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
         if not llm_analyzer_tool:
             raise ValueError("llm analyzer tool is not configured")
@@ -90,7 +117,7 @@ class Workforce:
 
         user_prompt = f"""
         ### TASK
-        Analyze the provided web search results to populate the Workforce Context Model for the target company.
+        Analyze the provided web search results to populate the Workforce Context Model for the target company: : {grounding.get("company_name")}
 
         ### Schema Fields to Populate:
         1. layoff_history: Freq/scale of layoffs (e.g., 'Meta conducted multiple large layoffs in 2022-2023')
@@ -99,7 +126,7 @@ class Workforce:
         4. employee_sentiments: Glassdoor/public sentiment (e.g., 'Low morale complaints during restructuring')
 
         ### Raw Search Results:
-        {state["raw_research"].get("workforce_research_raw")}
+        {web_research}
         """
 
         llm_response = await llm_analyzer_tool.run(

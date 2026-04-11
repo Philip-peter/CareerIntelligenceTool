@@ -1,8 +1,7 @@
 import asyncio
-import copy
 import os
 import sys
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from langchain_core.runnables import RunnableConfig
 
@@ -15,38 +14,53 @@ from src.state import State  # noqa: E402
 
 
 class Leadership:
-    def __init__(self) -> None:
-        pass
+    def _generate_queries_template(self, grounding_data):
+        name = grounding_data["company_name"]
+        domain = grounding_data["company_domain"]
+        linkedin_url = grounding_data.get("company_linkedin_url", "")
 
-    @staticmethod
-    def queries_template(company_name):
+        # Clean domain for site filtering
+        clean_domain = (
+            domain.replace("https://", "").replace("http://", "").split("/")[0]
+            if domain
+            else ""
+        )
+
         return [
             {
                 "topic": "ceo_tenure",
-                "query": f"[{company_name}] CEO tenure performance track record earnings call transcripts leadership stability sentiment",
+                # Focuses on the "Management" section of official filings and earnings sentiment
+                "query": f'site:sec.gov "{name}" CEO tenure "biography" "previous experience" earnings call sentiment',
             },
             {
                 "topic": "founder_involvement",
-                "query": f"[{company_name}] founder role board involvement ownership stake voting power dual-class stock structure",
+                # Targeting Proxy Statements (DEF 14A) which detail voting power and ownership
+                "query": f'site:sec.gov "{name}" "founder" "beneficial ownership" "voting power" "dual-class" "board of directors"',
             },
             {
                 "topic": "strategic_pivots",
-                "query": f"[{company_name}] major business model shifts restructuring history failed expansion exit core products strategy evolution",
+                # Looking for letters to shareholders or official restructuring announcements on their domain
+                "query": f'site:{clean_domain} "letter to shareholders" "restructuring" "strategic shift" "business transformation"',
             },
             {
                 "topic": "insider_behavior",
-                "query": f"[{company_name}] SEC Form 4 insider buying selling trends executive share ownership compensation alignment",
+                # Form 4 is the specific legal requirement for insider trades
+                "query": f'site:sec.gov "{name}" "Form 4" "insider trading" "executive compensation" "shares held" buying selling',
             },
+            # // TODO: Update pydantic model
+            # {
+            #     "topic": "executive_reputation",
+            #     # Leveraging the LinkedIn grounding data to find news about the executive team's reputation
+            #     "query": f'"{name}" executive leadership team "Glassdoor" ratings "Glassdoor" CEO approval "departure" "turnover"',
+            # }
         ]
 
-    async def run_research(self, state: State, config: RunnableConfig):
-        # make new copy of queries template
-        working_queries: List[Dict[str, Any]] = copy.deepcopy(
-            self.queries_template(company_name=state["target_company"])
-        )
-        web_research_tool = config.get("configurable", {}).get("web_research_tool")
-        if not web_research_tool:
-            raise ValueError("web search tool is not configured")
+    async def _run_web_research(
+        self, grounding_data, web_research_tool
+    ) -> Dict[str, Any]:
+
+        # generate web search query
+        working_queries = self._generate_queries_template(grounding_data=grounding_data)
 
         async def process_query(item: Dict[str, Any]):
             query = item.get("query")
@@ -64,12 +78,25 @@ class Leadership:
             if not isinstance(r, (Exception, BaseException))
         }
 
-        result = {"leadership_research_raw": researched_data_by_topic}
+        return researched_data_by_topic
 
-        return {"raw_research": result}
+    async def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
 
-    async def run_llm_analysis(self, state: State, config: RunnableConfig):
+        # extract grounding and job data from supervisor Send payload
+        # job = inputs["job_data"]
+        grounding = inputs["grounding_data"]
 
+        # initiate web search tool
+        web_research_tool = config.get("configurable", {}).get("web_research_tool")
+        if not web_research_tool:
+            raise ValueError("web search tool is not configured")
+
+        # run web search
+        web_research = self._run_web_research(
+            grounding_data=grounding, web_research_tool=web_research_tool
+        )
+
+        # initiate llm analysis
         llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
         if not llm_analyzer_tool:
             raise ValueError("llm analyzer tool is not configured")
@@ -93,7 +120,7 @@ class Leadership:
 
         user_prompt = f"""
         ### Task
-        Analyze the following search results for the company: {state["target_company"]}
+        Analyze the following search results for the company: {grounding.get("company_name")}
         Extract leadership context for the company into the JSON format specified by the LeadershipContextModels schema.
 
         ### Schema Fields to Populate:
@@ -103,7 +130,7 @@ class Leadership:
         4. **insider_behavior**: Analyze recent stock buying/selling trends and executive ownership.
 
         ### Raw Search Results:
-        {state["raw_research"].get("industry_research_raw")}
+        {web_research}
         """
 
         llm_response = await llm_analyzer_tool.run(

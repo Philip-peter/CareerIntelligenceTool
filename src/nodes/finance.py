@@ -1,8 +1,7 @@
 import asyncio
-import copy
 import os
 import sys
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from langchain_core.runnables import RunnableConfig
 
@@ -15,42 +14,58 @@ from src.state import State  # noqa: E402
 
 
 class FinancialData:
-    def __init__(self) -> None:
-        pass
+    def _generate_queries_template(self, grounding_data):
+        name = grounding_data["company_name"]
+        domain = grounding_data["company_domain"]
+        industry = grounding_data["company_industry"]
 
-    @staticmethod
-    def queries_template(company_name) -> List[Dict[str, Any]]:
+        # Clean the domain to use as a site filter
+        clean_domain = (
+            domain.replace("https://", "").replace("http://", "").split("/")[0]
+            if domain
+            else ""
+        )
+
         return [
             {
                 "topic": "revenue_growth",
-                "query": f"{company_name} historical revenue growth 3-5 year CAGR analysis",
+                # We target the official investor relations site or SEC filings for CAGR/Revenue tables
+                "query": f'site:sec.gov "{name}" "revenue growth" 3-year 5-year CAGR "historical financial results"',
             },
             {
                 "topic": "profitability",
-                "query": f"{company_name} gross operating net profit margins trend analysis",
+                # We look for specific margin terminology often found in tables
+                "query": f'"{name}" {industry} "gross margin" "operating margin" "net profit margin" trend analysis 2023 2024',
             },
             {
                 "topic": "debt",
-                "query": f"{company_name} debt-to-equity ratio debt-to-EBITDA leverage profile",
+                # Combining name with specific leverage ratios and the industry context
+                "query": f'"{name}" "debt-to-equity" "debt-to-EBITDA" "total liabilities" "credit rating" leverage profile',
             },
             {
                 "topic": "cash_flow",
-                "query": f"{company_name} free cash flow vs operating cash flow burn rate",
+                # Target the "Statement of Cash Flows" specifically
+                "query": f'"{name}" "cash flow from operations" FCF "free cash flow" "capital expenditures" burn rate',
             },
             {
                 "topic": "revenue_concentration",
-                "query": f"{company_name} revenue concentration risk 'major customers' OR 'segment diversification'",
+                # This uses exact phrases found in the "Risk Factors" or "Notes to Financial Statements"
+                "query": f'"{name}" "revenue concentration" "major customers" "percent of total revenue" "customer concentration"',
             },
+            # // TODO: Update pydantic model
+            # {
+            #     "topic": "investor_sentiment",
+            #     # BONUS: Checks for official IR decks or quarterly presentations on their own domain
+            #     "query": f'site:{clean_domain} "investor presentation" "quarterly results" "earnings release" 2024',
+            # },
         ]
 
-    async def run_research(self, state: State, config: RunnableConfig):
-        # make new copy of queries template
-        working_queries: List[Dict[str, Any]] = copy.deepcopy(
-            self.queries_template(company_name=state["target_company"])
-        )
-        web_research_tool = config.get("configurable", {}).get("web_research_tool")
-        if not web_research_tool:
-            raise ValueError("web search tool is not configured")
+    async def _run_web_research(
+        self, grounding_data, web_research_tool
+    ) -> Dict[str, Any]:
+
+        # generate web search query
+        working_queries = self._generate_queries_template(grounding_data=grounding_data)
 
         async def process_query(item: Dict[str, Any]):
             query = item.get("query")
@@ -68,12 +83,25 @@ class FinancialData:
             if not isinstance(r, (Exception, BaseException))
         }
 
-        result = {"finance_research_raw": researched_data_by_topic}
+        return researched_data_by_topic
 
-        return {"raw_research": result}
+    async def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
 
-    async def run_llm_analysis(self, state: State, config: RunnableConfig):
+        # extract grounding and job data from supervisor Send payload
+        # job = inputs["job_data"]
+        grounding = inputs["grounding_data"]
 
+        # initiate web search tool
+        web_research_tool = config.get("configurable", {}).get("web_research_tool")
+        if not web_research_tool:
+            raise ValueError("web search tool is not configured")
+
+        # run web search
+        web_research = self._run_web_research(
+            grounding_data=grounding, web_research_tool=web_research_tool
+        )
+
+        # initiate llm analysis
         llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
         if not llm_analyzer_tool:
             raise ValueError("llm analyzer tool is not configured")
@@ -96,7 +124,7 @@ class FinancialData:
         """
 
         user_prompt = f"""
-        Analyze the following search results for the company: {state["target_company"]}.
+        Analyze the following search results for the company: {grounding.get("company_name")}.
         Extract and synthesize information into the JSON format specified by the FinancialContextModels schema.
 
         ### Schema Fields to Populate:
@@ -107,7 +135,7 @@ class FinancialData:
         5. **revenue_concentration**: Assess dependency on customers, products, or regions.
 
         ### Raw Search Results:
-        {state["raw_research"].get("finance_research_raw")}
+        {web_research}
 
         ### Response Format:
         Return ONLY a JSON object. If information for a field is entirely missing from the text, use the default: "No data available".
