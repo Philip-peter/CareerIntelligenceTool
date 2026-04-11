@@ -1,8 +1,7 @@
 import asyncio
-import copy
 import os
 import sys
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from langchain_core.runnables import RunnableConfig
 
@@ -15,9 +14,6 @@ from src.state import State  # noqa: E402
 
 
 class Industry:
-    def __init__(self) -> None:
-        pass
-
     def _generate_queries_template(self, grounding_data):
         name = grounding_data["company_name"]
         domain = grounding_data["company_domain"]
@@ -51,17 +47,12 @@ class Industry:
             },
         ]
 
-    async def _run_web_search(
-        self, grounding_data: Dict, state: State, config: RunnableConfig
+    async def _run_web_research(
+        self, grounding_data, web_research_tool
     ) -> Dict[str, Any]:
 
-        # make new copy of queries template
-        working_queries: List[Dict[str, Any]] = copy.deepcopy(
-            self._generate_queries_template(grounding_data=grounding_data)
-        )
-        web_research_tool = config.get("configurable", {}).get("web_research_tool")
-        if not web_research_tool:
-            raise ValueError("web search tool is not configured")
+        # generate web search query
+        working_queries = self._generate_queries_template(grounding_data=grounding_data)
 
         async def process_query(item: Dict[str, Any]):
             query = item.get("query")
@@ -79,21 +70,25 @@ class Industry:
             if not isinstance(r, (Exception, BaseException))
         }
 
-        result = {"industry_research_raw": researched_data_by_topic}
-
-        return {"raw_research": result}
+        return researched_data_by_topic
 
     async def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
 
         # extract grounding and job data from supervisor Send payload
-        job = inputs["job_data"]
+        # job = inputs["job_data"]
         grounding = inputs["grounding_data"]
 
+        # initiate web search tool
+        web_research_tool = config.get("configurable", {}).get("web_research_tool")
+        if not web_research_tool:
+            raise ValueError("web search tool is not configured")
+
         # run web search
-        web_search_result = self._run_web_search(
-            grounding_data=grounding, state=state, config=config
+        web_research = self._run_web_research(
+            grounding_data=grounding, web_research_tool=web_research_tool
         )
 
+        # initiate llm analysis
         llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
         if not llm_analyzer_tool:
             raise ValueError("llm analyzer tool is not configured")
@@ -110,7 +105,7 @@ class Industry:
 
         user_prompt = f"""
         ### Task
-        Analyze the following search results for the company: {state["target_company"]}.
+        Analyze the following search results for the company: {grounding.get("company_name")}.
         Extract and synthesize information into the JSON format specified by the IndustryContextModels schema.
 
         ### Schema Fields to Populate:
@@ -120,7 +115,7 @@ class Industry:
         4. **competition**: Map the landscape, including market share, moats, and key rivals.
 
         ### Raw Search Results:
-        {state["raw_research"].get("industry_research_raw")}
+        {web_research}
 
         ### Response Format:
         Return ONLY a JSON object. If information for a field is entirely missing from the text, use the default: "No data available".
