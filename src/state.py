@@ -1,3 +1,4 @@
+import operator
 import os
 import sys
 from operator import or_
@@ -6,9 +7,6 @@ from typing import Annotated, Dict, List, TypedDict
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
-
-import operator
-from typing import Annotated
 
 from src.models import (  # noqa: E402
     # ApplicantModel,
@@ -27,7 +25,7 @@ class State(TypedDict):
     raw_research: Annotated[Dict, or_]
     agent_analysis: Annotated[
         List[Dict], operator.add
-    ]  # [{job_id:"", "job_title":"", "industry_analysis":""}]
+    ]  # sample: [{job_id:"", "job_title":"", "industry_analysis":"", "finance_analysis":""}]
     # industry_research: IndustryContextModels
     # finance_research: FinancialContextModels
     # workforce_research: WorkforceContextModels

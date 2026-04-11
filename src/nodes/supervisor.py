@@ -26,8 +26,15 @@ class Supervisor:
         job_queue = state["job_queue"]
 
         for job in job_queue:
+            # generate job id
+            job_id = self._generate_job_id(
+                company_name=job.company_name, job_title=job.job_title
+            )
+
+            # set dispatch job
             dispatch_job = {
                 "job_data": {
+                    "job_id": job_id,
                     "job_title": job.job_title,
                     "job_posting_link": job.job_posting_link,
                     "job_description": job.job_description,
@@ -41,8 +48,9 @@ class Supervisor:
                 },
             }
 
-            sends.append(Send("industry_web_search", {"job": dispatch_job}))
-            sends.append(Send("leadership_web_search", {"job": dispatch_job}))
-            sends.append(Send("workforce_web_search", {"job": dispatch_job}))
-            sends.append(Send("finance_web_search", {"job": dispatch_job}))
+            # update the node names after refactoring the nodes
+            # sends.append(Send("industry_web_search", {"job": dispatch_job}))
+            # sends.append(Send("leadership_web_search", {"job": dispatch_job}))
+            # sends.append(Send("workforce_web_search", {"job": dispatch_job}))
+            # sends.append(Send("finance_web_search", {"job": dispatch_job}))
         return sends
