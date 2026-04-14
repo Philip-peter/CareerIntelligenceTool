@@ -171,6 +171,15 @@ class FinancialContextModels(BaseModel):
         "Diversified multinational with broad customer base (low concentration risk).",
     )
 
+    investor_sentiment: str = Field(
+        default="No data available",
+        description="Analyze management's outlook from earnings calls and investor presentations. "
+        "Include key themes from quarterly results and how the market/investors are reacting to "
+        "recent financial guidance. Examples: Management raising full-year guidance (bullish); "
+        "Investor concerns over slowing growth in a core segment; Heavy emphasis on 'efficiency' "
+        "in latest investor deck.",
+    )
+
 
 class WorkforceContextModels(BaseModel):
     layoff_history: str = Field(
@@ -204,6 +213,15 @@ class WorkforceContextModels(BaseModel):
         "Low morale complaints during restructuring phases.",
     )
 
+    labor_disputes: str = Field(
+        default="No data available",
+        description="Detail any significant labor issues, including unionization efforts, "
+        "strikes, or legal friction related to unfair labor practices. "
+        "Examples: Ongoing UAW strike activity (operational risk); "
+        "Successful unionization votes at retail locations; "
+        "No history of labor disputes or union presence.",
+    )
+
 
 class LeadershipContextModels(BaseModel):
     ceo_tenure: str = Field(
@@ -232,6 +250,14 @@ class LeadershipContextModels(BaseModel):
         description="Analyze insider stock buying/selling trends and executive ownership levels. "
         "Examples: Significant insider buying during downturn (confidence signal); "
         "Heavy executive selling amid declining performance (risk signal).",
+    )
+
+    executive_reputation: str = Field(
+        default="No data available",
+        description="Assess the public and professional reputation of the executive team. "
+        "Include Glassdoor approval ratings, employee sentiment, and any notable awards or controversies. "
+        "Examples: High CEO approval on Glassdoor (80%+); Public criticism of leadership during restructuring; "
+        "Strong industry reputation for the engineering leadership team.",
     )
 
 

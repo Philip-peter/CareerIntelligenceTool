@@ -49,8 +49,8 @@ class Supervisor:
             }
 
             # update the node names after refactoring the nodes
-            # sends.append(Send("industry_web_search", {"job": dispatch_job}))
-            # sends.append(Send("leadership_web_search", {"job": dispatch_job}))
-            # sends.append(Send("workforce_web_search", {"job": dispatch_job}))
-            # sends.append(Send("finance_web_search", {"job": dispatch_job}))
+            sends.append(Send("industry_web_search", {"job": dispatch_job}))
+            sends.append(Send("leadership_web_search", {"job": dispatch_job}))
+            sends.append(Send("workforce_web_search", {"job": dispatch_job}))
+            sends.append(Send("finance_web_search", {"job": dispatch_job}))
         return sends
