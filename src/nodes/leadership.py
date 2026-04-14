@@ -47,12 +47,11 @@ class Leadership:
                 # Form 4 is the specific legal requirement for insider trades
                 "query": f'site:sec.gov "{name}" "Form 4" "insider trading" "executive compensation" "shares held" buying selling',
             },
-            # // TODO: Update pydantic model
-            # {
-            #     "topic": "executive_reputation",
-            #     # Leveraging the LinkedIn grounding data to find news about the executive team's reputation
-            #     "query": f'"{name}" executive leadership team "Glassdoor" ratings "Glassdoor" CEO approval "departure" "turnover"',
-            # }
+            {
+                "topic": "executive_reputation",
+                # Leveraging the LinkedIn grounding data to find news about the executive team's reputation
+                "query": f'site:{linkedin_url} "{name}" executive leadership team "Glassdoor" ratings "Glassdoor" CEO approval "departure" "turnover"',
+            },
         ]
 
     async def _run_web_research(
@@ -82,9 +81,12 @@ class Leadership:
 
     async def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
 
+        # distpatch_job from router agent
+        dispatch_job = inputs["job"]
+
         # extract grounding and job data from supervisor Send payload
-        # job = inputs["job_data"]
-        grounding = inputs["grounding_data"]
+        job = dispatch_job["job_data"]
+        grounding = dispatch_job["grounding_data"]
 
         # initiate web search tool
         web_research_tool = config.get("configurable", {}).get("web_research_tool")
@@ -139,4 +141,11 @@ class Leadership:
             output_schema=LeadershipContextModels,
         )
 
-        return {"leadership_research": llm_response}
+        formatted_results = {
+            "job_id": job.get("job_id"),
+            "agent_type": "leadership",
+            "data": llm_response.model_dump(),
+        }
+
+        # wrap formatted_result in list for applying reducer in agent_analysis state
+        return {"agent_analysis": [formatted_results]}

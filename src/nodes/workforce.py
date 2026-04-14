@@ -47,12 +47,11 @@ class Workforce:
                 # Forcing exact matches on review platforms for current sentiment
                 "query": f'site:glassdoor.com OR site:indeed.com "{name}" "reviews" "CEO approval" 2025 2026',
             },
-            # // TODO: Update pydantic model
-            # {
-            #     "topic": "labor_disputes",
-            #     # Helpful for industrial/workforce grounding: unions and legal friction
-            #     "query": f'"{name}" {industry} "union" OR "strike" OR "labor dispute" OR "unfair labor practice"',
-            # }
+            {
+                "topic": "labor_disputes",
+                # Helpful for industrial/workforce grounding: unions and legal friction
+                "query": f'"{name}" {industry} "union" OR "strike" OR "labor dispute" OR "unfair labor practice"',
+            },
         ]
 
     async def _run_web_research(
@@ -82,9 +81,12 @@ class Workforce:
 
     async def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
 
+        # distpatch_job from router agent
+        dispatch_job = inputs["job"]
+
         # extract grounding and job data from supervisor Send payload
-        # job = inputs["job_data"]
-        grounding = inputs["grounding_data"]
+        job = dispatch_job["job_data"]
+        grounding = dispatch_job["grounding_data"]
 
         # initiate web search tool
         web_research_tool = config.get("configurable", {}).get("web_research_tool")
@@ -135,4 +137,11 @@ class Workforce:
             output_schema=WorkforceContextModels,
         )
 
-        return {"workforce_research": llm_response}
+        formatted_results = {
+            "job_id": job.get("job_id"),
+            "agent_type": "workforce",
+            "data": llm_response.model_dump(),
+        }
+
+        # wrap formatted_result in list for applying reducer in agent_analysis state
+        return {"agent_analysis": [formatted_results]}

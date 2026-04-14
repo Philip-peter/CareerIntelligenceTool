@@ -22,12 +22,5 @@ from src.models import (  # noqa: E402
 class State(TypedDict):
     # applicant_profile: ApplicantModel
     job_queue: List[JobPostingModel]
-    raw_research: Annotated[Dict, or_]
-    agent_analysis: Annotated[
-        List[Dict], operator.add
-    ]  # sample: [{job_id:"", "job_title":"", "industry_analysis":"", "finance_analysis":""}]
-    # industry_research: IndustryContextModels
-    # finance_research: FinancialContextModels
-    # workforce_research: WorkforceContextModels
-    # leadership_research: LeadershipContextModels
+    agent_analysis: Annotated[List[Dict], operator.add]
     # final_report: str

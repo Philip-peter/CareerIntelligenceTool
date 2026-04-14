@@ -23,7 +23,7 @@ from src.nodes import (  # noqa: E402
     # finance,
     # industry,
     job_posting_researcher,
-    supervisor,
+    router,
     # jobrole,
     # leadership,
     # report,
@@ -50,7 +50,7 @@ class Workflow:
         # self.finance_obj = finance.FinancialData()
         # self.report_obj = report.GenerateReport()
         self.job_posting_obj = job_posting_researcher.JobPostingResearch()
-        self.supervisor_obj = supervisor.Supervisor()
+        self.supervisor_obj = router.Supervisor()
 
         # workflow
         workflow = StateGraph(State)

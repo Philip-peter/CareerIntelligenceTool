@@ -52,12 +52,11 @@ class FinancialData:
                 # This uses exact phrases found in the "Risk Factors" or "Notes to Financial Statements"
                 "query": f'"{name}" "revenue concentration" "major customers" "percent of total revenue" "customer concentration"',
             },
-            # // TODO: Update pydantic model
-            # {
-            #     "topic": "investor_sentiment",
-            #     # BONUS: Checks for official IR decks or quarterly presentations on their own domain
-            #     "query": f'site:{clean_domain} "investor presentation" "quarterly results" "earnings release" 2024',
-            # },
+            {
+                "topic": "investor_sentiment",
+                # BONUS: Checks for official IR decks or quarterly presentations on their own domain
+                "query": f'site:{clean_domain} "investor presentation" "quarterly results" "earnings release" 2024',
+            },
         ]
 
     async def _run_web_research(
@@ -87,9 +86,12 @@ class FinancialData:
 
     async def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
 
+        # distpatch_job from router agent
+        dispatch_job = inputs["job"]
+
         # extract grounding and job data from supervisor Send payload
-        # job = inputs["job_data"]
-        grounding = inputs["grounding_data"]
+        job = dispatch_job["job_data"]
+        grounding = dispatch_job["grounding_data"]
 
         # initiate web search tool
         web_research_tool = config.get("configurable", {}).get("web_research_tool")
@@ -147,4 +149,11 @@ class FinancialData:
             output_schema=FinancialContextModels,
         )
 
-        return {"finance_research": llm_response}
+        formatted_results = {
+            "job_id": job.get("job_id"),
+            "agent_type": "finance",
+            "data": llm_response.model_dump(),
+        }
+
+        # wrap formatted_result in list for applying reducer in agent_analysis state
+        return {"agent_analysis": [formatted_results]}
