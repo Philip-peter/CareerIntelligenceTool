@@ -12,9 +12,6 @@ from src.state import State  # noqa: E402
 
 
 class CompanyProfile:
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def queries_template(target_company: str) -> str:
         return f"'{target_company}' (site:linkedin.com/company OR site:crunchbase.com) 'about' 'industry' 'headquarters'"
