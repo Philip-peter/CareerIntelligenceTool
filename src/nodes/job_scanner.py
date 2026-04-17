@@ -13,7 +13,7 @@ from src.nodes.job_listing.theirstack import theirstack_provider  # noqa: E402
 from src.state import State  # noqa: E402
 
 
-class JobPostingResearch:
+class JobScanner:
     async def fetch_dummy_jobs(self, state: State):
 
         # mock api response
@@ -181,23 +181,16 @@ class JobPostingResearch:
             return {"raw_research": {"job_posting_raw": []}}
 
         data = recent_jobs.get("data", [])
-
-        result = {"job_posting_raw": data}
-        return {"raw_research": result}
+        return {"raw_jobs": data}
 
     async def normalize_job(self, state: State, config: RunnableConfig):
         list_of_jobs = []
-        raw_jobs = state["raw_research"].get("job_posting_raw")
+        recent_jobs = state.get("raw_jobs", [])
 
-        if not raw_jobs:
-            raise ValueError("No jobs found, halting further processing")
+        if not recent_jobs:
+            raise ValueError("No jobs found, halt further processing")
 
-        # Debug
-        # print(raw_jobs)
-        # print("*" * 50)
-        # print()
-
-        for job in raw_jobs:
+        for job in recent_jobs:
             extracted_jobs_fields = {}
 
             extracted_jobs_fields["job_title"] = job.get("job_title", "")

@@ -11,7 +11,7 @@ sys.path.append(root_dir)
 from src.state import State  # noqa: E402
 
 
-class Supervisor:
+class Router:
     @staticmethod
     def _generate_job_id(company_name, job_title):
         """Generates a deterministic ID based on company and title."""
@@ -49,8 +49,10 @@ class Supervisor:
             }
 
             # update the node names after refactoring the nodes
-            sends.append(Send("industry_web_search", {"job": dispatch_job}))
-            sends.append(Send("leadership_web_search", {"job": dispatch_job}))
-            sends.append(Send("workforce_web_search", {"job": dispatch_job}))
-            sends.append(Send("finance_web_search", {"job": dispatch_job}))
+            sends.append(Send("job_research", {"job": dispatch_job}))
+            sends.append(Send("company_research", {"job": dispatch_job}))
+            sends.append(Send("industry_research", {"job": dispatch_job}))
+            sends.append(Send("leadership_research", {"job": dispatch_job}))
+            sends.append(Send("workforce_research", {"job": dispatch_job}))
+            sends.append(Send("finance_research", {"job": dispatch_job}))
         return sends
