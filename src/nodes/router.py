@@ -49,10 +49,10 @@ class Router:
             }
 
             # update the node names after refactoring the nodes
-            sends.append(Send("job_research", {"job": dispatch_job}))
-            sends.append(Send("company_research", {"job": dispatch_job}))
-            sends.append(Send("industry_research", {"job": dispatch_job}))
-            sends.append(Send("leadership_research", {"job": dispatch_job}))
-            sends.append(Send("workforce_research", {"job": dispatch_job}))
-            sends.append(Send("finance_research", {"job": dispatch_job}))
+            sends.append(Send("job_profile_agent", {"job": dispatch_job}))
+            sends.append(Send("company_profile_agent", {"job": dispatch_job}))
+            sends.append(Send("industry_agent", {"job": dispatch_job}))
+            sends.append(Send("finance_agent", {"job": dispatch_job}))
+            sends.append(Send("leadership_agent", {"job": dispatch_job}))
+            sends.append(Send("workplace_agent", {"job": dispatch_job}))
         return sends

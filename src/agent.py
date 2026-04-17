@@ -91,18 +91,7 @@ class Workflow:
         # add edges
         workflow.add_edge(START, "job_scanner")
         workflow.add_edge("job_scanner", "router_agent")
-        workflow.add_conditional_edges(
-            "router_agent",
-            self.router_obj.process_jobs,
-            [
-                "job_research",
-                "company_research",
-                "industry_research",
-                "leadership_research",
-                "workforce_research",
-                "finance_research",
-            ],
-        )
+        workflow.add_conditional_edges("router_agent", self.router_obj.process_jobs)
 
         # compile agent
         self.agent = workflow.compile()
