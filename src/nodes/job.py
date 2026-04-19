@@ -13,7 +13,7 @@ from src.state import State  # noqa: E402
 
 
 class Job:
-    def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
+    def run_research(self, state: State, inputs: Dict, config: RunnableConfig):
 
         # distpatch_job from router agent
         dispatch_job = inputs["job"]

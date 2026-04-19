@@ -79,7 +79,7 @@ class Leadership:
 
         return researched_data_by_topic
 
-    async def run_research(self, inputs: Dict, state: State, config: RunnableConfig):
+    async def run_research(self, state: State, inputs: Dict, config: RunnableConfig):
 
         # distpatch_job from router agent
         dispatch_job = inputs["job"]
