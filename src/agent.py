@@ -99,17 +99,17 @@ class Workflow:
     def run(self):
         # init applicant profile
         # TODO: Add persist where we check if applicant profile already exist before init
-        # candidate_profile = my_applicant_profile.init_candidate_profile()
+        candidate_profile = my_applicant_profile.init_candidate_profile()
 
         # set initial state
         initial_state = cast(
             State,
             {
-                # "applicant_profile": candidate_profile,
+                "applicant_profile": candidate_profile,
                 "raw_jobs": [],
                 "job_queue": [],
                 "agent_analysis": [],
-                # "final_report": "",
+                "final_report": "",
             },
         )
 
