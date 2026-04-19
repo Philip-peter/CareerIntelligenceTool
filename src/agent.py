@@ -3,7 +3,7 @@ import sys
 from typing import cast
 
 from langchain_core.runnables import RunnableConfig
-from langgraph.graph import END, START, StateGraph
+from langgraph.graph import START, StateGraph  # END
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
@@ -80,8 +80,8 @@ class Workflow:
             self.leadership_obj.run_research,
         )
         workflow.add_node(
-            "workplace_agent",
-            self.workplace_obj.run_research,
+            "workforce_agent",
+            self.workforce_obj.run_research,
         )
         workflow.add_node(
             "reporting_agent",

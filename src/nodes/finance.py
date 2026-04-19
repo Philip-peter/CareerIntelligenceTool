@@ -10,7 +10,7 @@ root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
 from src.models import FinancialContextModels  # noqa: E402
-from src.state import State  # noqa: E402
+from src.state import SubAgentState  # noqa: E402
 
 
 class FinancialData:
@@ -84,10 +84,10 @@ class FinancialData:
 
         return researched_data_by_topic
 
-    async def run_research(self, state: State, inputs: Dict, config: RunnableConfig):
+    async def run_research(self, state: SubAgentState, config: RunnableConfig):
 
         # distpatch_job from router agent
-        dispatch_job = inputs["job"]
+        dispatch_job = state["job"]
 
         # extract grounding and job data from supervisor Send payload
         job = dispatch_job["job_data"]
