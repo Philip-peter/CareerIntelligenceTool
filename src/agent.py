@@ -10,7 +10,8 @@ root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
-from src.applicant_profile import my_applicant_profile  # noqa: E402
+
+# from src.applicant_profile import my_applicant_profile  # noqa: E402
 from src.nodes import (  # noqa: E402
     company_profile,
     finance,
@@ -53,7 +54,11 @@ class Workflow:
         # add nodes
         workflow.add_node(
             "job_scanner",
-            self.job_scanner_obj.fetch_dummy_jobs,
+            self.job_scanner_obj.fetch_recent_jobs,
+        )
+        workflow.add_node(
+            "normalize_jobs",
+            self.job_scanner_obj.normalize_job,
         )
         workflow.add_node(
             "router_agent",
@@ -90,7 +95,8 @@ class Workflow:
 
         # add edges
         workflow.add_edge(START, "job_scanner")
-        workflow.add_edge("job_scanner", "router_agent")
+        workflow.add_edge("job_scanner", "normalize_jobs")
+        workflow.add_edge("normalize_jobs", "router_agent")
         workflow.add_conditional_edges("router_agent", self.router_obj.process_jobs)
 
         # compile agent
@@ -99,13 +105,13 @@ class Workflow:
     def run(self):
         # init applicant profile
         # TODO: Add persist where we check if applicant profile already exist before init
-        candidate_profile = my_applicant_profile.init_candidate_profile()
+        # candidate_profile = my_applicant_profile.init_candidate_profile()
 
         # set initial state
         initial_state = cast(
             State,
             {
-                "applicant_profile": candidate_profile,
+                # "applicant_profile": candidate_profile,
                 "raw_jobs": [],
                 "job_queue": [],
                 "agent_analysis": [],
