@@ -14,162 +14,162 @@ from src.state import State  # noqa: E402
 
 
 class JobScanner:
-    async def fetch_dummy_jobs(self, state: State):
+    # async def fetch_dummy_jobs(self, state: State):
 
-        # mock api response
-        mock_api_response = [
-            {
-                "id": 657542775,
-                "job_title": "Security Engineer (Bangkok Based, Relocation Support)",
-                "url": "https://ca.linkedin.com/jobs/view/security-engineer-bangkok-based-relocation-support-at-agoda-4376307656",
-                "date_posted": "2026-04-05",
-                "has_blurred_data": False,
-                "company": "Agoda",
-                "location": "Toronto, Ontario",
-                "state_code": "ON",
-                "latitude": 43.70643,
-                "longitude": -79.39864,
-                "remote": False,
-                "hybrid": False,
-                "country": "Canada",
-                "country_code": "CA",
-                "seniority": "mid_level",
-                "company_domain": "careersatagoda.com",
-                "employment_statuses": ["full_time"],
-                "technology_slugs": [
-                    "amazon-web-services",
-                    "google-cloud-platform",
-                    "terraform",
-                    "kubernetes",
-                    "golang",
-                    "typescript",
-                ],
-                "description": "**About Agoda**\nAt Agoda, we bridge the world through travel...",
-                "company_object": {
-                    "id": "C5sZVlVBHF5TNbFoUy0KibuRpW8hRGPTLOx3F13wnAbefzqmxetCKWLRg35EosiU",
-                    "name": "Agoda",
-                    "domain": "careersatagoda.com",
-                    "industry": "Software Development",
-                    "employee_count": 11183,
-                    "url": "https://careersatagoda.com",
-                    "linkedin_url": "https://www.linkedin.com/company/agoda/",
-                    "is_recruiting_agency": False,
-                    "technology_slugs": ["python", "react", "kubernetes", "terraform"],
-                },
-                "locations": [
-                    {
-                        "id": 6167865,
-                        "name": "Toronto",
-                        "state": "Ontario",
-                        "country_name": "Canada",
-                    }
-                ],
-            },
-            # 2. Nexus Tech (Mock Startup)
-            {
-                "id": 700123456,
-                "job_title": "Senior Backend Engineer (Python/FastAPI)",
-                "url": "https://www.linkedin.com/jobs/view/senior-backend-engineer-at-nexus-tech-700123456",
-                "date_posted": "2026-04-06",
-                "has_blurred_data": False,
-                "company": "Nexus Tech",
-                "location": "San Francisco, California",
-                "state_code": "CA",
-                "latitude": 37.7749,
-                "longitude": -122.4194,
-                "remote": True,
-                "hybrid": False,
-                "min_annual_salary": 160000,
-                "max_annual_salary": 210000,
-                "salary_currency": "USD",
-                "country": "USA",
-                "country_code": "US",
-                "seniority": "senior_level",
-                "company_domain": "nexustech.io",
-                "employment_statuses": ["full_time"],
-                "technology_slugs": [
-                    "python",
-                    "fastapi",
-                    "postgresql",
-                    "docker",
-                    "aws",
-                ],
-                "description": "**About Nexus Tech**\nNexus Tech is a leading fintech startup...",
-                "company_object": {
-                    "id": "NEXUS123456789",
-                    "name": "Nexus Tech Inc.",
-                    "domain": "nexustech.io",
-                    "industry": "Financial Services",
-                    "employee_count": 150,
-                    "yc_batch": "W18",
-                    "total_funding_usd": 45000000,
-                    "is_recruiting_agency": False,
-                },
-                "locations": [
-                    {
-                        "id": 5391959,
-                        "name": "San Francisco",
-                        "state": "California",
-                        "country_name": "United States",
-                    }
-                ],
-            },
-            # 3. Anthropic (Real Company Mock)
-            {
-                "id": 998877665,
-                "job_title": "Member of Technical Staff - AI Safety & Alignment",
-                "url": "https://www.linkedin.com/jobs/view/mts-ai-safety-at-anthropic-998877665",
-                "date_posted": "2026-04-07",
-                "has_blurred_data": False,
-                "company": "Anthropic",
-                "location": "San Francisco, California",
-                "state_code": "CA",
-                "latitude": 37.77493,
-                "longitude": -122.41942,
-                "remote": False,
-                "hybrid": True,
-                "min_annual_salary": 250000,
-                "max_annual_salary": 450000,
-                "salary_currency": "USD",
-                "country": "United States",
-                "country_code": "US",
-                "seniority": "senior_level",
-                "company_domain": "anthropic.com",
-                "employment_statuses": ["full_time"],
-                "technology_slugs": [
-                    "python",
-                    "pytorch",
-                    "jax",
-                    "rust",
-                    "kubernetes",
-                    "aws",
-                ],
-                "description": "**About Anthropic**\nAnthropic is an AI safety and research company...",
-                "company_object": {
-                    "id": "ANT-55667788",
-                    "name": "Anthropic",
-                    "domain": "anthropic.com",
-                    "industry": "Artificial Intelligence",
-                    "employee_count": 500,
-                    "total_funding_usd": 7300000000,
-                    "linkedin_url": "https://www.linkedin.com/company/anthropicresearch/",
-                    "is_recruiting_agency": False,
-                    "funding_stage": "Series C",
-                },
-                "locations": [
-                    {
-                        "id": 5391959,
-                        "name": "San Francisco",
-                        "state": "California",
-                        "country_name": "United States",
-                    }
-                ],
-            },
-        ]
+    #     # mock api response
+    #     mock_api_response = [
+    #         {
+    #             "id": 657542775,
+    #             "job_title": "Security Engineer (Bangkok Based, Relocation Support)",
+    #             "url": "https://ca.linkedin.com/jobs/view/security-engineer-bangkok-based-relocation-support-at-agoda-4376307656",
+    #             "date_posted": "2026-04-05",
+    #             "has_blurred_data": False,
+    #             "company": "Agoda",
+    #             "location": "Toronto, Ontario",
+    #             "state_code": "ON",
+    #             "latitude": 43.70643,
+    #             "longitude": -79.39864,
+    #             "remote": False,
+    #             "hybrid": False,
+    #             "country": "Canada",
+    #             "country_code": "CA",
+    #             "seniority": "mid_level",
+    #             "company_domain": "careersatagoda.com",
+    #             "employment_statuses": ["full_time"],
+    #             "technology_slugs": [
+    #                 "amazon-web-services",
+    #                 "google-cloud-platform",
+    #                 "terraform",
+    #                 "kubernetes",
+    #                 "golang",
+    #                 "typescript",
+    #             ],
+    #             "description": "**About Agoda**\nAt Agoda, we bridge the world through travel...",
+    #             "company_object": {
+    #                 "id": "C5sZVlVBHF5TNbFoUy0KibuRpW8hRGPTLOx3F13wnAbefzqmxetCKWLRg35EosiU",
+    #                 "name": "Agoda",
+    #                 "domain": "careersatagoda.com",
+    #                 "industry": "Software Development",
+    #                 "employee_count": 11183,
+    #                 "url": "https://careersatagoda.com",
+    #                 "linkedin_url": "https://www.linkedin.com/company/agoda/",
+    #                 "is_recruiting_agency": False,
+    #                 "technology_slugs": ["python", "react", "kubernetes", "terraform"],
+    #             },
+    #             "locations": [
+    #                 {
+    #                     "id": 6167865,
+    #                     "name": "Toronto",
+    #                     "state": "Ontario",
+    #                     "country_name": "Canada",
+    #                 }
+    #             ],
+    #         },
+    #         # 2. Nexus Tech (Mock Startup)
+    #         {
+    #             "id": 700123456,
+    #             "job_title": "Senior Backend Engineer (Python/FastAPI)",
+    #             "url": "https://www.linkedin.com/jobs/view/senior-backend-engineer-at-nexus-tech-700123456",
+    #             "date_posted": "2026-04-06",
+    #             "has_blurred_data": False,
+    #             "company": "Nexus Tech",
+    #             "location": "San Francisco, California",
+    #             "state_code": "CA",
+    #             "latitude": 37.7749,
+    #             "longitude": -122.4194,
+    #             "remote": True,
+    #             "hybrid": False,
+    #             "min_annual_salary": 160000,
+    #             "max_annual_salary": 210000,
+    #             "salary_currency": "USD",
+    #             "country": "USA",
+    #             "country_code": "US",
+    #             "seniority": "senior_level",
+    #             "company_domain": "nexustech.io",
+    #             "employment_statuses": ["full_time"],
+    #             "technology_slugs": [
+    #                 "python",
+    #                 "fastapi",
+    #                 "postgresql",
+    #                 "docker",
+    #                 "aws",
+    #             ],
+    #             "description": "**About Nexus Tech**\nNexus Tech is a leading fintech startup...",
+    #             "company_object": {
+    #                 "id": "NEXUS123456789",
+    #                 "name": "Nexus Tech Inc.",
+    #                 "domain": "nexustech.io",
+    #                 "industry": "Financial Services",
+    #                 "employee_count": 150,
+    #                 "yc_batch": "W18",
+    #                 "total_funding_usd": 45000000,
+    #                 "is_recruiting_agency": False,
+    #             },
+    #             "locations": [
+    #                 {
+    #                     "id": 5391959,
+    #                     "name": "San Francisco",
+    #                     "state": "California",
+    #                     "country_name": "United States",
+    #                 }
+    #             ],
+    #         },
+    #         # 3. Anthropic (Real Company Mock)
+    #         {
+    #             "id": 998877665,
+    #             "job_title": "Member of Technical Staff - AI Safety & Alignment",
+    #             "url": "https://www.linkedin.com/jobs/view/mts-ai-safety-at-anthropic-998877665",
+    #             "date_posted": "2026-04-07",
+    #             "has_blurred_data": False,
+    #             "company": "Anthropic",
+    #             "location": "San Francisco, California",
+    #             "state_code": "CA",
+    #             "latitude": 37.77493,
+    #             "longitude": -122.41942,
+    #             "remote": False,
+    #             "hybrid": True,
+    #             "min_annual_salary": 250000,
+    #             "max_annual_salary": 450000,
+    #             "salary_currency": "USD",
+    #             "country": "United States",
+    #             "country_code": "US",
+    #             "seniority": "senior_level",
+    #             "company_domain": "anthropic.com",
+    #             "employment_statuses": ["full_time"],
+    #             "technology_slugs": [
+    #                 "python",
+    #                 "pytorch",
+    #                 "jax",
+    #                 "rust",
+    #                 "kubernetes",
+    #                 "aws",
+    #             ],
+    #             "description": "**About Anthropic**\nAnthropic is an AI safety and research company...",
+    #             "company_object": {
+    #                 "id": "ANT-55667788",
+    #                 "name": "Anthropic",
+    #                 "domain": "anthropic.com",
+    #                 "industry": "Artificial Intelligence",
+    #                 "employee_count": 500,
+    #                 "total_funding_usd": 7300000000,
+    #                 "linkedin_url": "https://www.linkedin.com/company/anthropicresearch/",
+    #                 "is_recruiting_agency": False,
+    #                 "funding_stage": "Series C",
+    #             },
+    #             "locations": [
+    #                 {
+    #                     "id": 5391959,
+    #                     "name": "San Francisco",
+    #                     "state": "California",
+    #                     "country_name": "United States",
+    #                 }
+    #             ],
+    #         },
+    #     ]
 
-        # store in state
-        result = {"job_posting_raw": mock_api_response}
-        return {"raw_research": result}
+    #     # store in state
+    #     result = {"job_posting_raw": mock_api_response}
+    #     return {"raw_research": result}
 
     async def fetch_recent_jobs(self, state: State, config: RunnableConfig):
         # fetch recent jobs
@@ -180,8 +180,8 @@ class JobScanner:
             # return empty list
             return {"raw_research": {"job_posting_raw": []}}
 
-        data = recent_jobs.get("data", [])
-        return {"raw_jobs": data}
+        result = recent_jobs.get("data", [])
+        return {"raw_jobs": result}
 
     async def normalize_job(self, state: State, config: RunnableConfig):
         list_of_jobs = []
