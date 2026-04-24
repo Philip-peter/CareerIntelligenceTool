@@ -48,7 +48,7 @@ class TheirStack(job_provider_interface.JobProviderInterface):
     def fetch_jobs(self):
         payload = {
             "page": 0,  # research how to use pagination
-            "limit": 5,  # theirstack max limit < -- currently experimental
+            "limit": 2,  # theirstack max limit < -- currently experimental
             "job_title_or": self.preferred_jobs,
             "job_country_code_or": self.preferred_location,
             "posted_at_max_age_days": 30,

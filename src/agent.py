@@ -3,7 +3,7 @@ import sys
 from typing import cast
 
 from langchain_core.runnables import RunnableConfig
-from langgraph.graph import START, StateGraph  # END
+from langgraph.graph import END, START, StateGraph
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
@@ -61,10 +61,6 @@ class Workflow:
             self.job_scanner_obj.normalize_job,
         )
         workflow.add_node(
-            "router_agent",
-            self.router_obj.process_jobs,
-        )
-        workflow.add_node(
             "job_profile_agent",
             self.job_obj.run_research,
         )
@@ -96,8 +92,25 @@ class Workflow:
         # add edges
         workflow.add_edge(START, "job_scanner")
         workflow.add_edge("job_scanner", "normalize_jobs")
-        workflow.add_edge("normalize_jobs", "router_agent")
-        workflow.add_conditional_edges("router_agent", self.router_obj.process_jobs)
+        workflow.add_conditional_edges(
+            "normalize_jobs",
+            self.router_obj.process_jobs,
+            [
+                "job_profile_agent",
+                "company_profile_agent",
+                "industry_agent",
+                "finance_agent",
+                "leadership_agent",
+                "workforce_agent",
+            ],
+        )
+        workflow.add_edge("job_profile_agent", "reporting_agent")
+        workflow.add_edge("company_profile_agent", "reporting_agent")
+        workflow.add_edge("industry_agent", "reporting_agent")
+        workflow.add_edge("finance_agent", "reporting_agent")
+        workflow.add_edge("leadership_agent", "reporting_agent")
+        workflow.add_edge("workforce_agent", "reporting_agent")
+        workflow.add_edge("reporting_agent", END)
 
         # compile agent
         self.agent = workflow.compile()
