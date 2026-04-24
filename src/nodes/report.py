@@ -13,6 +13,7 @@ from src.state import State  # noqa: E402
 class GenerateReport:
     def run(self, state: State):
 
+        # final analysis
         final_analysis = state.get("agent_analysis", "No report generated")
 
         summary = f"""
