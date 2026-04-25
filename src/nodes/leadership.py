@@ -81,11 +81,11 @@ class Leadership:
 
     async def run_research(self, state: SubAgentState, config: RunnableConfig):
 
-        # distpatch_job from router agent
+        # dispatch_job from router agent
         dispatch_job = state["job"]
 
-        # extract grounding and job data from supervisor Send payload
-        job = dispatch_job["job_data"]
+        # extract grounding and job data
+        job_info = dispatch_job["job_data"]
         grounding = dispatch_job["grounding_data"]
 
         # initiate web search tool
@@ -93,8 +93,8 @@ class Leadership:
         if not web_research_tool:
             raise ValueError("web search tool is not configured")
 
-        # run web search
-        web_research = self._run_web_research(
+        # run web search (awaiting properly to fix earlier RuntimeWarnings)
+        web_research = await self._run_web_research(
             grounding_data=grounding, web_research_tool=web_research_tool
         )
 
@@ -103,36 +103,48 @@ class Leadership:
         if not llm_analyzer_tool:
             raise ValueError("llm analyzer tool is not configured")
 
+        # 1. Prepare Anchor Context
+        # This block forces the LLM to verify the identity of the leaders found online.
+        leadership_anchor = f"""
+        TARGET COMPANY IDENTITY:
+        - Legal Name: {grounding.get("company_name")}
+        - Corporate Domain: {grounding.get("company_domain")}
+        - LinkedIn: {grounding.get("company_linkedin_url")}
+        - Industry: {grounding.get("company_industry")}
+        - Official Website: {grounding.get("company_official_url")}
+        """
+
         system_prompt = """
         ### ROLE
-        You are a Senior Equity Research Analyst specializing in corporate governance and leadership transitions. Your task is to extract structured leadership insights from provided web search results.
+        You are a Senior Equity Research Analyst specializing in Corporate Governance and Leadership Transitions.
 
-        ### OBJECTIVE
-        Analyze the provided text to populate a specific JSON schema. You must maintain high analytical standards, distinguishing between factual data (e.g., tenure years) and market signals (e.g., performance trends).
+        ### STRATEGIC OBJECTIVE
+        Your goal is to cross-reference 'Internal Grounding' with 'Web Research' to create a high-fidelity leadership profile.
 
-        ### EXTRACTION RULES
-        1.  **Strict Schema Adherence:** Your output must be a single JSON object matching the requested schema exactly.
-        2.  **No Data Handling:** If search results do not contain information for a specific field, use the default value: "No data available".
-        3.  **Synthesize, Don't Just Copy:** Combine information from multiple search snippets to provide a comprehensive summary for each field.
-        4.  **Tone:** Professional, objective, and data-driven.
-
-        ### OUTPUT FORMAT
-        Provide only the raw JSON. Do not include conversational filler, markdown code blocks (unless specified), or explanations outside of the JSON structure.
+        ### EXTRACTION & VERIFICATION RULES:
+        1. **Identity Guardrail**: Use the 'TARGET COMPANY IDENTITY' to verify search results. Only include data that clearly belongs to this specific entity (matching domain or industry).
+        2. **Synthesize Signals**: Look for the "why" behind the data. For example, correlate CEO tenure with stock performance or strategic pivots mentioned in search results.
+        3. **Insider Behavior**: Distinguish between routine sales (10b5-1 plans) and high-conviction buying/selling if the data is available.
+        4. **Strict JSON**: Respond ONLY with the raw JSON object.
         """
 
         user_prompt = f"""
-        ### Task
-        Analyze the following search results for the company: {grounding.get("company_name")}
-        Extract leadership context for the company into the JSON format specified by the LeadershipContextModels schema.
+        ### Company Grounding Context:
+        {leadership_anchor}
 
-        ### Schema Fields to Populate:
-        1. **ceo_tenure**: State tenure length and performance impact (improvement/decline).
-        2. **founder_involvement**: Describe current roles (leadership/board) and ownership stake.
-        3. **strategic_pivots**: Identify major business model shifts and their outcomes.
-        4. **insider_behavior**: Analyze recent stock buying/selling trends and executive ownership.
-
-        ### Raw Search Results:
+        ### Web Research Results:
         {web_research}
+
+        ### Analysis Task:
+        Using the research results, populate the LeadershipContextModels schema for {grounding.get("company_name")}.
+
+        Fields to Populate:
+        1. **ceo_tenure**: Length of service and impact on company trajectory.
+        2. **founder_involvement**: Current roles, board presence, and influence.
+        3. **strategic_pivots**: Major business shifts under current leadership.
+        4. **insider_behavior**: Recent executive stock activity and ownership trends.
+
+        Return ONLY a JSON object. Use "No data available" for missing fields.
         """
 
         llm_response = await llm_analyzer_tool.run(
@@ -142,7 +154,7 @@ class Leadership:
         )
 
         formatted_results = {
-            "job_id": job.get("job_id"),
+            "job_id": job_info.get("job_id"),
             "agent_type": "leadership",
             "data": llm_response.model_dump(),
         }

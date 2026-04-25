@@ -86,61 +86,71 @@ class FinancialData:
 
     async def run_research(self, state: SubAgentState, config: RunnableConfig):
 
-        # distpatch_job from router agent
+        # distpatch job data from router agent
         dispatch_job = state["job"]
-
-        # extract grounding and job data from supervisor Send payload
-        job = dispatch_job["job_data"]
+        job_info = dispatch_job["job_data"]
         grounding = dispatch_job["grounding_data"]
 
-        # initiate web search tool
+        # tool initialization
         web_research_tool = config.get("configurable", {}).get("web_research_tool")
+        llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
+
+        # run web search
         if not web_research_tool:
             raise ValueError("web search tool is not configured")
 
-        # run web search
-        web_research = self._run_web_research(
+        web_research = await self._run_web_research(
             grounding_data=grounding, web_research_tool=web_research_tool
         )
 
-        # initiate llm analysis
-        llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
+        # run llm analysis
         if not llm_analyzer_tool:
             raise ValueError("llm analyzer tool is not configured")
 
-        system_prompt = """
-        You are a Senior Equity Research Analyst. Your task is to extract high-fidelity financial
-        data from search results and map them to a specific JSON schema.
+        # Anchor Context
+        company_anchor = f"""
+        COMPANY IDENTITY:
+        - Name: {grounding.get("company_name")}
+        - Industry: {grounding.get("company_industry")}
+        - Primary Domain: {grounding.get("company_domain")}
+        - Official URL: {grounding.get("company_official_url")}
+        - LinkedIn: {grounding.get("company_linkedin_url")}
 
-        ### Rules:
-        1. **Source Grounding**: Only use the provided search results. If information is missing
-           for a specific field, use the default: "No data available".
-        2. **Financial Accuracy**: Interpret terms like "CAGR", "EBITDA", and "Net Margin"
-           accurately. Use the historical context provided in the snippets to note trends
-           (e.g., "improving", "declining", "stable").
-        3. **Conciseness**: Follow the example formats provided in the field descriptions.
-           Keep summaries dense and informative.
-        4. **Output Format**: You must respond ONLY with a valid JSON object that matches
-           the schema provided. Do not include conversational filler or markdown code blocks
-           unless specifically requested.
+        JOB CONTEXT:
+        - Target Role: {job_info.get("job_title")}
+        - Role Description: {job_info.get("job_description")[:500]}...
+        """
+
+        system_prompt = """
+        You are a Senior Equity Research Analyst. Your goal is to synthesize internal company
+        grounding data with external web research to produce a high-fidelity financial profile.
+
+        ### Strategic Constraints:
+        1. **Verification**: Use the 'COMPANY IDENTITY' section to verify that the 'Web Research Results'
+           actually pertain to the correct entity. Cross-reference domains and industries.
+        2. **Role Relevance**: Keep the financial analysis relevant to the 'Target Role' context.
+        3. **Data Integrity**: If search results provide conflicting numbers, prefer data from
+           official company domains or reputable financial news outlets.
+        4. **Strict JSON**: Respond only with the requested JSON schema.
         """
 
         user_prompt = f"""
-        Analyze the following search results for the company: {grounding.get("company_name")}.
-        Extract and synthesize information into the JSON format specified by the FinancialContextModels schema.
+        ### Internal Grounding Data:
+        {company_anchor}
 
-        ### Schema Fields to Populate:
-        1. **revenue_growth**: Summarize historical revenue growth trends (3–5 year CAGR).
-        2. **profitability**: Describe profit margins (gross, operating, net) and trend direction.
-        3. **debt**: Assess leverage levels (debt-to-equity or debt-to-EBITDA).
-        4. **cash_flow**: Describe operating and free cash flow stability/burn.
-        5. **revenue_concentration**: Assess dependency on customers, products, or regions.
-
-        ### Raw Search Results:
+        ### Web Research Results:
         {web_research}
 
-        ### Response Format:
-        Return ONLY a JSON object. If information for a field is entirely missing from the text, use the default: "No data available".
+        ### Analysis Task:
+        Using the research results above, populate the FinancialContextModels schema for {grounding.get("company_name")}.
+        Focus on:
+        - Revenue Growth (CAGR)
+        - Profitability Margins
+        - Debt and Leverage
+        - Cash Flow Stability
+        - Revenue Concentration
+
+        If no specific financial data was found in the research for a field, return "No data available".
         """
 
         llm_response = await llm_analyzer_tool.run(
@@ -150,7 +160,7 @@ class FinancialData:
         )
 
         formatted_results = {
-            "job_id": job.get("job_id"),
+            "job_id": job_info.get("job_id"),
             "agent_type": "finance",
             "data": llm_response.model_dump(),
         }
