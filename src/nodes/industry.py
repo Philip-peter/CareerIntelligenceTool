@@ -73,57 +73,68 @@ class Industry:
         return researched_data_by_topic
 
     async def run_research(self, state: SubAgentState, config: RunnableConfig):
-
-        # distpatch_job from router agent
+        # Dispatch job from router agent
         dispatch_job = state["job"]
 
-        # extract grounding and job data from supervisor Send payload
-        job = dispatch_job["job_data"]
+        # Extract grounding and job data
+        job_info = dispatch_job["job_data"]
         grounding = dispatch_job["grounding_data"]
 
-        # initiate web search tool
+        # Tool initialization
         web_research_tool = config.get("configurable", {}).get("web_research_tool")
-        if not web_research_tool:
-            raise ValueError("web search tool is not configured")
+        llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
 
-        # run web search
-        web_research = self._run_web_research(
+        if not web_research_tool or not llm_analyzer_tool:
+            raise ValueError("Required tools (search or llm) are not configured")
+
+        # Run web search
+        web_research = await self._run_web_research(
             grounding_data=grounding, web_research_tool=web_research_tool
         )
 
-        # initiate llm analysis
-        llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
-        if not llm_analyzer_tool:
-            raise ValueError("llm analyzer tool is not configured")
+        # Anchor Context: Define the Company Sector and Niche
+        industry_anchor = f"""
+        TARGET ENTITY:
+        - Company: {grounding.get("company_name")}
+        - Reported Industry: {grounding.get("company_industry")}
+        - Domain: {grounding.get("company_domain")}
+
+        JOB CONTEXT:
+        - Position: {job_info.get("job_title")}
+        - Context: Analyzing industry forces relevant to this role.
+        """
 
         system_prompt = """
-        You are a Senior Equity Research Analyst specializing in industrial organization and strategic moat analysis. Your task is to synthesize raw web search data into a structured industry profile.
+        You are a Senior Equity Research Analyst specializing in Industrial Organization and Strategic Moat Analysis.
+        Your task is to synthesize raw web search data and company grounding into a structured industry profile.
 
-        ### Guidelines:
-        - **Evidence-Based:** Base every claim on the provided search results. If the data is conflicting, highlight the consensus.
-        - **Specifics Over Generalities:** Use concrete examples (e.g., mention specific regulators like the FDA or specific competitors like ASML).
-        - **Nuance:** Distinguish between "cyclical" and "defensive" by referencing historical performance during downturns if available.
-        - **Strict Output:** You must output valid JSON that conforms to the provided schema. Do not include introductory text or conversational filler.
+        ### Strategic Framework:
+        1. **Contextual Filtering**: Use the 'TARGET ENTITY' details to ensure search results are relevant to the specific sector (e.g., distinguish between 'Cloud Computing' and 'Enterprise Software' if applicable).
+        2. **Moat Assessment**: Look for evidence of high switching costs, network effects, or cost advantages.
+        3. **AI Impact**: Categorize AI as a structural shift. Is it an existential threat to the current business model or a margin-expanding tool?
+        4. **Consensus & Conflict**: If different sources disagree on market share or regulatory outlook, provide the most reputable or consensus-based view.
         """
 
         user_prompt = f"""
-        ### Task
-        Analyze the following search results for the company: {grounding.get("company_name")}.
-        Extract and synthesize information into the JSON format specified by the IndustryContextModels schema.
+        ### Company & Industry Grounding:
+        {industry_anchor}
 
-        ### Schema Fields to Populate:
-        1. **cyclic_or_defensive**: Classify the industry type and cite recession performance.
-        2. **regulatory_environment**: Detail oversight levels, compliance costs, and specific agencies.
-        3. **ai_distruption**: Evaluate AI as a threat (headwind) or opportunity (tailwind).
-        4. **competition**: Map the landscape, including market share, moats, and key rivals.
-
-        ### Raw Search Results:
+        ### Web Research Results:
         {web_research}
 
-        ### Response Format:
-        Return ONLY a JSON object. If information for a field is entirely missing from the text, use the default: "No data available".
+        ### Analysis Task:
+        Perform a deep-dive industry analysis for {grounding.get("company_name")} based on the research results.
+        Populate the IndustryContextModels schema focusing on:
+
+        1. **cyclic_or_defensive**: Classify the industry type and cite historical performance during economic cycles.
+        2. **regulatory_environment**: Identify specific oversight agencies (e.g., FTC, SEC, GDPR) and compliance burdens.
+        3. **ai_distruption**: Evaluate AI as a headwind (threat) or tailwind (opportunity).
+        4. **competition**: Map the landscape, identify key rivals, and describe the 'moat' (competitive advantage).
+
+        Return ONLY a JSON object. Use "No data available" if the research is insufficient.
         """
 
+        # Run llm analysis
         llm_response = await llm_analyzer_tool.run(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
@@ -131,10 +142,9 @@ class Industry:
         )
 
         formatted_results = {
-            "job_id": job.get("job_id"),
+            "job_id": job_info.get("job_id"),
             "agent_type": "industry",
             "data": llm_response.model_dump(),
         }
 
-        # wrap formatted_result in list for applying reducer in agent_analysis state
         return {"agent_analysis": [formatted_results]}

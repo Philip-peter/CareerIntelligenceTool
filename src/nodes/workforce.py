@@ -81,11 +81,11 @@ class Workforce:
 
     async def run_research(self, state: SubAgentState, config: RunnableConfig):
 
-        # distpatch_job from router agent
+        # dispatch_job from router agent
         dispatch_job = state["job"]
 
-        # extract grounding and job data from supervisor Send payload
-        job = dispatch_job["job_data"]
+        # extract grounding and job data
+        job_info = dispatch_job["job_data"]
         grounding = dispatch_job["grounding_data"]
 
         # initiate web search tool
@@ -93,8 +93,8 @@ class Workforce:
         if not web_research_tool:
             raise ValueError("web search tool is not configured")
 
-        # run web search
-        web_research = self._run_web_research(
+        # run web search (awaiting to fix the RuntimeWarning)
+        web_research = await self._run_web_research(
             grounding_data=grounding, web_research_tool=web_research_tool
         )
 
@@ -103,32 +103,49 @@ class Workforce:
         if not llm_analyzer_tool:
             raise ValueError("llm analyzer tool is not configured")
 
+        # 1. Anchor Context: Ground the workforce analysis
+        workforce_anchor = f"""
+        TARGET ENTITY FOR ANALYSIS:
+        - Company: {grounding.get("company_name")}
+        - Domain: {grounding.get("company_domain")}
+        - Industry: {grounding.get("company_industry")}
+        - LinkedIn: {grounding.get("company_linkedin_url")}
+
+        JOB CONTEXT:
+        - Hiring Role: {job_info.get("job_title")}
+        """
+
         system_prompt = """
         ### ROLE
-        You are a Corporate Intelligence Analyst specializing in organizational health and workforce dynamics. Your goal is to synthesize raw web search data into structured insights.
+        You are a Corporate Intelligence Analyst specializing in organizational health, workforce dynamics, and human capital risk.
 
         ### ANALYTICAL GUIDELINES
-        1. **Identify Patterns:** Don't just list events; identify trends (e.g., "multiple rounds of layoffs" vs "a single restructuring").
-        2. **Contextualize Signals:** Label findings as "stability signals," "risk signals," or "growth signals" based on the provided examples.
-        3. **Handle Missing Data:** Use exactly "No data available" if the search results do not provide enough information for a specific field.
-        4. **Source Integrity:** Prioritize information from the last 2-3 years as specified in the schema.
-
-        ### OUTPUT REQUIREMENT
-        Return a single JSON object that strictly follows the provided schema. Do not include markdown formatting or conversational text outside the JSON.
+        1. **Identity Verification**: Use the 'TARGET ENTITY' details to filter search results. Ensure sentiments and layoff news are specific to this company and domain.
+        2. **Identify Patterns**: Distinguish between isolated events (e.g., "one executive left") and systemic trends (e.g., "three CFOs in 18 months").
+        3. **Categorize Signals**:
+           - Stability: Consistent leadership, steady hiring.
+           - Risk: High turnover, frequent layoffs, Glassdoor mentions of "low morale."
+           - Growth: Surges in technical hiring, expansion into new regions.
+        4. **Source Recency**: Prioritize information from the last 24 months.
         """
 
         user_prompt = f"""
-        ### TASK
-        Analyze the provided web search results to populate the Workforce Context Model for the target company: : {grounding.get("company_name")}
+        ### Company Grounding:
+        {workforce_anchor}
 
-        ### Schema Fields to Populate:
-        1. layoff_history: Freq/scale of layoffs (e.g., 'Meta conducted multiple large layoffs in 2022-2023')
-        2. hiring_trends: Expansion vs. freeze signals (e.g., 'Rapid AI hiring surge at NVIDIA')
-        3. executive_turnover: Stability of CFO/CTO/COO (e.g., 'Multiple CFO changes in 2 years - risk signal')
-        4. employee_sentiments: Glassdoor/public sentiment (e.g., 'Low morale complaints during restructuring')
-
-        ### Raw Search Results:
+        ### Web Research Results:
         {web_research}
+
+        ### Task:
+        Analyze the provided web search results to populate the WorkforceContextModels schema for {grounding.get("company_name")}.
+
+        Extract and synthesize:
+        1. **layoff_history**: Frequency and scale (e.g., 'Company conducted a 10% workforce reduction in Q3 2024').
+        2. **hiring_trends**: Expansion vs. freeze signals.
+        3. **executive_turnover**: Stability of the C-suite (CFO/CTO/COO).
+        4. **employee_sentiments**: Public sentiment from platforms like Glassdoor or LinkedIn.
+
+        Return ONLY a JSON object. Use "No data available" for missing fields.
         """
 
         llm_response = await llm_analyzer_tool.run(
@@ -138,7 +155,7 @@ class Workforce:
         )
 
         formatted_results = {
-            "job_id": job.get("job_id"),
+            "job_id": job_info.get("job_id"),
             "agent_type": "workforce",
             "data": llm_response.model_dump(),
         }
