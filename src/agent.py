@@ -104,12 +104,9 @@ class Workflow:
                 "workforce_agent",
             ],
         )
-        workflow.add_edge("job_profile_agent", "reporting_agent")
-        workflow.add_edge("company_profile_agent", "reporting_agent")
-        workflow.add_edge("industry_agent", "reporting_agent")
-        workflow.add_edge("finance_agent", "reporting_agent")
-        workflow.add_edge("leadership_agent", "reporting_agent")
-        workflow.add_edge("workforce_agent", "reporting_agent")
+        # router uses Send api, langraph automatically waits for all Send() task to finish
+        # then normalize_jobs agents calls reporting agent
+        workflow.add_edge("normalize_jobs", "reporting_agent")
         workflow.add_edge("reporting_agent", END)
 
         # compile agent

@@ -10,7 +10,7 @@ async def main():
     # run agent
     research = await my_agent.run()
 
-    print(research["job_queue"])
+    print(research["final_report"])
 
 
 if __name__ == "__main__":

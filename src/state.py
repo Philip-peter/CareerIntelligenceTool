@@ -16,6 +16,7 @@ from src.models import (  # noqa: E402
 # Sub Agent State
 class SubAgentState(TypedDict):
     job: Dict
+    # agent_analysis: Annotated[List[Dict], operator.add]
 
 
 # Overall State
