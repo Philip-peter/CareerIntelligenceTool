@@ -13,11 +13,15 @@ from src.state import State  # noqa: E402
 class GenerateReport:
     def run(self, state: State):
 
-        final_analysis = state.get("agent_analysis", "No report generated")
+        summary = ""
+        final_analysis = state.get("aggregated_analysis", "No report generated")
+
+        for report in final_analysis:
+            pass
 
         summary = f"""
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        {final_analysis}
+        JOB ID: {final_analysis}
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         *Report generated on: {datetime.now().strftime("%Y-%m-%d")}*"""
 

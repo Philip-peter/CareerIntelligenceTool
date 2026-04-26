@@ -13,6 +13,7 @@ from config import cfg  # noqa: E402
 
 # from src.applicant_profile import my_applicant_profile  # noqa: E402
 from src.nodes import (  # noqa: E402
+    aggregator,
     company_profile,
     finance,
     industry,
@@ -47,6 +48,7 @@ class Workflow:
         self.company_profile_obj = company_profile.CompanyProfile()
         self.job_scanner_obj = job_scanner.JobScanner()
         self.job_obj = job.Job()
+        self.aggregator_obj = aggregator.Aggregator()
 
         # workflow
         workflow = StateGraph(State)
@@ -88,6 +90,10 @@ class Workflow:
             "reporting_agent",
             self.report_obj.run,
         )
+        workflow.add_node(
+            "aggregator_agent",
+            self.aggregator_obj.aggregate_analysis_result,
+        )
 
         # add edges
         workflow.add_edge(START, "job_scanner")
@@ -104,9 +110,13 @@ class Workflow:
                 "workforce_agent",
             ],
         )
-        # router uses Send api, langraph automatically waits for all Send() task to finish
-        # then normalize_jobs agents calls reporting agent
-        workflow.add_edge("normalize_jobs", "reporting_agent")
+        workflow.add_edge("job_profile_agent", "aggregator_agent")
+        workflow.add_edge("company_profile_agent", "aggregator_agent")
+        workflow.add_edge("industry_agent", "aggregator_agent")
+        workflow.add_edge("finance_agent", "aggregator_agent")
+        workflow.add_edge("leadership_agent", "aggregator_agent")
+        workflow.add_edge("workforce_agent", "aggregator_agent")
+        workflow.add_edge("aggregator_agent", "reporting_agent")
         workflow.add_edge("reporting_agent", END)
 
         # compile agent
@@ -125,6 +135,7 @@ class Workflow:
                 "raw_jobs": [],
                 "job_queue": [],
                 "agent_analysis": [],
+                "aggregated_analysis": [],
                 "final_report": "",
             },
         )
