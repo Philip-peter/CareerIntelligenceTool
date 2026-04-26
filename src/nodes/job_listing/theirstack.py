@@ -29,8 +29,9 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "detection and response",
         ]
         self.preferred_location = [
-            "US",
+            # "US",
             # "CA",
+            "GB",
         ]
         # self.job_seniority = [
         #     "staff",
@@ -52,7 +53,7 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "limit": 1,  # theirstack max limit < -- currently experimental
             "job_title_or": self.preferred_jobs,
             "job_country_code_or": self.preferred_location,
-            "posted_at_max_age_days": 30,
+            "posted_at_max_age_days": 7,
             # "job_seniority_or": self.job_seniority,
             # "min_salary_usd": self.minimum_salary,
             "url_domain_or": self.preferred_job_board,
