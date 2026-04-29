@@ -22,16 +22,16 @@ class TheirStack(job_provider_interface.JobProviderInterface):
         self.api_url = cfg.THEIRSTACK_API_URL
         self.preferred_jobs = [
             "security engineer",
-            "detection and response",
-            "cloud security",
-            "infrastructure security",
-            "security analyst",
-            "detection and response",
+            # "detection and response",
+            # "cloud security",
+            # "infrastructure security",
+            # "security analyst",
+            # "detection and response",
         ]
         self.preferred_location = [
             # "US",
-            # "CA",
-            "GB",
+            "CA",
+            # "GB",
         ]
         # self.job_seniority = [
         #     "staff",
@@ -53,7 +53,7 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "limit": 1,  # theirstack max limit < -- currently experimental
             "job_title_or": self.preferred_jobs,
             "job_country_code_or": self.preferred_location,
-            "posted_at_max_age_days": 7,
+            "posted_at_max_age_days": 30,
             # "job_seniority_or": self.job_seniority,
             # "min_salary_usd": self.minimum_salary,
             "url_domain_or": self.preferred_job_board,
