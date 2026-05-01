@@ -29,8 +29,8 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             # "detection and response",
         ]
         self.preferred_location = [
-            # "US",
-            "CA",
+            "US",
+            # "CA",
             # "GB",
         ]
         # self.job_seniority = [

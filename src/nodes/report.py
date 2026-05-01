@@ -32,6 +32,12 @@ class GenerateReport:
                 | **Title** | {job_data.get("job", {}).get("job_title", "N/A")} |
                 | **Posting** | {job_data.get("job", {}).get("job_posting_link", "N/A")} |
 
+                ## Company Details
+                **Company Name: {job_data.get("company", {}).get("company_name", "N/A")}
+                **Industry: {job_data.get("company", {}).get("company_industry", "N/A")}
+                **Company Official Site: {job_data.get("company", {}).get("company_official_url", "N/A")}
+                **Company LinkedIn Site: {job_data.get("company", {}).get("company_linkedin_url", "N/A")}
+
                 ---
 
                 ## Leadership Analysis
@@ -42,11 +48,29 @@ class GenerateReport:
                 **2. Founder Involvement**
                 {job_data.get("leadership", {}).get("founder_involvement", "N/A")}
 
-                **3. Insider Behavior**
-                {job_data.get("leadership", {}).get("insider_behavior", "N/A")}
+                **3. Strategic Pivots**
+                {job_data.get("leadership", {}).get("strategic_pivots", "N/A")}
 
                 **4. Executive Reputation**
                 {job_data.get("leadership", {}).get("executive_reputation", "N/A")}
+
+                **5. Leadership Stability**
+                {job_data.get("leadership", {}).get("leadership_stability", "N/A")}
+
+                **6. Employee Treatment During Hardship**
+                {job_data.get("leadership", {}).get("employee_treatment_during_hardship", "N/A")}
+
+                **7. Management Style and Culture**
+                {job_data.get("leadership", {}).get("management_style_and_culture", "N/A")}
+
+                **8. Vision and Communication Clarity**
+                {job_data.get("leadership", {}).get("vision_and_communication_clarity", "N/A")}
+
+                **9. DEI and Values Commitment**
+                {job_data.get("leadership", {}).get("dei_and_values_commitment", "N/A")}
+
+                **10. Employee Development Investment**
+                {job_data.get("leadership", {}).get("employee_development_investment", "N/A")}
 
                 ---
 

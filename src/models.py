@@ -226,38 +226,98 @@ class WorkforceContextModels(BaseModel):
 class LeadershipContextModels(BaseModel):
     ceo_tenure: str = Field(
         default="No data available",
-        description="State how long the current CEO has served and whether performance improved or declined under their leadership. "
-        "Examples: Satya Nadella at Microsoft (long tenure, successful transformation); "
-        "Frequent CEO turnover at struggling companies.",
+        description=(
+            "State how long the current CEO has served and assess their impact on employees — "
+            "not just business performance. Look for reorganizations, layoffs, or culture shifts that "
+            "occurred under their leadership. "
+            "Examples: CEO drove stable headcount growth and avoided mass layoffs during downturns (positive); "
+            "Three major reorgs in four years with high attrition following each (negative signal for stability)."
+        ),
     )
-
     founder_involvement: str = Field(
         default="No data available",
-        description="Describe whether founders remain involved in leadership or board roles and their ownership stake. "
-        "Examples: Mark Zuckerberg at Meta Platforms (founder-led); "
-        "Founder exited with no operational involvement.",
+        description=(
+            "Describe whether founders remain involved in leadership and assess the cultural effect of "
+            "their presence or absence — not their ownership stake. "
+            "Founder involvement can mean strong mission alignment or an unpredictable 'founder mode' environment. "
+            "Examples: Founder stepped back into advisory role, enabling professional management to scale culture; "
+            "Founder still controls day-to-day decisions, creating bottlenecks and inconsistent employee experience."
+        ),
     )
-
     strategic_pivots: str = Field(
         default="No data available",
-        description="Identify major business model shifts and evaluate their outcomes. "
-        "Examples: Netflix pivot from DVD rentals to streaming (successful); "
-        "Company abandoning core product after failed expansion.",
+        description=(
+            "Identify major business model shifts and evaluate their workforce consequences. "
+            "Did pivots lead to layoffs, new career opportunities, or signal reactive vs. visionary leadership? "
+            "Examples: Pivot into new product line created 200 new engineering roles (positive for applicants); "
+            "Abandoned core product after failed expansion, resulting in 30% headcount reduction (risk signal)."
+        ),
     )
-
-    insider_behavior: str = Field(
-        default="No data available",
-        description="Analyze insider stock buying/selling trends and executive ownership levels. "
-        "Examples: Significant insider buying during downturn (confidence signal); "
-        "Heavy executive selling amid declining performance (risk signal).",
-    )
-
     executive_reputation: str = Field(
         default="No data available",
-        description="Assess the public and professional reputation of the executive team. "
-        "Include Glassdoor approval ratings, employee sentiment, and any notable awards or controversies. "
-        "Examples: High CEO approval on Glassdoor (80%+); Public criticism of leadership during restructuring; "
-        "Strong industry reputation for the engineering leadership team.",
+        description=(
+            "Assess the public and employee-facing reputation of the executive team. "
+            "Include Glassdoor and Blind approval ratings, employee sentiment, management controversies, "
+            "and any notable awards or public criticism. "
+            "Examples: CEO maintains 85% Glassdoor approval with consistent positive reviews on transparency; "
+            "Executive team publicly criticized for poor communication during restructuring."
+        ),
+    )
+    leadership_stability: str = Field(
+        default="No data available",
+        description=(
+            "Assess C-suite and senior leadership turnover across roles (CEO, CTO, CFO, CPO, CHRO). "
+            "High churn in VP/Director layers is a major red flag for job applicants. "
+            "Examples: Stable leadership team with less than 10% annual attrition (positive signal); "
+            "Three CHROs in two years (instability signal for culture and HR practices)."
+        ),
+    )
+    employee_treatment_during_hardship: str = Field(
+        default="No data available",
+        description=(
+            "Evaluate how leadership has handled workforce reductions, restructurings, or downturns. "
+            "Assess whether layoffs were handled transparently and humanely (severance, notice, support). "
+            "Examples: Leadership provided 6-month severance and outplacement support (positive); "
+            "Employees terminated via email with no severance (negative signal for leadership character)."
+        ),
+    )
+    management_style_and_culture: str = Field(
+        default="No data available",
+        description=(
+            "Characterize the leadership's management philosophy and its downstream effect on culture. "
+            "Is it top-down and command-control, or collaborative and empowering? "
+            "Look for signals of psychological safety, micromanagement, or autonomy. "
+            "Examples: Leaders publicly promote internal mobility and employee development; "
+            "Culture described as fear-based in Glassdoor reviews referencing executive behavior."
+        ),
+    )
+    vision_and_communication_clarity: str = Field(
+        default="No data available",
+        description=(
+            "Assess whether leadership communicates a clear, consistent strategic direction to employees. "
+            "Look for evidence of regular all-hands meetings, transparent roadmaps, and honest messaging. "
+            "Examples: CEO hosts monthly town halls and publishes internal strategy memos (positive); "
+            "Employees report being blindsided by major announcements (negative signal)."
+        ),
+    )
+    dei_and_values_commitment: str = Field(
+        default="No data available",
+        description=(
+            "Evaluate leadership's demonstrated commitment to diversity, equity, and inclusion — "
+            "not just stated values, but measurable actions (representation in leadership, pay equity audits, ERGs). "
+            "Note any public controversies or rollbacks. "
+            "Examples: Executive team reflects diverse backgrounds, company publishes annual pay equity report; "
+            "Leadership rolled back DEI programs under pressure with no explanation."
+        ),
+    )
+    employee_development_investment: str = Field(
+        default="No data available",
+        description=(
+            "Determine whether leadership actively invests in employee growth through L&D budgets, "
+            "mentorship programs, internal promotions, and career pathing. "
+            "Examples: Company promotes 70% of senior roles internally (strong signal for growth); "
+            "No formal L&D budget, high attrition among high performers."
+        ),
     )
 
 

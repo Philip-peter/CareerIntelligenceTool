@@ -17,7 +17,7 @@ class Leadership:
     def _generate_queries_template(self, grounding_data):
         name = grounding_data["company_name"]
         domain = grounding_data["company_domain"]
-        linkedin_url = grounding_data.get("company_linkedin_url", "")
+        # linkedin_url = grounding_data.get("company_linkedin_url", "")
 
         # Clean domain for site filtering
         clean_domain = (
@@ -29,28 +29,58 @@ class Leadership:
         return [
             {
                 "topic": "ceo_tenure",
-                # Focuses on the "Management" section of official filings and earnings sentiment
-                "query": f'site:sec.gov "{name}" CEO tenure "biography" "previous experience" earnings call sentiment',
+                "query": f'"{name}" site:{clean_domain} OR CEO tenure leadership "reorganization" OR "layoffs" OR "culture shift" '
+                f'"since joining" OR "under his leadership" OR "under her leadership" employees',
             },
             {
                 "topic": "founder_involvement",
-                # Targeting Proxy Statements (DEF 14A) which detail voting power and ownership
-                "query": f'site:sec.gov "{name}" "founder" "beneficial ownership" "voting power" "dual-class" "board of directors"',
+                "query": f'"{name}" site:{clean_domain} OR founder "founder-led" OR "founder mode" OR "founder vision" '
+                f'company culture employees "day-to-day" OR "still involved" OR "stepped back"',
             },
             {
                 "topic": "strategic_pivots",
-                # Looking for letters to shareholders or official restructuring announcements on their domain
-                "query": f'site:{clean_domain} "letter to shareholders" "restructuring" "strategic shift" "business transformation"',
-            },
-            {
-                "topic": "insider_behavior",
-                # Form 4 is the specific legal requirement for insider trades
-                "query": f'site:sec.gov "{name}" "Form 4" "insider trading" "executive compensation" "shares held" buying selling',
+                "query": f'"{name}" site:{clean_domain} OR "strategic pivot" OR "business transformation" OR "restructuring" '
+                f'employees "job cuts" OR "new direction" OR "career opportunities" OR "headcount"',
             },
             {
                 "topic": "executive_reputation",
-                # Leveraging the LinkedIn grounding data to find news about the executive team's reputation
-                "query": f'site:{linkedin_url} "{name}" executive leadership team "Glassdoor" ratings "Glassdoor" CEO approval "departure" "turnover"',
+                "query": f'"{name}" site:{clean_domain} OR CEO "Glassdoor" OR "Blind" OR "employee reviews" '
+                f'"approval rating" OR "leadership style" OR "management controversy" OR "executive criticism"',
+            },
+            {
+                "topic": "leadership_stability",
+                "query": f'"{name}" site:{clean_domain} OR "chief" OR "VP" OR "vice president" '
+                f'"departed" OR "resigned" OR "appointed" OR "replaced" "executive turnover" OR "leadership changes" '
+                f"site:businessinsider.com OR site:wsj.com OR site:bloomberg.com",
+            },
+            {
+                "topic": "employee_treatment_during_hardship",
+                "query": f'"{name}" site:{clean_domain} OR layoffs OR "workforce reduction" OR "restructuring" '
+                f'"severance" OR "notice period" OR "how it was handled" OR "employees react" '
+                f"site:techcrunch.com OR site:businessinsider.com OR site:glassdoor.com",
+            },
+            {
+                "topic": "management_style_and_culture",
+                "query": f'"{name}" site:{clean_domain} OR "management style" OR "work culture" OR "micromanagement" '
+                f'OR "psychological safety" OR "toxic culture" OR "employee autonomy" '
+                f"site:glassdoor.com OR site:teamblind.com OR site:reddit.com",
+            },
+            {
+                "topic": "vision_and_communication_clarity",
+                "query": f'"{name}" site:{clean_domain} OR CEO "all-hands" OR "town hall" OR "internal memo" OR "strategic vision" '
+                f'"employees" "communication" OR "transparency" OR "roadmap" OR "blindsided"',
+            },
+            {
+                "topic": "dei_and_values_commitment",
+                "query": f'"{name}" site:{clean_domain} OR "diversity" OR "DEI" OR "inclusion" "pay equity" OR "representation" '
+                f'OR "ERG" OR "diversity report" OR "DEI rollback" OR "diversity controversy" '
+                f"site:{clean_domain} OR site:builtin.com",
+            },
+            {
+                "topic": "employee_development_investment",
+                "query": f'"{name}" site:{clean_domain} OR "employee development" OR "learning and development" OR "internal promotions" '
+                f'OR "career growth" OR "mentorship" OR "tuition reimbursement" OR "L&D budget" '
+                f"site:{clean_domain} OR site:glassdoor.com",
             },
         ]
 
@@ -116,16 +146,25 @@ class Leadership:
 
         system_prompt = """
         ### ROLE
-        You are a Senior Equity Research Analyst specializing in Corporate Governance and Leadership Transitions.
+        You are a Senior Talent Intelligence Analyst specializing in Corporate Leadership Assessment for job seekers.
 
         ### STRATEGIC OBJECTIVE
-        Your goal is to cross-reference 'Internal Grounding' with 'Web Research' to create a high-fidelity leadership profile.
+        Your goal is to cross-reference 'Internal Grounding' with 'Web Research' to create a high-fidelity leadership
+        profile from the perspective of a prospective employee — not an investor.
+        Focus on signals that indicate what it is like to work under this leadership team.
 
         ### EXTRACTION & VERIFICATION RULES:
-        1. **Identity Guardrail**: Use the 'TARGET COMPANY IDENTITY' to verify search results. Only include data that clearly belongs to this specific entity (matching domain or industry).
-        2. **Synthesize Signals**: Look for the "why" behind the data. For example, correlate CEO tenure with stock performance or strategic pivots mentioned in search results.
-        3. **Insider Behavior**: Distinguish between routine sales (10b5-1 plans) and high-conviction buying/selling if the data is available.
-        4. **Strict JSON**: Respond ONLY with the raw JSON object.
+        1. **Identity Guardrail**: Use the 'TARGET COMPANY IDENTITY' to verify search results. Only include data
+           that clearly belongs to this specific entity (matching domain or industry). Discard results
+           that belong to similarly named companies.
+        2. **Employee Lens**: Prioritize signals that affect day-to-day employee experience — culture,
+           communication, stability, growth opportunities, and how leadership behaves under pressure.
+        3. **Synthesize Signals**: Look for the "why" behind the data. For example, correlate CEO tenure
+           with layoff history, or connect executive turnover patterns to Glassdoor sentiment trends.
+        4. **Source Credibility**: Weight employee-sourced platforms (Glassdoor, Blind, Reddit) heavily
+           for culture fields. Use news sources (TechCrunch, Bloomberg, WSJ) for factual events like
+           layoffs, leadership departures, and strategic pivots.
+        5. **Strict JSON**: Respond ONLY with the raw JSON object. No preamble, no markdown, no explanation.
         """
 
         user_prompt = f"""
@@ -136,15 +175,41 @@ class Leadership:
         {web_research}
 
         ### Analysis Task:
-        Using the research results, populate the LeadershipContextModels schema for {grounding.get("company_name")}.
+        Using the research results above, populate the LeadershipContextModels schema for {grounding.get("company_name")}
+        strictly from the perspective of a job applicant evaluating this company.
 
         Fields to Populate:
-        1. **ceo_tenure**: Length of service and impact on company trajectory.
-        2. **founder_involvement**: Current roles, board presence, and influence.
-        3. **strategic_pivots**: Major business shifts under current leadership.
-        4. **insider_behavior**: Recent executive stock activity and ownership trends.
+        1. **ceo_tenure**: How long the current CEO has served and how their tenure has affected employees —
+           include any reorgs, layoffs, or culture shifts that occurred under their watch.
 
-        Return ONLY a JSON object. Use "No data available" for missing fields.
+        2. **founder_involvement**: Whether founders remain active in leadership and what effect their
+           presence or absence has on company culture and employee experience.
+
+        3. **strategic_pivots**: Major business model shifts under current leadership and their workforce
+           consequences — did pivots create opportunities or trigger headcount reductions?
+
+        4. **executive_reputation**: Public and employee-facing reputation of the executive team based on
+           Glassdoor ratings, Blind reviews, approval scores, and any notable controversies.
+
+        5. **leadership_stability**: C-suite and VP-level turnover patterns across key roles (CEO, CTO, CFO,
+           CPO, CHRO). Flag high churn as a risk signal for prospective employees.
+
+        6. **employee_treatment_during_hardship**: How leadership handled layoffs, restructurings, or downturns —
+           assess transparency, severance quality, and communication during difficult periods.
+
+        7. **management_style_and_culture**: Leadership's management philosophy and its effect on culture —
+           look for signals of psychological safety, autonomy, micromanagement, or fear-based environments.
+
+        8. **vision_and_communication_clarity**: Whether leadership communicates a clear, consistent direction
+           to employees — look for evidence of town halls, internal memos, and whether employees feel informed.
+
+        9. **dei_and_values_commitment**: Leadership's demonstrated commitment to DEI through measurable actions,
+           not just stated values — flag rollbacks, controversies, or strong program investment.
+
+        10. **employee_development_investment**: Whether leadership actively invests in employee growth through
+            L&D budgets, mentorship, internal promotions, and career pathing programs.
+
+        Return ONLY a JSON object. Use "No data available" for any fields where insufficient evidence exists.
         """
 
         llm_response = await llm_analyzer_tool.run(
