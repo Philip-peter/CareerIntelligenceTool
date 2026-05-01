@@ -36,7 +36,7 @@ class CompanyProfile:
 
         formatted_results = {
             "job_id": job.get("job_id"),
-            "agent_type": "leadership",
+            "agent_type": "company",
             "data": company_profile,
         }
 
