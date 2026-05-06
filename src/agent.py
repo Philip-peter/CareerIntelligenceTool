@@ -123,9 +123,23 @@ class Workflow:
         self.agent = workflow.compile()
 
     def run(self):
-        # init applicant profile
-        # TODO: Add persist where we check if applicant profile already exist before init
+        # init applicant preference
         # candidate_profile = my_applicant_profile.init_candidate_profile()
+        # init dummy user preferences
+        user_preferences = {
+            "compensation": {
+                "min_salary": 140000,
+                "max_salary": 180000,
+                "currency": "CAD",
+            },
+            "location": {
+                "country": "Canada",
+                "state": "Ontario",
+                "city": None,
+            },
+            "employment_status": "full_time",
+            "work_arrangement": "remote",
+        }
 
         # set initial state
         initial_state = cast(

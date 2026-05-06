@@ -256,3 +256,7 @@ class JobScanner:
             list_of_jobs.append(job_data)
 
         return {"job_queue": list_of_jobs}
+
+    async def filter_jobs(self, user_preferences):
+        """Filter jobs based on user preferences"""
+        pass
