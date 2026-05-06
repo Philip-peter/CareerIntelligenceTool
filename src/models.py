@@ -1,6 +1,9 @@
+from __future__ import annotations
+
+from enum import Enum
 from typing import Any, Literal, Optional, Union
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 # model for the candidate
@@ -21,6 +24,77 @@ class ApplicantModel(BaseModel):
     )
     career_priority: Literal["compensation", "stability"] = Field(
         ..., description="The primary driver for the candidate's next move"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Enums
+# ---------------------------------------------------------------------------
+
+
+class Currency(str, Enum):
+    CAD = "CAD"
+    USD = "USD"
+    EUR = "EUR"
+    GBP = "GBP"
+
+
+class EmploymentStatus(str, Enum):
+    FULL_TIME = "full_time"
+    PART_TIME = "part_time"
+    CONTRACT = "contract"
+    FREELANCE = "freelance"
+    INTERNSHIP = "internship"
+
+
+class WorkArrangement(str, Enum):
+    REMOTE = "remote"
+    HYBRID = "hybrid"
+    ON_SITE = "on_site"
+
+
+# ---------------------------------------------------------------------------
+# Sub-models
+# ---------------------------------------------------------------------------
+
+
+class Compensation(BaseModel):
+    min_salary: float = Field(..., gt=0, description="Minimum acceptable annual salary")
+    max_salary: Optional[float] = Field(
+        None, gt=0, description="Maximum expected annual salary (optional ceiling)"
+    )
+    currency: Currency = Field(Currency.CAD, description="Currency for salary values")
+
+    @model_validator(mode="after")
+    def max_must_exceed_min(self) -> Compensation:
+        if self.max_salary is not None and self.max_salary <= self.min_salary:
+            raise ValueError("max_salary must be greater than min_salary")
+        return self
+
+
+class Location(BaseModel):
+    country: str = Field(..., description="Country of the job")
+    state: Optional[str] = Field(None, description="Province or state")
+    city: Optional[str] = Field(
+        None, description="City (optional for broader searches)"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Root model
+# ---------------------------------------------------------------------------
+
+
+class UserPreferences(BaseModel):
+    compensation: Compensation = Field(
+        ..., description="Salary expectations and currency"
+    )
+    location: Location = Field(..., description="Preferred job location")
+    employment_status: EmploymentStatus = Field(
+        ..., description="Desired employment type"
+    )
+    work_arrangement: WorkArrangement = Field(
+        ..., description="Remote, hybrid, or on-site preference"
     )
 
 
