@@ -5,6 +5,10 @@ from typing import Any, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
+# ---------------------------------------------------------------------------
+# BaseModel for Applicant
+# ---------------------------------------------------------------------------
+
 
 # model for the candidate
 class ApplicantModel(BaseModel):
@@ -27,9 +31,7 @@ class ApplicantModel(BaseModel):
     )
 
 
-# ---------------------------------------------------------------------------
-# Enums
-# ---------------------------------------------------------------------------
+# ---- Enums ---- #
 
 
 class Currency(str, Enum):
