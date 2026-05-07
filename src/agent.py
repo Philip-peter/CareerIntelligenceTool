@@ -125,21 +125,21 @@ class Workflow:
     def run(self):
         # init applicant preference
         # candidate_profile = my_applicant_profile.init_candidate_profile()
-        # init dummy user preferences
-        user_preferences = {
-            "compensation": {
-                "min_salary": 140000,
-                "max_salary": 180000,
-                "currency": "CAD",
-            },
-            "location": {
-                "country": "Canada",
-                "state": "Ontario",
-                "city": None,
-            },
-            "employment_status": "full_time",
-            "work_arrangement": "remote",
-        }
+
+        # user_preferences = {
+        #     "compensation": {
+        #         "min_salary": 140000,
+        #         "max_salary": 180000,
+        #         "currency": "CAD",
+        #     },
+        #     "location": {
+        #         "country": "Canada",
+        #         "state": "Ontario",
+        #         "city": None,
+        #     },
+        #     "employment_status": "full_time",
+        #     "work_arrangement": "remote",
+        # }
 
         # set initial state
         initial_state = cast(

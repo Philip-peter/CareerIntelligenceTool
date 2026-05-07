@@ -5,26 +5,37 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, ".."))
 sys.path.append(root_dir)
 
-from src.models import ApplicantModel  # noqa: E402
+from src.models import UserPreference  # noqa: E402
 
 
 class ApplicantProfile:
     pass
 
-    # TODO: Validate User Input
-    # TODO: Execute once and persist data
     def init_candidate_profile(self):
+        """Capture users preference"""
         current_company = input("CURRENT COMPANY: ")
-        risk_tolerance = int(input("RISK TOLERANCE: "))
-        career_priority = input("CAREER PRIORITY: ")
+        salary_expectations = float(input("SALARY EXPECTATION [hint: float]: "))
+        desired_work_location = input("DESIRED LOCATION [hint: country]: ")
+        desired_employment_status = input(
+            "DESIRED EMPLOYMENT STATUS [hint: full_time, part_time, contract]: "
+        )
+        desired_work_arrangement = input(
+            "DESIRED WORK ARRANGEMENT [hint: remote, hybrid]: "
+        )
+        career_switch_motivation = input(
+            "CAREER SWITCH PRIORITY [hint: compensation, growth, stability, work_life_balance, impact, prestige]: "
+        )
 
         applicant_data = {
             "current_company": current_company,
-            "risk_tolerance": risk_tolerance,
-            "career_priority": career_priority,
+            "salary_expectations": salary_expectations,
+            "desired_work_location": desired_work_location,
+            "desired_employment_status": desired_employment_status,
+            "desired_work_arrangement": desired_work_arrangement,
+            "career_switch_motivation": career_switch_motivation,
         }
 
-        return ApplicantModel(**applicant_data)
+        return UserPreference(**applicant_data)
 
     def update_candidate_profile(self):
         pass
