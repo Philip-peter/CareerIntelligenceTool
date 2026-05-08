@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, Optional, Union
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator
 
 # ---------------------------------------------------------------------------
 # BaseModel for User Preference
@@ -12,16 +12,9 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 # Enums for user profile
 
 
-class Currency(str, Enum):
-    CAD = "CAD"
-    USD = "USD"
-    EUR = "EUR"
-    GBP = "GBP"
-
-
 class EmploymentStatus(str, Enum):
-    FULL_TIME = "full_time"
-    PART_TIME = "part_time"
+    FULL_TIME = "fulltime"
+    PART_TIME = "parttime"
     CONTRACT = "contract"
     FREELANCE = "freelance"
     INTERNSHIP = "internship"
@@ -33,31 +26,6 @@ class WorkArrangement(str, Enum):
     ON_SITE = "on_site"
 
 
-# Sub Models
-
-
-class Compensation(BaseModel):
-    min_salary: float = Field(..., gt=0, description="Minimum acceptable annual salary")
-    max_salary: Optional[float] = Field(
-        None, gt=0, description="Maximum expected annual salary (optional ceiling)"
-    )
-    currency: Currency = Field(Currency.CAD, description="Currency for salary values")
-
-    @model_validator(mode="after")
-    def max_must_exceed_min(self) -> Compensation:
-        if self.max_salary is not None and self.max_salary <= self.min_salary:
-            raise ValueError("max_salary must be greater than min_salary")
-        return self
-
-
-class Location(BaseModel):
-    country: str = Field(..., description="Country of the job")
-    state: Optional[str] = Field(None, description="Province or state")
-    city: Optional[str] = Field(
-        None, description="City (optional for broader searches)"
-    )
-
-
 class SwitchMotivation(str, Enum):
     COMPENSATION = "compensation"  # primarily chasing higher pay
     GROWTH = "growth"  # next level, new skills
@@ -65,6 +33,14 @@ class SwitchMotivation(str, Enum):
     WORK_LIFE_BALANCE = "work_life_balance"  # reclaiming personal time
     IMPACT = "impact"  # meaningful work
     PRESTIGE = "prestige"  # brand name, title
+
+
+# Sub Models
+
+
+class Location(BaseModel):
+    country: str = Field(..., description="Country of the job")
+    city_state: Optional[str] = Field(None, description="Province or state")
 
 
 # Main Class for User Profile
@@ -76,7 +52,7 @@ class UserPreference(BaseModel):
         description="The name of the candidate's current employer",
         examples=["Google", "Amazon"],
     )
-    salary_expectations: Compensation = Field(
+    salary_expectations: float = Field(
         ..., description="Salary expectations and currency"
     )
     desired_work_location: Location = Field(..., description="Preferred job location")
