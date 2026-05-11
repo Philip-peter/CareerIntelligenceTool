@@ -10,7 +10,7 @@ root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
-from src.applicant_profile import my_applicant_profile  # noqa: E402
+from src.applicant_data import my_applicant_data  # noqa: E402
 from src.nodes import (  # noqa: E402
     aggregator,
     company_profile,
@@ -123,16 +123,17 @@ class Workflow:
 
     def run(self):
         # init applicant preference
-        # applicant_profile = my_applicant_profile.init_candidate_profile()
+        # my_app_profile, my_app_preference = my_applicant_profile.init_candidate_profile()
 
         # use synthetic user preferences fot testing
-        applicant_profile = my_applicant_profile.dummy_user_preferences()
+        my_app_profile, my_app_preference = my_applicant_data.dummy_user_preferences()
 
         # set initial state
         initial_state = cast(
             State,
             {
-                "applicant_profile": applicant_profile,
+                "applicant_profile": my_app_profile,
+                "applicant_preference": my_app_preference,
                 "raw_jobs": [],
                 "job_queue": [],
                 "agent_analysis": [],

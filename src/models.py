@@ -43,15 +43,10 @@ class Location(BaseModel):
     city_state: Optional[str] = Field(None, description="Province or state")
 
 
-# Main Class for User Profile
+# Main Class for User Preferences
 
 
-class UserPreference(BaseModel):
-    current_company: Optional[str] = Field(
-        ...,
-        description="The name of the candidate's current employer",
-        examples=["Google", "Amazon"],
-    )
+class UserPreferenceModel(BaseModel):
     salary_expectations: float = Field(
         ..., description="Salary expectations and currency"
     )
@@ -64,6 +59,29 @@ class UserPreference(BaseModel):
     )
     career_switch_motivation: SwitchMotivation = Field(
         ..., description="The primary driver for the candidate's next move"
+    )
+
+
+# ---------------------------------------------------------------------------
+# BaseModel for User Profile
+# ---------------------------------------------------------------------------
+
+
+class UserProfileModels(BaseModel):
+    current_company: str = Field(
+        ...,
+        description="The name of the candidate's current employer",
+        examples=["Google", "Amazon"],
+    )
+    current_company_official_url: str = Field(
+        ...,
+        description="The official url of the candidate's current employer",
+        examples=["https://www.dayforce.com/ca"],
+    )
+    current_company_linkedin_url: Optional[str] = Field(
+        ...,
+        description="The official linkedin page of the candidate's current employer",
+        examples=["https://linkedin.com/company/dayforce/"],
     )
 
 
