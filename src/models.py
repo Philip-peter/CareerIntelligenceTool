@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any, List, Optional, Union
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -38,20 +38,24 @@ class SwitchMotivation(str, Enum):
 # Sub Models
 
 
-class Location(BaseModel):
-    country: str = Field(..., description="Country of the job")
-    city_state: Optional[str] = Field(None, description="Province or state")
+class Location(str, Enum):
+    US = "us"
+    CA = "ca"
+    GB = "gb"
 
 
 # Main Class for User Preferences
 
 
 class UserPreferenceModel(BaseModel):
+    preferred_job_roles: List[str] = Field(..., description="Desired job roles")
     salary_expectations: float = Field(
         ..., description="Salary expectations and currency"
     )
-    desired_work_location: Location = Field(..., description="Preferred job location")
-    desired_employment_status: EmploymentStatus = Field(
+    desired_work_location: List[Location] = Field(
+        ..., description="Preferred job location"
+    )
+    desired_employment_status: List[EmploymentStatus] = Field(
         ..., description="Desired employment type"
     )
     desired_work_arrangement: WorkArrangement = Field(

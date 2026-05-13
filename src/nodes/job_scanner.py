@@ -9,7 +9,7 @@ sys.path.append(root_dir)
 
 # from src.models import TargetJobDetails  # noqa: E402
 from src.models import JobPostingModel  # noqa: E402
-from src.nodes.job_listing.theirstack import theirstack_provider  # noqa: E402
+from src.nodes.job_listing import theirstack  # noqa: E402
 from src.state import State  # noqa: E402
 
 
@@ -172,7 +172,14 @@ class JobScanner:
     #     return {"raw_research": result}
 
     async def fetch_recent_jobs(self, state: State, config: RunnableConfig):
-        # fetch recent jobs
+
+        # load user preference from state
+        user_preferences = state["applicant_preference"]
+
+        # initialize theirstack
+        theirstack_provider = theirstack.TheirStack(user_preferences=user_preferences)
+
+        # fetch recent jobs from theirstack provider
         recent_jobs = theirstack_provider.fetch_jobs()
 
         if not recent_jobs:
