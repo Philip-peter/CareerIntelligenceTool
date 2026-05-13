@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import List
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, ".."))
@@ -19,12 +20,10 @@ class ApplicantData:
         }
 
         applicant_preferences = {
+            "preferred_job_roles": ["security engineer"],
             "salary_expectations": 140000.0,
-            "desired_work_location": {
-                "country": "Canada",
-                "city_state": "Ontario",
-            },
-            "desired_employment_status": "fulltime",
+            "desired_work_location": ["ca"],
+            "desired_employment_status": ["fulltime"],
             "desired_work_arrangement": "remote",
             "career_switch_motivation": "compensation",
         }
@@ -38,9 +37,11 @@ class ApplicantData:
         current_company = input("CURRENT COMPANY: ")
         current_company_official_url = input("CURRENT COMPANY URL: ")
         current_company_linkedin_url = input("CURRENT COMPANY LINKEDIN: ")
+        preferred_job_roles = input(
+            "PREFERRED JOB ROLES [seperate multiple preferred jobs using comma]: "
+        )
         salary_expectations = float(input("SALARY EXPECTATION [hint: float]: "))
-        desired_work_country = input("DESIRED LOCATION [hint: country]: ")
-        desired_work_city_state = input("DESIRED LOCATION [hint: city/state]: ")
+        desired_work_country = input("DESIRED LOCATION [hint: US, CA, GB]: ")
         desired_employment_status = input(
             "DESIRED EMPLOYMENT STATUS [hint: full_time, part_time, contract]: "
         )
@@ -58,12 +59,14 @@ class ApplicantData:
         }
 
         applicant_preferences = {
+            "preferred_job_role": preferred_job_roles.split(
+                ","
+            ),  # convert comma seperated strings to List[str]
             "salary_expectations": salary_expectations,
-            "desired_work_location": {
-                "country": desired_work_country,
-                "city_state": desired_work_city_state,
-            },
-            "desired_employment_status": desired_employment_status,
+            "desired_work_country": List[desired_work_country],  # convert to a list
+            "desired_employment_status": List[
+                desired_employment_status
+            ],  # convert to a list
             "desired_work_arrangement": desired_work_arrangement,
             "career_switch_motivation": career_switch_motivation,
         }

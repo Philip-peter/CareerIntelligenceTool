@@ -8,8 +8,9 @@ root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
 from src.models import (  # noqa: E402
-    ApplicantModel,
     JobPostingModel,
+    UserPreferenceModel,
+    UserProfileModels,
 )
 
 
@@ -20,7 +21,8 @@ class SubAgentState(TypedDict):
 
 # Overall State
 class State(TypedDict):
-    applicant_profile: ApplicantModel
+    applicant_profile: UserProfileModels
+    applicant_preference: UserPreferenceModel
     raw_jobs: List
     job_queue: List[JobPostingModel]
     agent_analysis: Annotated[List[Dict[str, Any]], operator.add]
