@@ -11,26 +11,27 @@ root_dir = os.path.abspath(os.path.join(current_dir, "../../../"))
 sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
-from src.models import UserPreferenceModel  # noqa: E402
 
 from . import job_provider_interface  # noqa: E402
 
 
 class TheirStack(job_provider_interface.JobProviderInterface):
-    def __init__(self, user_preferences: UserPreferenceModel) -> None:
+    def __init__(self, user_preferences: dict) -> None:
         super().__init__()
         self.api_key = cfg.THEIRSTACK_API_KEY
         self.api_url = cfg.THEIRSTACK_API_URL
-        self.preferred_jobs = user_preferences.preferred_job_roles
-        self.preferred_location = user_preferences.desired_work_location
-        self.minimum_salary = user_preferences.salary_expectations
+        self.preferred_jobs = user_preferences.get("preferred_job_roles")
+        self.preferred_location = user_preferences.get("desired_work_location")
+        # self.minimum_salary = user_preferences.get("salary_expectations")
         self.preferred_job_board = ["linkedin.com"]
-        self.preferred_employment_status = user_preferences.desired_employment_status
+        self.preferred_employment_status = user_preferences.get(
+            "desired_employment_status"
+        )
 
     def fetch_jobs(self):
         payload = {
             "page": 0,  # research how to use pagination
-            "limit": 5,  # theirstack max limit < -- currently experimental
+            "limit": 1,  # theirstack max limit < -- currently experimental
             "job_title_or": self.preferred_jobs,
             "job_country_code_or": self.preferred_location,
             "posted_at_max_age_days": 30,
@@ -55,4 +56,4 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             response.raise_for_status()
             return response.json()
         except Exception as e:
-            print(f"Encountered error during 'fetch_jobs' operation. Error: {e}")
+            print(f"Encountered error during 'fetch_jobs' operation. \nError: {e}")

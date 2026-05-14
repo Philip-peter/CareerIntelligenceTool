@@ -21,16 +21,22 @@ class ApplicantData:
 
         applicant_preferences = {
             "preferred_job_roles": ["security engineer"],
-            "salary_expectations": 140000.0,
-            "desired_work_location": ["ca"],
-            "desired_employment_status": ["fulltime"],
+            # "salary_expectations": 140000.0,
+            "desired_work_location": ["CA"],
+            "desired_employment_status": ["full_time"],
             "desired_work_arrangement": "remote",
             "career_switch_motivation": "compensation",
         }
 
-        return UserProfileModels(**applicant_profile), UserPreferenceModel(
-            **applicant_preferences
-        )
+        # pydantic model validate
+        user_profile = UserProfileModels.model_validate(applicant_profile)
+        user_preference = UserPreferenceModel.model_validate(applicant_preferences)
+
+        # convert to dict
+        user_profile = user_profile.model_dump(mode="json")
+        user_preference = user_preference.model_dump(mode="json")
+
+        return user_profile, user_preference
 
     def init_candidate_profile(self):
         """Capture users input and returns user profile and preference objects"""
@@ -71,9 +77,15 @@ class ApplicantData:
             "career_switch_motivation": career_switch_motivation,
         }
 
-        return UserProfileModels(**applicant_profile), UserPreferenceModel(
-            **applicant_preferences
-        )
+        # pydantic model validate
+        user_profile = UserProfileModels.model_validate(applicant_profile)
+        user_preference = UserPreferenceModel.model_validate(applicant_preferences)
+
+        # convert to dict
+        user_profile = user_profile.model_dump(mode="json")
+        user_preference = user_preference.model_dump(mode="json")
+
+        return user_profile, user_preference
 
 
 # applicant profile instance
