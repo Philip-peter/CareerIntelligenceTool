@@ -13,11 +13,9 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class EmploymentStatus(str, Enum):
-    FULL_TIME = "fulltime"
-    PART_TIME = "parttime"
+    FULL_TIME = "full_time"
+    PART_TIME = "part_time"
     CONTRACT = "contract"
-    FREELANCE = "freelance"
-    INTERNSHIP = "internship"
 
 
 class WorkArrangement(str, Enum):
@@ -39,9 +37,9 @@ class SwitchMotivation(str, Enum):
 
 
 class Location(str, Enum):
-    US = "us"
-    CA = "ca"
-    GB = "gb"
+    US = "US"
+    CA = "CA"
+    GB = "GB"
 
 
 # Main Class for User Preferences
@@ -49,9 +47,9 @@ class Location(str, Enum):
 
 class UserPreferenceModel(BaseModel):
     preferred_job_roles: List[str] = Field(..., description="Desired job roles")
-    salary_expectations: float = Field(
-        ..., description="Salary expectations and currency"
-    )
+    # salary_expectations: float = Field(
+    #     ..., description="Salary expectations and currency"
+    # )
     desired_work_location: List[Location] = Field(
         ..., description="Preferred job location"
     )
