@@ -27,23 +27,52 @@ class Industry:
         return [
             {
                 "topic": "cyclic_or_defensive",
-                # We add the industry to the query to help the search engine contextualize the 'cyclical' nature
-                "query": f'"{name}" {industry} analyst commentary "cyclical or defensive" recession sensitivity operating margin',
+                # Reframed around workforce consequences of downturns, not stock defensiveness
+                "query": f'"{name}" {industry} "economic downturn" OR "recession" OR "slowdown" '
+                f'"layoffs" OR "hiring freeze" OR "budget cuts" OR "workforce impact" '
+                f"site:{clean_domain} OR site:bloomberg.com OR site:wsj.com",
             },
             {
                 "topic": "regulatory_environment",
-                # Still using site:sec.gov but adding the specific company name for 10-K extraction
-                "query": f'site:sec.gov "{name}" regulatory risks risk factors compliance "government oversight"',
+                # Kept SEC grounding but added workforce and operational impact framing
+                "query": f'site:sec.gov "{name}" "risk factors" "regulatory" OR "compliance" OR "government oversight" '
+                f'"operations" OR "workforce" OR "business continuity" OR "license" OR "penalty"',
             },
             {
                 "topic": "ai_disruption",
-                # Prioritize the official domain to see what THEY say about AI vs what news says
-                "query": f'site:{clean_domain} AI integration strategy R&D spending "AI capex"',
+                # Broadened beyond company domain to capture industry-wide automation and job displacement risk
+                "query": f'"{name}" {industry} "AI" OR "automation" OR "artificial intelligence" '
+                f'"job displacement" OR "workforce reduction" OR "replacing roles" OR "productivity gains" '
+                f'OR "AI strategy" OR "AI investment" '
+                f"site:{clean_domain} OR site:techcrunch.com OR site:wired.com",
             },
             {
                 "topic": "competition",
-                # Search for the company name and industry keywords specifically focused on pricing power
-                "query": f'"{name}" {industry} "gross margin trend" competitors pricing power switching costs',
+                # Reframed around competitive position as a proxy for company stability and job security
+                "query": f'"{name}" {industry} competitors "market share" OR "market position" OR "competitive advantage" '
+                f'"losing ground" OR "dominant player" OR "industry leader" OR "threat from" '
+                f"site:{clean_domain} OR site:bloomberg.com OR site:businessinsider.com",
+            },
+            {
+                "topic": "industry_growth_trajectory",
+                # New — is the industry expanding or contracting? Directly affects hiring outlook and job security
+                "query": f'{industry} "industry growth" OR "market size" OR "market forecast" OR "sector outlook" '
+                f'"hiring trends" OR "talent demand" OR "expanding" OR "declining" OR "headcount growth" '
+                f"site:bloomberg.com OR site:mckinsey.com OR site:forrester.com OR site:gartner.com",
+            },
+            {
+                "topic": "consolidation_and_ma_risk",
+                # New — M&A activity in the industry is a major job security risk (redundancy, culture disruption)
+                "query": f'"{name}" {industry} "merger" OR "acquisition" OR "consolidation" OR "buyout" '
+                f'"job cuts" OR "integration" OR "redundancies" OR "acquired by" OR "merger impact employees" '
+                f"site:{clean_domain} OR site:wsj.com OR site:reuters.com OR site:bloomberg.com",
+            },
+            {
+                "topic": "offshoring_and_automation_risk",
+                # New — are roles in this industry being moved offshore or eliminated by automation?
+                "query": f'"{name}" {industry} "offshoring" OR "outsourcing" OR "automation" OR "nearshoring" '
+                f'"role elimination" OR "cost reduction" OR "moving jobs" OR "replacing workers" '
+                f"site:{clean_domain} OR site:techcrunch.com OR site:businessinsider.com",
             },
         ]
 
@@ -100,19 +129,41 @@ class Industry:
         - Domain: {grounding.get("company_domain")}
 
         JOB CONTEXT:
-        - Position: {job_info.get("job_title")}
-        - Context: Analyzing industry forces relevant to this role.
+        - Position Being Evaluated: {job_info.get("job_title")}
+        - Purpose: Assess industry-level forces that affect job security, career growth,
+        and employer stability for a candidate considering this role.
         """
 
         system_prompt = """
-        You are a Senior Equity Research Analyst specializing in Industrial Organization and Strategic Moat Analysis.
-        Your task is to synthesize raw web search data and company grounding into a structured industry profile.
+        ### ROLE
+        You are a Senior Talent Market Intelligence Analyst specializing in industry risk assessment
+        for job seekers evaluating career moves.
 
-        ### Strategic Framework:
-        1. **Contextual Filtering**: Use the 'TARGET ENTITY' details to ensure search results are relevant to the specific sector (e.g., distinguish between 'Cloud Computing' and 'Enterprise Software' if applicable).
-        2. **Moat Assessment**: Look for evidence of high switching costs, network effects, or cost advantages.
-        3. **AI Impact**: Categorize AI as a structural shift. Is it an existential threat to the current business model or a margin-expanding tool?
-        4. **Consensus & Conflict**: If different sources disagree on market share or regulatory outlook, provide the most reputable or consensus-based view.
+        ### STRATEGIC OBJECTIVE
+        Synthesize raw web research and company grounding into a structured industry profile that helps
+        a prospective employee understand the structural forces shaping their potential employer's sector.
+        The goal is not financial analysis — it is career risk and opportunity assessment.
+
+        ### ANALYTICAL FRAMEWORK:
+        1. **Contextual Filtering**: Use the 'TARGET ENTITY' details to ensure all research findings
+        are scoped to the correct industry and sector. Discard results that belong to adjacent or
+        unrelated industries (e.g., distinguish 'Cloud Infrastructure' from 'Enterprise SaaS' if applicable).
+
+        2. **Job-Applicant Lens**: Every finding should be interpreted through the question:
+        "What does this mean for someone working here?" Translate industry dynamics into
+        workforce implications — hiring trends, layoff risk, role stability, and career ceiling.
+
+        3. **Role Relevance**: Where possible, relate industry forces to the specific job title provided
+        in the JOB CONTEXT. A regulatory shift may affect a compliance role differently than an engineering role.
+
+        4. **AI and Automation**: Assess whether AI represents a structural threat to roles in this
+        industry or a tailwind creating new opportunities. Distinguish between AI augmenting workers
+        and AI eliminating job categories outright.
+
+        5. **Source Conflicts**: If sources disagree on market outlook or competitive position,
+        default to the most recent and reputable source. Flag the disagreement in your output.
+
+        6. **Strict JSON**: Respond ONLY with the raw JSON object. No preamble, no markdown, no explanation.
         """
 
         user_prompt = f"""
@@ -123,15 +174,36 @@ class Industry:
         {web_research}
 
         ### Analysis Task:
-        Perform a deep-dive industry analysis for {grounding.get("company_name")} based on the research results.
-        Populate the IndustryContextModels schema focusing on:
+        Perform an industry analysis for {grounding.get("company_name")} in the {grounding.get("company_industry")} sector.
+        Evaluate all findings through the lens of a job applicant considering a {job_info.get("job_title")} role.
 
-        1. **cyclic_or_defensive**: Classify the industry type and cite historical performance during economic cycles.
-        2. **regulatory_environment**: Identify specific oversight agencies (e.g., FTC, SEC, GDPR) and compliance burdens.
-        3. **ai_distruption**: Evaluate AI as a headwind (threat) or tailwind (opportunity).
-        4. **competition**: Map the landscape, identify key rivals, and describe the 'moat' (competitive advantage).
+        Populate ALL fields of the IndustryContextModels schema:
 
-        Return ONLY a JSON object. Use "No data available" if the research is insufficient.
+        1. **cyclic_or_defensive**: Is this industry cyclical or defensive? What happens to headcount
+        and hiring in this sector during economic downturns? Cite historical patterns where available.
+
+        2. **regulatory_environment**: What regulatory bodies govern this industry? How does compliance
+        burden affect company operations, workforce stability, and risk of forced restructuring or shutdown?
+
+        3. **ai_disruption**: Is AI a threat to roles in this industry or a growth driver creating new ones?
+        Distinguish between automation of specific tasks vs. elimination of entire job categories.
+        Relate findings to the {job_info.get("job_title")} role where possible.
+
+        4. **competition**: How competitive is this industry and what does that mean for the company's
+        stability as an employer? Does the company hold a durable market position or is it fighting
+        for survival in a commoditized market?
+
+        5. **industry_growth_trajectory**: Is the industry expanding or contracting? What does the
+        talent demand outlook look like — are companies in this sector actively hiring or reducing headcount?
+
+        6. **consolidation_and_ma_risk**: How active is M&A in this industry? Is the company a likely
+        acquisition target or acquirer, and what would that mean for employees in terms of redundancies
+        or culture disruption?
+
+        7. **offshoring_and_automation_risk**: Are roles in this industry structurally at risk of being
+        offshored, outsourced, or automated — independent of this company's specific performance?
+
+        Return ONLY a JSON object. Use "No data available" for any fields where research is insufficient.
         """
 
         # Run llm analysis

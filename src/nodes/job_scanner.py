@@ -176,16 +176,11 @@ class JobScanner:
         # load user preference from state
         user_preferences = state["applicant_preference"]
 
-        print(type(user_preferences))
-        print(user_preferences)
-
         # initialize theirstack
         theirstack_provider = theirstack.TheirStack(user_preferences=user_preferences)
 
         # fetch recent jobs from theirstack provider
         recent_jobs = theirstack_provider.fetch_jobs()
-
-        print(recent_jobs)
 
         if not recent_jobs:
             print("No recent jobs found")

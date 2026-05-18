@@ -29,33 +29,65 @@ class FinancialData:
         return [
             {
                 "topic": "revenue_growth",
-                # We target the official investor relations site or SEC filings for CAGR/Revenue tables
-                "query": f'site:sec.gov "{name}" "revenue growth" 3-year 5-year CAGR "historical financial results"',
+                # Added IR domain alongside SEC; added recent years and reframed around growth trajectory
+                "query": f'"{name}" site:{clean_domain} OR site:sec.gov '
+                f'"revenue growth" OR "annual revenue" OR "revenue trend" '
+                f'"2023" OR "2024" OR "2025" "year over year" OR "YoY" OR "CAGR" '
+                f'"growing" OR "declining" OR "flat revenue"',
             },
             {
                 "topic": "profitability",
-                # We look for specific margin terminology often found in tables
-                "query": f'"{name}" {industry} "gross margin" "operating margin" "net profit margin" trend analysis 2023 2024',
+                # Added domain grounding, updated date range, reframed around financial sustainability
+                "query": f'"{name}" site:{clean_domain} OR site:sec.gov {industry} '
+                f'"gross margin" OR "operating margin" OR "net margin" OR "EBITDA" '
+                f'"2024" OR "2025" "profitable" OR "profitability" OR "operating loss" OR "path to profitability"',
             },
             {
                 "topic": "debt",
-                # Combining name with specific leverage ratios and the industry context
-                "query": f'"{name}" "debt-to-equity" "debt-to-EBITDA" "total liabilities" "credit rating" leverage profile',
+                # Added SEC and credit agency sources; debt is most reliably found in filings and ratings reports
+                "query": f'"{name}" site:{clean_domain} OR site:sec.gov '
+                f'"debt-to-equity" OR "debt-to-EBITDA" OR "total liabilities" OR "long-term debt" '
+                f'"credit rating" OR "leverage" OR "covenant" OR "refinancing" '
+                f"site:moodys.com OR site:spglobal.com OR site:fitchratings.com",
             },
             {
                 "topic": "cash_flow",
-                # Target the "Statement of Cash Flows" specifically
-                "query": f'"{name}" "cash flow from operations" FCF "free cash flow" "capital expenditures" burn rate',
+                # Added domain grounding; burn rate and runway are the most job-applicant-relevant signals
+                "query": f'"{name}" site:{clean_domain} OR site:sec.gov '
+                f'"cash flow from operations" OR "free cash flow" OR "FCF" '
+                f'"capital expenditures" OR "burn rate" OR "cash runway" OR "cash position" '
+                f'"2024" OR "2025"',
             },
             {
                 "topic": "revenue_concentration",
-                # This uses exact phrases found in the "Risk Factors" or "Notes to Financial Statements"
-                "query": f'"{name}" "revenue concentration" "major customers" "percent of total revenue" "customer concentration"',
+                # Strengthened with explicit SEC grounding — this language appears verbatim in 10-K Risk Factors
+                "query": f'"{name}" site:{clean_domain} OR site:sec.gov '
+                f'"revenue concentration" OR "customer concentration" OR "major customers" '
+                f'"percent of total revenue" OR "accounts for" OR "single customer" OR "top 10 customers"',
             },
             {
                 "topic": "investor_sentiment",
-                # BONUS: Checks for official IR decks or quarterly presentations on their own domain
-                "query": f'site:{clean_domain} "investor presentation" "quarterly results" "earnings release" 2024',
+                # Added analyst sources alongside IR; counterbalances optimistic official IR content
+                "query": f'"{name}" site:{clean_domain} OR "investor presentation" OR "earnings release" '
+                f'OR "analyst rating" OR "price target" OR "outlook" OR "guidance" '
+                f'"2024" OR "2025" OR "2026" '
+                f"site:seekingalpha.com OR site:bloomberg.com OR site:wsj.com",
+            },
+            {
+                "topic": "funding_and_runway",
+                # New — critical for private/startup employers; strong role at underfunded company is high risk
+                "query": f'"{name}" site:{clean_domain} '
+                f'"funding round" OR "Series A" OR "Series B" OR "venture capital" OR "raised" '
+                f'OR "runway" OR "cash reserves" OR "burn rate" OR "IPO" OR "pre-IPO" '
+                f"site:crunchbase.com OR site:techcrunch.com OR site:bloomberg.com",
+            },
+            {
+                "topic": "financial_distress_signals",
+                # New — earliest warning indicators that won't appear in standard revenue/margin queries
+                "query": f'"{name}" site:{clean_domain} OR site:sec.gov '
+                f'"going concern" OR "covenant breach" OR "credit downgrade" OR "missed payment" '
+                f'OR "debt restructuring" OR "bankruptcy" OR "financial difficulty" OR "liquidity risk" '
+                f"site:bloomberg.com OR site:wsj.com OR site:reuters.com",
             },
         ]
 
@@ -149,6 +181,9 @@ class FinancialData:
         - Debt and Leverage
         - Cash Flow Stability
         - Revenue Concentration
+        - Investor Sentiment
+        - Funding and Runway
+        - Financial Distress Signals
 
         If no specific financial data was found in the research for a field, return "No data available".
         """
