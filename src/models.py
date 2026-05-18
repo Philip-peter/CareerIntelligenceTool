@@ -164,129 +164,278 @@ class JobPostingModel(BaseModel):
 class IndustryContextModels(BaseModel):
     cyclic_or_defensive: str = Field(
         default="No data available",
-        description="Classify whether the company operates in a cyclical industry (sensitive to economic cycles) or defensive industry (stable during recessions). "
-        "Include historical recession performance if available. "
-        "Examples: Automotive like Ford Motor Company (cyclical, demand drops in recessions); "
-        "Consumer staples like Procter & Gamble (defensive, steady demand).",
+        description=(
+            "Assess whether the industry is cyclical or defensive and what that means for workforce stability. "
+            "Focus on whether economic downturns historically trigger layoffs, hiring freezes, or budget cuts "
+            "in this sector — not stock defensiveness. "
+            "Examples: Automotive (cyclical, mass layoffs common during recessions); "
+            "Healthcare (defensive, headcount largely stable during downturns); "
+            "SaaS (mixed — SMB-facing contracts churn, enterprise tends to hold)."
+        ),
     )
-
     regulatory_environment: str = Field(
         default="No data available",
-        description="Describe the level of regulatory oversight affecting the company and industry. "
-        "Include required approvals, compliance costs, and exposure to policy changes. "
-        "Examples: Banks like JPMorgan Chase (high capital requirements, stress tests); "
-        "Pharma like Pfizer (FDA approvals required); "
-        "Software startups (typically low regulatory burden).",
+        description=(
+            "Describe the level of regulatory oversight and its implications for company operations, "
+            "workforce stability, and business continuity. Flag whether regulatory risk could lead to "
+            "operational disruptions, fines, license loss, or forced restructuring that affects employees. "
+            "Examples: Banks like JPMorgan Chase (heavy compliance burden, but regulation adds operational stability); "
+            "Crypto firms (high regulatory uncertainty, risk of forced shutdowns); "
+            "Software startups (low regulatory burden, faster operational agility)."
+        ),
     )
-
-    ai_distruption: str = Field(
+    ai_disruption: str = Field(
         default="No data available",
-        description="Assess whether AI is a threat or tailwind to the company’s business model. "
-        "Specify if AI could automate core services or drive new revenue. "
-        "Examples: Chegg (at risk due to AI homework tools); "
-        "NVIDIA (benefits from AI chip demand); "
-        "Traditional consulting firms (partial automation risk).",
+        description=(
+            "Assess whether AI and automation represent a threat or tailwind to roles and job stability "
+            "within this industry. Distinguish between AI augmenting workers vs. eliminating roles outright. "
+            "Include both company-specific AI strategy and industry-wide displacement signals. "
+            "Examples: Legal document review (high displacement risk from AI); "
+            "NVIDIA (AI is a growth tailwind creating new roles); "
+            "Traditional consulting (partial automation of analytical tasks, senior roles less affected)."
+        ),
     )
-
     competition: str = Field(
         default="No data available",
-        description="Describe the competitive landscape including main competitors, market share concentration, barriers to entry, and pricing power. "
-        "Examples: Airlines like Delta Air Lines (high competition, low margins); "
-        "Visa (strong moat, network effects); "
-        "ASML (near monopoly in EUV lithography).",
+        description=(
+            "Describe the competitive landscape and assess what it means for the company's stability "
+            "and longevity as an employer. Intense competition with margin pressure often precedes "
+            "cost-cutting and layoffs. A strong moat signals a more durable employer. "
+            "Examples: Airlines (high competition, low margins, frequent workforce reductions); "
+            "Visa (dominant market position, strong moat, stable employer); "
+            "ASML (near-monopoly in EUV lithography, highly stable with strong hiring demand)."
+        ),
+    )
+    industry_growth_trajectory: str = Field(
+        default="No data available",
+        description=(
+            "Evaluate whether the industry is expanding or contracting and what that implies for "
+            "hiring outlook, career growth potential, and long-term job security. "
+            "Reference market size forecasts, talent demand trends, and sector analyst outlooks. "
+            "Examples: Cybersecurity (high growth, strong talent demand, low layoff risk); "
+            "Print media (structural decline, shrinking headcount industry-wide); "
+            "Cloud infrastructure (rapid expansion with sustained hiring across all levels)."
+        ),
+    )
+    consolidation_and_ma_risk: str = Field(
+        default="No data available",
+        description=(
+            "Assess the level of M&A activity in the industry and the risk it poses to employees "
+            "through redundancies, culture disruption, or post-merger integration layoffs. "
+            "Flag whether the company itself is a likely acquisition target or acquirer. "
+            "Examples: Regional banks (high consolidation risk, frequent post-merger layoffs); "
+            "Enterprise software (active M&A market, acquired companies often see role redundancies); "
+            "Mature telecom (high consolidation history with significant workforce reductions post-merger)."
+        ),
+    )
+    offshoring_and_automation_risk: str = Field(
+        default="No data available",
+        description=(
+            "Identify whether roles in this industry are at structural risk of being moved offshore, "
+            "outsourced, or eliminated through automation — independent of company-specific performance. "
+            "Examples: Customer support roles in SaaS (high offshoring and automation risk); "
+            "Semiconductor engineering (low offshoring risk due to IP sensitivity and specialized talent); "
+            "Back-office finance and accounting (moderate risk from RPA and offshore shared services)."
+        ),
     )
 
 
 class FinancialContextModels(BaseModel):
     revenue_growth: str = Field(
         default="No data available",
-        description="Summarize historical revenue growth trends (3–5 year CAGR if possible). "
-        "Note acceleration or deceleration. "
-        "Examples: High-growth SaaS (20–40% CAGR); "
-        "Mature utilities (2–5% growth); "
-        "Declining retailers with negative YoY revenue.",
+        description=(
+            "Summarize revenue growth trends over the past 2-3 years and what the trajectory signals "
+            "for the company's long-term viability as an employer. Accelerating growth suggests hiring "
+            "demand; decelerating or negative growth often precedes cost-cutting and layoffs. "
+            "Examples: Consistent 25%+ YoY revenue growth with expanding customer base "
+            "(strong employer stability signal); Revenue declining 3 years consecutively in core segment "
+            "(elevated layoff and restructuring risk)."
+        ),
     )
-
     profitability: str = Field(
         default="No data available",
-        description="Describe profit margins (gross, operating, net) and trend direction. "
-        "Examples: Apple (high gross margins, strong profitability); "
-        "Early-stage startup (negative net income but improving margins); "
-        "Retail grocery (thin margins).",
+        description=(
+            "Describe gross, operating, and net margin trends and what they reveal about the company's "
+            "financial sustainability as an employer. Sustained losses or margin compression often "
+            "trigger cost reduction programs that affect headcount and compensation. "
+            "Examples: Improving operating margins with clear path to profitability "
+            "(financial health improving, lower workforce risk); Widening operating losses with no "
+            "stated path to profitability (elevated risk of cost-cutting measures affecting employees)."
+        ),
     )
-
     debt: str = Field(
         default="No data available",
-        description="Assess leverage levels including debt-to-equity or debt-to-EBITDA where available. "
-        "Note refinancing risk. "
-        "Examples: Capital-intensive telecom with high debt; "
-        "Asset-light SaaS with minimal debt.",
+        description=(
+            "Assess leverage levels and refinancing risk. High debt burdens constrain a company's "
+            "ability to invest in headcount, compensation, and benefits — and can force restructuring "
+            "if refinancing conditions deteriorate. Reference credit ratings where available. "
+            "Examples: Manageable debt-to-EBITDA of 1.5x with investment-grade credit rating "
+            "(low financial stress signal); Highly leveraged at 6x EBITDA with covenant pressures "
+            "and recent credit downgrade (elevated restructuring and layoff risk)."
+        ),
     )
-
     cash_flow: str = Field(
         default="No data available",
-        description="Describe operating and free cash flow stability. "
-        "Indicate whether the company generates consistent positive cash flow or burns cash. "
-        "Examples: Microsoft generates strong free cash flow; "
-        "Venture-backed startup burning cash with limited runway.",
+        description=(
+            "Describe operating and free cash flow stability and what it means for the company's "
+            "ability to sustain payroll, benefits, and investment in people. For private companies, "
+            "assess burn rate and estimated cash runway. A company burning cash without a clear "
+            "path to positive FCF is a materially higher employment risk. "
+            "Examples: Consistent positive free cash flow funding organic growth and employee programs "
+            "(strong stability signal); Monthly burn rate of $8M with 10 months of runway and no "
+            "funding round announced (high employment risk for prospective hires)."
+        ),
     )
-
     revenue_concentration: str = Field(
         default="No data available",
-        description="Assess dependency on a small number of customers, products, or regions. "
-        "Examples: A company deriving 40% of revenue from one client (high concentration risk); "
-        "Diversified multinational with broad customer base (low concentration risk).",
+        description=(
+            "Assess dependency on a small number of customers, products, or geographies. "
+            "High concentration means a single contract loss or regional downturn can trigger "
+            "rapid workforce reductions — a material risk for any new hire. "
+            "Examples: 45% of revenue from a single enterprise customer with contract up for renewal "
+            "(high concentration risk, significant job security exposure); Diversified revenue across "
+            "500+ customers with no single customer exceeding 3% of revenue (low concentration risk)."
+        ),
     )
-
     investor_sentiment: str = Field(
         default="No data available",
-        description="Analyze management's outlook from earnings calls and investor presentations. "
-        "Include key themes from quarterly results and how the market/investors are reacting to "
-        "recent financial guidance. Examples: Management raising full-year guidance (bullish); "
-        "Investor concerns over slowing growth in a core segment; Heavy emphasis on 'efficiency' "
-        "in latest investor deck.",
+        description=(
+            "Summarize the outlook from earnings calls, investor presentations, and analyst commentary. "
+            "Translate investor signals into workforce implications — raised guidance suggests growth "
+            "and hiring; emphasis on 'efficiency' or 'right-sizing' in IR decks is a layoff precursor. "
+            "Weight analyst views alongside management commentary to counterbalance optimistic IR framing. "
+            "Examples: Management raising full-year guidance with analysts confirming positive outlook "
+            "(bullish signal for hiring and stability); Investor deck heavily emphasizing cost discipline "
+            "and operational efficiency following a revenue miss (likely precursor to headcount reduction)."
+        ),
+    )
+    funding_and_runway: str = Field(
+        default="No data available",
+        description=(
+            "For private, pre-IPO, or venture-backed companies, assess the most recent funding round, "
+            "total capital raised, estimated burn rate, and cash runway. A strong role at an underfunded "
+            "company is a high employment risk. For public companies, note whether the balance sheet "
+            "is self-sustaining or reliant on debt and equity issuance. "
+            "Examples: Series B company with $40M raised, 18-month runway, and active Series C process "
+            "(moderate risk — dependent on successful fundraise); Bootstrapped and profitable with no "
+            "external funding dependency (strong stability signal for private employer)."
+        ),
+    )
+    financial_distress_signals: str = Field(
+        default="No data available",
+        description=(
+            "Identify the earliest warning indicators of financial distress that may not surface in "
+            "standard revenue or margin analysis. Look for going concern warnings in SEC filings, "
+            "covenant breaches, credit downgrades, deferred vendor payments, or bankruptcy filings. "
+            "These signals typically precede mass layoffs by 6-12 months. "
+            "Examples: Auditor issued going concern warning in most recent 10-K filing "
+            "(critical risk signal — imminent financial instability); No distress signals detected "
+            "across SEC filings, credit ratings, and news sources (clean financial health signal)."
+        ),
     )
 
 
 class WorkforceContextModels(BaseModel):
     layoff_history: str = Field(
         default="No data available",
-        description="Describe major layoffs in the past 2–3 years including frequency and scale. "
-        "Examples: Meta Platforms conducted multiple large layoffs in 2022–2023; "
-        "Stable mid-sized firm with no recent workforce reductions.",
+        description=(
+            "Describe major layoff events in the past 2-3 years including frequency, scale, and how "
+            "they were handled. Cross-reference layoffs.fyi, WARN Act notices, and news coverage. "
+            "Focus on what the pattern reveals about the company's workforce stability. "
+            "Examples: Meta conducted multiple large layoffs in 2022-2023 but provided strong severance "
+            "and outplacement support (scale risk, handled humanely); "
+            "No layoff history in the past 3 years despite industry-wide reductions (strong stability signal)."
+        ),
     )
-
     hiring_trends: str = Field(
         default="No data available",
-        description="Assess whether the company is expanding headcount or freezing hiring. "
-        "Include signals like aggressive LinkedIn recruiting or job posting declines. "
-        "Examples: Rapid AI hiring surge at NVIDIA; "
-        "Hiring freeze after cost-cutting measures.",
+        description=(
+            "Assess whether the company is actively growing headcount or contracting. "
+            "Look for signals like surge in open roles, hiring announcements, or conversely "
+            "hiring freezes and paused recruitment. Distinguish between targeted hiring "
+            "in specific functions vs. broad expansion. "
+            "Examples: Aggressive AI and engineering hiring across all levels (growth signal); "
+            "Job postings declined 60% YoY with freeze announced in Q1 (contraction signal)."
+        ),
     )
-
-    executive_turnover: str = Field(
+    mid_management_turnover: str = Field(
         default="No data available",
-        description="Evaluate stability of leadership team (CFO, CTO, COO turnover). "
-        "Frequent departures may signal instability. "
-        "Examples: Multiple CFO changes in 2 years (risk signal); "
-        "Long-tenured executive team (stability signal).",
+        description=(
+            "Assess churn at the director and VP level — the management layer a new hire would "
+            "most directly report into. High mid-management turnover is a stronger day-to-day risk "
+            "signal than C-suite changes, which are tracked separately in the leadership profile. "
+            "Sources include LinkedIn departures, Glassdoor reviews mentioning manager changes, "
+            "and Blind discussions. "
+            "Examples: High director-level attrition with frequent team restructuring (instability signal); "
+            "Stable mid-management tenure averaging 4+ years (positive signal for new hires)."
+        ),
     )
-
     employee_sentiments: str = Field(
         default="No data available",
-        description="Summarize employee satisfaction from public sources like Glassdoor. "
-        "Include CEO approval rating if available. "
-        "Examples: High CEO approval at Microsoft; "
-        "Low morale complaints during restructuring phases.",
+        description=(
+            "Summarize employee satisfaction from platforms including Glassdoor, Blind, Fishbowl, "
+            "and Indeed. Include CEO approval rating, overall company rating, and recurring themes "
+            "in reviews — both positive and negative. Weight recent reviews more heavily. "
+            "Examples: 4.2 Glassdoor rating with 85% CEO approval and consistent praise for work-life "
+            "balance (strong signal); Low morale reviews citing poor communication and lack of direction "
+            "spiking after restructuring announcement (negative signal)."
+        ),
     )
-
     labor_disputes: str = Field(
         default="No data available",
-        description="Detail any significant labor issues, including unionization efforts, "
-        "strikes, or legal friction related to unfair labor practices. "
-        "Examples: Ongoing UAW strike activity (operational risk); "
-        "Successful unionization votes at retail locations; "
-        "No history of labor disputes or union presence.",
+        description=(
+            "Detail any significant labor issues including unionization efforts, strikes, NLRB filings, "
+            "wrongful termination suits, or class action complaints from employees. "
+            "Flag whether disputes are isolated incidents or part of a broader pattern. "
+            "Examples: Active NLRB unfair labor practice filing with ongoing union organizing drive "
+            "(material risk signal); No history of labor disputes or union activity across all locations "
+            "(stable signal)."
+        ),
+    )
+    remote_and_flexibility_policy: str = Field(
+        default="No data available",
+        description=(
+            "Describe the company's current remote, hybrid, or in-office policy and any recent changes. "
+            "Flag return-to-office mandates as these frequently trigger voluntary attrition spikes. "
+            "Note whether policy varies by role, team, or location. "
+            "Examples: Fully remote with no RTO mandate announced (positive for flexibility-seeking candidates); "
+            "Enforced 5-day RTO policy implemented in 2025 following prior hybrid arrangement "
+            "(high voluntary attrition risk, negative signal for remote-preferring candidates)."
+        ),
+    )
+    compensation_and_benefits: str = Field(
+        default="No data available",
+        description=(
+            "Assess salary competitiveness, total compensation structure, and benefits quality "
+            "relative to industry peers. Include equity (RSU, options), 401k matching, health coverage, "
+            "and any notable perks or reductions. Cross-reference Glassdoor, Blind, and levels.fyi. "
+            "Examples: Top-of-market total compensation with strong RSU grants and full health coverage "
+            "(strong signal for attraction and retention); Below-market base salary with no equity "
+            "and benefits cuts announced in 2025 (switching risk signal)."
+        ),
+    )
+    headcount_trajectory: str = Field(
+        default="No data available",
+        description=(
+            "Evaluate the overall workforce size trend over the past 2-3 years — distinct from "
+            "specific layoff events. A company can avoid formal layoffs while quietly shrinking "
+            "through attrition and hiring freezes. Look for headcount data from macrotrends, "
+            "annual reports, or LinkedIn employee count changes. "
+            "Examples: Workforce grew from 8,000 to 12,000 employees over 3 years (strong growth signal); "
+            "Headcount declined 25% over 2 years via attrition without formal layoff announcements "
+            "(stealth contraction signal)."
+        ),
+    )
+    employee_tenure_and_retention: str = Field(
+        default="No data available",
+        description=(
+            "Assess average employee tenure and retention signals from LinkedIn data, Glassdoor reviews, "
+            "and Blind discussions. High turnover relative to industry peers is one of the strongest "
+            "red flags for a prospective employee regardless of stated cause. "
+            "Examples: Average tenure of 4.5 years with high internal promotion rate "
+            "(strong retention signal); Average tenure under 18 months with Glassdoor reviews "
+            "citing burnout and poor management (high-risk signal for a new hire)."
+        ),
     )
 
 
