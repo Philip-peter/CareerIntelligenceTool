@@ -21,6 +21,7 @@ from src.nodes import (  # noqa: E402
     leadership,
     report,
     router,
+    synthesis,
     workforce,
 )
 from src.state import State  # noqa: E402
@@ -48,6 +49,7 @@ class Workflow:
         self.job_scanner_obj = job_scanner.JobScanner()
         self.job_obj = job.Job()
         self.aggregator_obj = aggregator.Aggregator()
+        self.synthesis_obj = synthesis.SynthesisAgent()
 
         # workflow
         workflow = StateGraph(State)
@@ -93,6 +95,10 @@ class Workflow:
             "aggregator_agent",
             self.aggregator_obj.aggregate_analysis_result,
         )
+        workflow.add_node(
+            "synthesis_agent",
+            self.synthesis_obj.synthesize,
+        )
 
         # add edges
         workflow.add_edge(START, "job_scanner")
@@ -115,7 +121,8 @@ class Workflow:
         workflow.add_edge("finance_agent", "aggregator_agent")
         workflow.add_edge("leadership_agent", "aggregator_agent")
         workflow.add_edge("workforce_agent", "aggregator_agent")
-        workflow.add_edge("aggregator_agent", "reporting_agent")
+        workflow.add_edge("aggregator_agent", "synthesis_agent")
+        workflow.add_edge("synthesis_agent", "reporting_agent")
         workflow.add_edge("reporting_agent", END)
 
         # compile agent
@@ -138,6 +145,7 @@ class Workflow:
                 "job_queue": [],
                 "agent_analysis": [],
                 "aggregated_analysis": [],
+                "synthesis_results": [],
                 "final_report": "",
             },
         )
