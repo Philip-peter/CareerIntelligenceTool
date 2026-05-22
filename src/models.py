@@ -557,3 +557,62 @@ class JobRoleContextModels(BaseModel):
         "Examples: Routine data entry (high automation risk); "
         "Complex AI systems engineering (low automation risk).",
     )
+
+
+# ---------------------------------------------------------------------------
+# BaseModel for Job Switch Recommendation Agent
+# ---------------------------------------------------------------------------
+
+
+class JobSwitchRecommendationModel(BaseModel):
+    leadership_score_prospect: int = Field(
+        description="Leadership quality score for prospect company, 1-10."
+    )
+    leadership_score_current: int = Field(
+        description="Leadership quality score for current employer, 1-10."
+    )
+    industry_score_prospect: int = Field(
+        description="Industry health score for prospect company, 1-10."
+    )
+    industry_score_current: int = Field(
+        description="Industry health score for current employer, 1-10."
+    )
+    financial_score_prospect: int = Field(
+        description="Financial health score for prospect company, 1-10."
+    )
+    financial_score_current: int = Field(
+        description="Financial health score for current employer, 1-10."
+    )
+    workforce_score_prospect: int = Field(
+        description="Workforce health score for prospect company, 1-10."
+    )
+    workforce_score_current: int = Field(
+        description="Workforce health score for current employer, 1-10."
+    )
+    red_flags: list[str] = Field(
+        description="Top 3-5 highest-risk findings about the prospect company "
+        "that could negatively affect the candidate."
+    )
+    watch_items: list[str] = Field(
+        description="2-3 findings that are not immediate red flags but warrant "
+        "further investigation before accepting an offer."
+    )
+    green_flags: list[str] = Field(
+        description="Top 3-5 strongest positive signals about the prospect company."
+    )
+    head_to_head_summary: str = Field(
+        description="A concise 3-5 sentence narrative comparing the prospect company "
+        "to the current employer across leadership, industry, financial, "
+        "and workforce dimensions most relevant to the candidate's role."
+    )
+    recommendation: str = Field(
+        description="One of: 'Strong Proceed', 'Lean Proceed', 'Lean Stay', 'Strong Stay'."
+    )
+    confidence_level: str = Field(
+        description="One of: 'High', 'Medium', 'Low' — based on data completeness "
+        "across all research agents."
+    )
+    deciding_factor: str = Field(
+        description="The single most important finding that tips the recommendation "
+        "in either direction."
+    )
