@@ -29,102 +29,129 @@ class GenerateReport:
                 ## Job Details
                 | Field | Details |
                 |---|---|
-                | **Title** | {job_data.get("job", {}).get("job_title", "N/A")} |
-                | **Posting** | {job_data.get("job", {}).get("job_posting_link", "N/A")} |
+                | **Title** | {job_data.get("job", {}).get("job_title", "No Data Available")} |
+                | **Posting** | {job_data.get("job", {}).get("job_posting_link", "No Data Available")} |
 
                 ## Company Details
-                **Company Name: {job_data.get("company", {}).get("company_name", "N/A")}
-                **Industry: {job_data.get("company", {}).get("company_industry", "N/A")}
-                **Company Official Site: {job_data.get("company", {}).get("company_official_url", "N/A")}
-                **Company LinkedIn Site: {job_data.get("company", {}).get("company_linkedin_url", "N/A")}
+                **Company Name: {job_data.get("company", {}).get("company_name", "No Data Available")}
+                **Industry: {job_data.get("company", {}).get("company_industry", "No Data Available")}
+                **Company Official Site: {job_data.get("company", {}).get("company_official_url", "No Data Available")}
+                **Company LinkedIn Site: {job_data.get("company", {}).get("company_linkedin_url", "No Data Available")}
 
                 ---
 
                 ## Leadership Analysis
 
                 **1. CEO Tenure**
-                {job_data.get("leadership", {}).get("ceo_tenure", "N/A")}
+                {job_data.get("leadership", {}).get("ceo_tenure", "No Data Available")}
 
                 **2. Founder Involvement**
-                {job_data.get("leadership", {}).get("founder_involvement", "N/A")}
+                {job_data.get("leadership", {}).get("founder_involvement", "No Data Available")}
 
                 **3. Strategic Pivots**
-                {job_data.get("leadership", {}).get("strategic_pivots", "N/A")}
+                {job_data.get("leadership", {}).get("strategic_pivots", "No Data Available")}
 
                 **4. Executive Reputation**
-                {job_data.get("leadership", {}).get("executive_reputation", "N/A")}
+                {job_data.get("leadership", {}).get("executive_reputation", "No Data Available")}
 
                 **5. Leadership Stability**
-                {job_data.get("leadership", {}).get("leadership_stability", "N/A")}
+                {job_data.get("leadership", {}).get("leadership_stability", "No Data Available")}
 
                 **6. Employee Treatment During Hardship**
-                {job_data.get("leadership", {}).get("employee_treatment_during_hardship", "N/A")}
+                {job_data.get("leadership", {}).get("employee_treatment_during_hardship", "No Data Available")}
 
                 **7. Management Style and Culture**
-                {job_data.get("leadership", {}).get("management_style_and_culture", "N/A")}
+                {job_data.get("leadership", {}).get("management_style_and_culture", "No Data Available")}
 
                 **8. Vision and Communication Clarity**
-                {job_data.get("leadership", {}).get("vision_and_communication_clarity", "N/A")}
+                {job_data.get("leadership", {}).get("vision_and_communication_clarity", "No Data Available")}
 
                 **9. DEI and Values Commitment**
-                {job_data.get("leadership", {}).get("dei_and_values_commitment", "N/A")}
+                {job_data.get("leadership", {}).get("dei_and_values_commitment", "No Data Available")}
 
                 **10. Employee Development Investment**
-                {job_data.get("leadership", {}).get("employee_development_investment", "N/A")}
+                {job_data.get("leadership", {}).get("employee_development_investment", "No Data Available")}
 
                 ---
 
                 ## Industry Analysis
 
                 **1. Cyclic or Defensive**
-                {job_data.get("industry", {}).get("cyclic_or_defensive", "N/A")}
+                {job_data.get("industry", {}).get("cyclic_or_defensive", "No Data Available")}
 
                 **2. Regulatory Environment**
-                {job_data.get("industry", {}).get("regulatory_environment", "N/A")}
+                {job_data.get("industry", {}).get("regulatory_environment", "No Data Available")}
 
                 **3. AI Disruption**
-                {job_data.get("industry", {}).get("ai_distruption", "N/A")}
+                {job_data.get("industry", {}).get("ai_distruption", "No Data Available")}
 
                 **4. Competition**
-                {job_data.get("industry", {}).get("competition", "N/A")}
+                {job_data.get("industry", {}).get("competition", "No Data Available")}
+
+                **5. Industry Growth Trajectory**
+                {job_data.get("industry", {}).get("industry_growth_trajectory", "No Data Available")}
+
+                **6. Consolidation and MA Risk**
+                {job_data.get("industry", {}).get("consolidation_and_ma_risk", "No Data Available")}
+
+                **7. Offshore and Automation Risk**
+                {job_data.get("industry", {}).get("offshoring_and_automation_risk", "No Data Available")}
 
                 ---
 
                 ## Financial Analysis
 
                 **1. Revenue Growth**
-                {job_data.get("finance", {}).get("revenue_growth", "N/A")}
+                {job_data.get("finance", {}).get("revenue_growth", "No Data Available")}
 
                 **2. Debt**
-                {job_data.get("finance", {}).get("debt", "N/A")}
+                {job_data.get("finance", {}).get("debt", "No Data Available")}
 
                 **3. Cash Flow**
-                {job_data.get("finance", {}).get("cash_flow", "N/A")}
+                {job_data.get("finance", {}).get("cash_flow", "No Data Available")}
 
                 **4. Revenue Concentration**
-                {job_data.get("finance", {}).get("revenue_concentration", "N/A")}
+                {job_data.get("finance", {}).get("revenue_concentration", "No Data Available")}
 
                 **5. Investor Sentiment**
-                {job_data.get("finance", {}).get("investor_sentiment", "N/A")}
+                {job_data.get("finance", {}).get("investor_sentiment", "No Data Available")}
+
+                **6. Funding and Runway**
+                {job_data.get("finance", {}).get("funding_and_runway", "No Data Available")}
+
+                **7. Financial Distress Signals**
+                {job_data.get("finance", {}).get("financial_distress_signals", "No Data Available")}
 
                 ---
 
                 ## Workforce Analysis
 
                 **1. Layoff History**
-                {job_data.get("workforce", {}).get("layoff_history", "N/A")}
+                {job_data.get("workforce", {}).get("layoff_history", "No Data Available")}
 
                 **2. Hiring Trends**
-                {job_data.get("workforce", {}).get("hiring_trends", "N/A")}
+                {job_data.get("workforce", {}).get("hiring_trends", "No Data Available")}
 
                 **3. Executive Turnover**
-                {job_data.get("workforce", {}).get("executive_turnover", "N/A")}
+                {job_data.get("workforce", {}).get("executive_turnover", "No Data Available")}
 
                 **4. Employee Sentiment**
-                {job_data.get("workforce", {}).get("employee_sentiments", "N/A")}
+                {job_data.get("workforce", {}).get("employee_sentiments", "No Data Available")}
 
                 **5. Labor Disputes**
-                {job_data.get("workforce", {}).get("labor_disputes", "N/A")}
+                {job_data.get("workforce", {}).get("labor_disputes", "No Data Available")}
+
+                **6. Remote and Flexibility Policy**
+                {job_data.get("workforce", {}).get("remote_and_flexibility_policy", "No Data Available")}
+
+                **7. Compensation and Benefits**
+                {job_data.get("workforce", {}).get("compensation_and_benefits", "No Data Available")}
+
+                **8. Headcount Trajectory**
+                {job_data.get("workforce", {}).get("headcount_trajectory", "No Data Available")}
+
+                **9. Employee Tenure and Retention**
+                {job_data.get("workforce", {}).get("employee_tenure_and_retention", "No Data Available")}
 
                 ---
 
