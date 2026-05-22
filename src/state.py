@@ -23,4 +23,5 @@ class State(TypedDict):
     job_queue: List[JobPostingModel]
     agent_analysis: Annotated[List[Dict[str, Any]], operator.add]
     aggregated_analysis: Annotated[List[Dict[str, Any]], operator.add]
+    synthesis_results: Annotated[List[Dict[str, Any]], operator.add]
     final_report: str
