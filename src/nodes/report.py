@@ -17,12 +17,26 @@ class GenerateReport:
         final_analysis = state.get("synthesis_results", "No report generated")
 
         for job_analysis in final_analysis:
+            # current_company_profile = job_analysis.get("current_company_profile", {})
+            prospect_company_profile = job_analysis.get("prospect_company_profile", {})
             recommendation = job_analysis.get("recommendation", {})
+
             formatted_report = f"""
             ---
 
             # Job Analysis Report
             **Job ID:** `{job_analysis["job_id"]}`
+
+            ---
+
+            ## Prospect Company Profile
+
+            **Job Title:** {prospect_company_profile.get("job_title")}
+            **Job Link:** {prospect_company_profile.get("job_posting_link")}
+            **Company:** {prospect_company_profile.get("company_name")}
+            **Company Industry:** {prospect_company_profile.get("company_industry")}
+            **Company Website:** {prospect_company_profile.get("company_official_url")}
+            **Company LinkedIn:** {prospect_company_profile.get("company_linkedin_url")}
 
             ---
 
