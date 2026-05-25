@@ -22,8 +22,15 @@ class SynthesisAgent:
             raise ValueError("llm analyzer tool is not configured")
 
         # simulated current employer
-        simulated_dayforce_current_employer = simulated_dayforce_current_employer = {
+        simulated_current_employer = {
             "job_id": "current_employer",
+            "current_company_profile": {
+                "Current Job Title": "Principal Security Analyst",
+                "Current Company": "Dayforce",
+                "Current Company Industry": "Human Capital Management (HCM) / HR Technology",
+                "Current Company Official Website": "https://www.dayforce.com/",
+                "Prospect Company Official Linkedin": "https://www.linkedin.com/company/dayforce/",
+            },
             "data": {
                 "leadership": {
                     "ceo_tenure": (
@@ -417,10 +424,33 @@ class SynthesisAgent:
         # Unpack the aggregated research per job
         for job_analysis in state["aggregated_analysis"]:
             for job_id, job_data in job_analysis.items():
+                # extract prospect company profile
+                prospect_company_profile = {
+                    "job_title": job_data.get("job", {}).get(
+                        "job_title", "Not Available"
+                    ),
+                    "job_posting_link": job_data.get("job", {}).get(
+                        "job_posting_link", "Not Available"
+                    ),
+                    "company_name": job_data.get("company", {}).get(
+                        "company_name", "Not Available"
+                    ),
+                    "company_industry": job_data.get("company", {}).get(
+                        "company_industry", "Not Available"
+                    ),
+                    "company_official_url": job_data.get("company", {}).get(
+                        "company_official_url", "Not Available"
+                    ),
+                    "company_linkedin_url": job_data.get("company", {}).get(
+                        "company_linkedin_url", "Not Available"
+                    ),
+                }
+
+                # user prompt
                 user_prompt = f"""
 
                 ### CURRENT EMPLOYER DATA:
-                {simulated_dayforce_current_employer["data"]}
+                {simulated_current_employer["data"]}
 
                 ### Raw Research Data for Prospective Employer
 
@@ -446,7 +476,12 @@ class SynthesisAgent:
                 )
 
                 synthesis_results.append(
-                    {"job_id": job_id, "recommendation": llm_response.model_dump()}
+                    {
+                        "job_id": job_id,
+                        "current_company_profile": prospect_company_profile,
+                        "prospect_company_profile": prospect_company_profile,
+                        "recommendation": llm_response.model_dump(),
+                    }
                 )
 
         return {"synthesis_results": synthesis_results}
