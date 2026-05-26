@@ -20,7 +20,7 @@ class ApplicantData:
         }
 
         applicant_preferences = {
-            "preferred_job_roles": ["security engineer", "cloud security"],
+            "preferred_job_roles": ["cloud security"],
             # "salary_expectations": 140000.0,
             "desired_work_location": ["CA"],
             "desired_employment_status": ["full_time"],

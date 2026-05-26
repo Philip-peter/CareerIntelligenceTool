@@ -12,7 +12,7 @@ from src.state import SubAgentState  # noqa: E402
 
 
 class Job:
-    def run_research(self, state: SubAgentState, config: RunnableConfig):
+    async def run_research(self, state: SubAgentState, config: RunnableConfig):
 
         # distpatch_job from router agent
         dispatch_job = state["job"]

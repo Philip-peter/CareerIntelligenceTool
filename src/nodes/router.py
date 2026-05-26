@@ -13,13 +13,13 @@ from src.state import State  # noqa: E402
 
 class Router:
     @staticmethod
-    def _generate_job_id(company_name, job_title):
+    async def _generate_job_id(company_name, job_title):
         """Generates a deterministic ID based on company and title."""
         input_string = f"{company_name}-{job_title}".lower().replace(" ", "")
         # Returns the first 12 characters of a SHA-256 hash
         return hashlib.sha256(input_string.encode()).hexdigest()[:12]
 
-    def process_jobs(self, state: State):
+    async def process_jobs(self, state: State):
         sends = []
 
         # fetch job_queue
@@ -27,7 +27,7 @@ class Router:
 
         for job in job_queue:
             # generate job id
-            job_id = self._generate_job_id(
+            job_id = await self._generate_job_id(
                 company_name=job.company_name, job_title=job.job_title
             )
 
