@@ -180,7 +180,7 @@ class JobScanner:
         theirstack_provider = theirstack.TheirStack(user_preferences=user_preferences)
 
         # fetch recent jobs from theirstack provider
-        recent_jobs = theirstack_provider.fetch_jobs()
+        recent_jobs = await theirstack_provider.fetch_jobs()
 
         if not recent_jobs:
             print("No recent jobs found")

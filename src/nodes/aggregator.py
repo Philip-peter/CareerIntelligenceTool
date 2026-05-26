@@ -9,7 +9,7 @@ from src.state import State  # noqa: E402
 
 
 class Aggregator:
-    def aggregate_analysis_result(self, state: State):
+    async def aggregate_analysis_result(self, state: State):
         grouped_job_analysis = {}
 
         agent_analysis = state["agent_analysis"]

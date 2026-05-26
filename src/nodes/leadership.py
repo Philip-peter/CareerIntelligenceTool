@@ -14,7 +14,7 @@ from src.state import SubAgentState  # noqa: E402
 
 
 class Leadership:
-    def _generate_queries_template(self, grounding_data):
+    async def _generate_queries_template(self, grounding_data):
         name = grounding_data["company_name"]
         domain = grounding_data["company_domain"]
         # linkedin_url = grounding_data.get("company_linkedin_url", "")
@@ -89,7 +89,9 @@ class Leadership:
     ) -> Dict[str, Any]:
 
         # generate web search query
-        working_queries = self._generate_queries_template(grounding_data=grounding_data)
+        working_queries = await self._generate_queries_template(
+            grounding_data=grounding_data
+        )
 
         async def process_query(item: Dict[str, Any]):
             query = item.get("query")

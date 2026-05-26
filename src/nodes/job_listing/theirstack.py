@@ -1,10 +1,12 @@
 import os
 import sys
 
-import requests
-import urllib3
+import httpx
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# import requests
+# import urllib3
+
+# urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../../"))
@@ -28,7 +30,7 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "desired_employment_status"
         )
 
-    def fetch_jobs(self):
+    async def fetch_jobs(self):
         payload = {
             "page": 0,  # research how to use pagination
             "limit": 1,  # theirstack max limit < -- currently experimental
@@ -45,15 +47,33 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "Authorization": f"Bearer {self.api_key}",
         }
 
-        try:
-            response = requests.request(
-                method="POST",
-                url=self.api_url,
-                json=payload,
-                headers=headers,
-                verify=False,
-            )
-            response.raise_for_status()
-            return response.json()
-        except Exception as e:
-            print(f"Encountered error during 'fetch_jobs' operation. \nError: {e}")
+        async with httpx.AsyncClient(verify=False, headers=headers) as client:
+            try:
+                response = await client.post(url=self.api_url, json=payload)
+                response.raise_for_status()
+                return response.json()
+            except httpx.HTTPStatusError as e:
+                # Catches server errors (4xx, 5xx) specifically
+                print(
+                    f"API returned error status: {e.response.status_code} during 'fetch_jobs'"
+                )
+                # return {}
+            except httpx.RequestError as e:
+                # Catches network failures, connection timeouts, DNS issues
+                print(
+                    f"Network error occurred while reaching {e.request.url} during 'fetch_jobs'"
+                )
+                # return {}
+
+        # try:
+        #     response = requests.request(
+        #         method="POST",
+        #         url=self.api_url,
+        #         json=payload,
+        #         headers=headers,
+        #         verify=False,
+        #     )
+        #     response.raise_for_status()
+        #     return response.json()
+        # except Exception as e:
+        #     print(f"Encountered error during 'fetch_jobs' operation. \nError: {e}")
