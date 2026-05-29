@@ -17,14 +17,16 @@ class Job:
         # distpatch_job from router agent
         dispatch_job = state["job"]
 
-        # extract grounding and job data from supervisor Send payload
+        # extract job data from supervisor Send payload
         job = dispatch_job["job_data"]
-        # grounding = dispatch_job["grounding_data"]
 
         # TO DO: Need to modify
         job_profile = {
             "job_title": job.get("job_title", "Not Available"),
             "job_posting_link": job.get("job_posting_link", "Not Available"),
+            "job_description": job.get("job_description", "Not Available"),
+            "job_salary": job.get("job_salary", "Not Available"),
+            "job_hiring_team": job.get("job_hiring_team", "Not Available"),
         }
 
         formatted_results = {

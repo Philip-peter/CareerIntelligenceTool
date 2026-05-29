@@ -432,6 +432,15 @@ class SynthesisAgent:
                     "job_posting_link": job_data.get("job", {}).get(
                         "job_posting_link", "Not Available"
                     ),
+                    "job_description": job_data.get("job", {}).get(
+                        "job_description", "Not Available"
+                    ),
+                    "job_salary": job_data.get("job", {}).get(
+                        "job_salary", "Not Available"
+                    ),
+                    "job_hiring_team": job_data.get("job", {}).get(
+                        "job_hiring_team", "Not Available"
+                    ),
                     "company_name": job_data.get("company", {}).get(
                         "company_name", "Not Available"
                     ),
