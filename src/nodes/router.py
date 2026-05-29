@@ -38,6 +38,8 @@ class Router:
                     "job_title": job.job_title,
                     "job_posting_link": job.job_posting_link,
                     "job_description": job.job_description,
+                    "job_salary": job.salary,
+                    "job_hiring_team": job.hiring_team,
                 },
                 "grounding_data": {
                     "company_name": job.company_name,

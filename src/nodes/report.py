@@ -29,10 +29,18 @@ class GenerateReport:
 
             ---
 
-            ## Prospect Company Profile
+            ## Prospect Job Data
 
             **Job Title:** {prospect_company_profile.get("job_title")}
             **Job Link:** {prospect_company_profile.get("job_posting_link")}
+            **Job Description:** {prospect_company_profile.get("job_description")}
+            **Job Salary:** {prospect_company_profile.get("job_salary")}
+            **Job Hiring Team:** {prospect_company_profile.get("job_hiring_team")}
+
+            ---
+
+            ## Prospect Company Profile
+
             **Company:** {prospect_company_profile.get("company_name")}
             **Company Industry:** {prospect_company_profile.get("company_industry")}
             **Company Website:** {prospect_company_profile.get("company_official_url")}
