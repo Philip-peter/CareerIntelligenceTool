@@ -341,6 +341,165 @@ class SynthesisAgent:
                         "motivator for leaving. Retention risk is elevated relative to 2020-2022 levels."
                     ),
                 },
+                "company_direction": {
+                    "earnings_call_forward_guidance": (
+                        "Dayforce issued raised full-year 2025 guidance in Q1 2025, projecting total revenue "
+                        "of $1.96B-$1.97B, representing approximately 13% YoY growth on a constant currency basis. "
+                        "Management simultaneously raised adjusted EBITDA guidance following the restructuring-driven "
+                        "$80M annualized cost savings. The dual raise — revenue and profitability — signals a company "
+                        "in growth-and-efficiency mode simultaneously, which typically supports selective hiring in "
+                        "strategic functions while maintaining headcount discipline elsewhere. For a prospective "
+                        "employee, raised guidance reduces near-term layoff risk but does not signal a return to "
+                        "the broad-based hiring of 2021-2022."
+                    ),
+                    "ceo_strategic_narrative": (
+                        "In the most recent earnings call prepared remarks, CEO David Ossip articulated three concrete "
+                        "strategic priorities: (1) becoming the number one global people platform with $5B in long-term "
+                        "revenue, (2) achieving $1B+ in free cash flow as the primary financial target, and (3) "
+                        "accelerating AI integration across the Dayforce platform through Dayforce Co-Pilot and "
+                        "AI Agents. Ossip's narrative is specific and financially anchored — these are not aspirational "
+                        "statements but targets tied to executive compensation metrics. The emphasis on AI-driven "
+                        "productivity and global payroll expansion signals that engineering, product, and international "
+                        "go-to-market roles are the primary growth vectors. Cost center functions and US-based "
+                        "implementation services are implicitly deprioritized in this narrative."
+                    ),
+                    "analyst_pressure_points": (
+                        "Analysts raised three recurring concerns during the Q1 2025 earnings call Q&A: "
+                        "(1) Competitive displacement risk — multiple analysts questioned whether Workday and Oracle's "
+                        "full ERP integration capabilities are pulling enterprise deals away from Dayforce, and "
+                        "management's response acknowledged the competitive intensity without providing specific "
+                        "win-rate data; (2) Services margin drag — analysts pressed on the timeline for reducing "
+                        "professional services revenue dependency, with management providing directional but "
+                        "non-committal answers; (3) International execution — analysts questioned whether the "
+                        "global payroll buildout would dilute margins before generating returns, with Ossip "
+                        "citing the Government of Canada contract as validation but declining to provide "
+                        "international revenue breakdowns. These unresolved pressure points are relevant for "
+                        "candidates in enterprise sales, professional services, and international roles."
+                    ),
+                    "investor_day_long_term_targets": (
+                        "Dayforce's most recent investor day established two primary long-term financial anchors: "
+                        "$5B in revenue and $1B+ in free cash flow, with no specific timeline publicly committed. "
+                        "The 2025 executive compensation program was restructured to incorporate FCF CAGR as a "
+                        "multi-year performance metric, directly aligning CEO incentives with these targets. "
+                        "Workforce implications are significant — the path from $1.9B to $5B in revenue requires "
+                        "substantial growth in enterprise sales, global payroll delivery, and AI product development. "
+                        "However, the lack of a specific timeline makes it difficult to assess the pace of hiring. "
+                        "The $500M share repurchase program running concurrently suggests capital is being returned "
+                        "to shareholders in parallel with growth investment — a balanced but not aggressive "
+                        "growth posture."
+                    ),
+                    "recent_capital_investments": (
+                        "Dayforce's most significant capital deployment in 2024-2025 has been in two areas: "
+                        "(1) AI product infrastructure — Dayforce Co-Pilot was made generally available in Q4 2024 "
+                        "and AI Agents were announced at Dayforce Discover, representing sustained R&D investment "
+                        "in GenAI capabilities embedded across the platform; (2) Acquisition of eloomi A/S in Q1 2024, "
+                        "a learning experience platform, signaling investment in the talent management and L&D "
+                        "product category. The $80M annualized cost savings from the 2025 restructuring are "
+                        "explicitly earmarked for reinvestment in these strategic growth initiatives. "
+                        "Capital is flowing toward AI engineering and international delivery infrastructure — "
+                        "candidates in these functions are joining ahead of sustained investment."
+                    ),
+                    "hiring_signals": (
+                        "Analysis of Dayforce's active job postings over the past 3-6 months reveals a clear "
+                        "compositional shift. The highest-volume hiring categories are: AI/ML engineering, "
+                        "global payroll implementation specialists, enterprise account executives targeting "
+                        "EMEA and APAC markets, and product managers with HCM domain expertise. "
+                        "Notably absent from the hiring surge: US-based implementation consultants, technical "
+                        "support roles, and QA engineering — functions consistent with the offshore outsourcing "
+                        "trend flagged in employee reviews. The hiring composition confirms the CEO's strategic "
+                        "narrative — the company is building toward AI-native HCM and global payroll, and "
+                        "the open roles reflect exactly that. Candidates in AI, product, and international "
+                        "functions are joining a growing team; US services candidates are joining a contracting one."
+                    ),
+                    "strategic_alliances_and_partnerships": (
+                        "Dayforce's most significant recent partnership activity includes: (1) Expanded integrations "
+                        "with major benefits and insurance providers embedded natively in the Dayforce platform, "
+                        "extending its ecosystem stickiness for North American enterprise customers; (2) System "
+                        "integrator partnerships with global consulting firms to support the Government of Canada "
+                        "deployment and similar large-scale implementations — these partnerships directly create "
+                        "co-delivery roles and expand Dayforce's addressable enterprise market; (3) Recognition "
+                        "in Gartner Magic Quadrant for Cloud HCM Suites for the fifth consecutive year, which "
+                        "functions as a de facto partnership signal with the analyst ecosystem that influences "
+                        "enterprise purchasing decisions. No transformative platform partnership (e.g., hyperscaler "
+                        "co-sell agreement) has been announced, which some analysts note as a competitive gap "
+                        "versus Workday's Microsoft Azure alignment."
+                    ),
+                    "mergers_and_acquisitions": (
+                        "Dayforce completed one acquisition in the past 18 months: eloomi A/S, a Denmark-based "
+                        "learning experience platform, acquired in Q1 2024. The acquisition added L&D capabilities "
+                        "to the Dayforce talent suite and signals intent to compete more directly with Cornerstone "
+                        "and SAP SuccessFactors in the learning management segment. Integration appears to be "
+                        "in progress — eloomi branding has transitioned to Dayforce Learning in product materials. "
+                        "No additional acquisitions have been announced as of mid-2025. Dayforce itself has not "
+                        "been publicly identified as an acquisition target, though its public listing, strong "
+                        "recurring revenue, and founder-CEO control make an unsolicited approach unlikely in "
+                        "the near term. Integration turbulence from the eloomi deal is largely contained to "
+                        "the talent and learning product team."
+                    ),
+                    "new_products_and_ventures": (
+                        "Dayforce's most significant new product launches in the past 12-18 months include: "
+                        "(1) Dayforce Co-Pilot — a GenAI assistant made generally available to all customers "
+                        "in Q4 2024, enabling contextual HR question answering, job posting generation, and "
+                        "workflow guidance; (2) Dayforce AI Agents — announced at Dayforce Discover, automating "
+                        "repetitive tasks across the employee lifecycle; (3) Dayforce Workforce Insights — a "
+                        "new analytics hub for people leaders; and (4) AI-enhanced Demand Forecasting for "
+                        "workforce planning. These launches are concentrated in AI-native capabilities layered "
+                        "onto the existing platform — they create near-term hiring demand in AI engineering, "
+                        "product management, and customer success roles focused on AI adoption. They also "
+                        "signal medium-term displacement risk for implementation consultants as AI reduces "
+                        "manual configuration work."
+                    ),
+                    "market_and_geographic_expansion": (
+                        "Dayforce is executing a concrete international expansion strategy backed by signed "
+                        "contracts rather than aspirational announcements. Key evidence: (1) The Government "
+                        "of Canada contract — one of the largest HCM implementations in Canadian public sector "
+                        "history — validates enterprise-scale delivery capability in a non-US market; "
+                        "(2) Q2 2024 customer wins included an Australian utilities organization, a global "
+                        "manufacturer across 30+ countries, and a multinational clothing company across 28 countries; "
+                        "(3) The company explicitly cited EMEA and APAC expansion in investor communications "
+                        "with dedicated regional go-to-market investment. This is not aspirational — the "
+                        "contract wins confirm the expansion is funded and in-flight. Candidates in international "
+                        "implementation, global payroll, and EMEA/APAC sales are joining a team with real "
+                        "near-term delivery demand behind them."
+                    ),
+                    "ai_and_technology_roadmap": (
+                        "AI is Dayforce's primary technology investment vector for 2025-2026. The roadmap is "
+                        "product-facing rather than internally cost-reducing in the near term — Co-Pilot and "
+                        "AI Agents are designed to enhance customer value and drive expansion revenue, not "
+                        "to replace Dayforce's own workforce immediately. However, the medium-term implication "
+                        "is clear: as AI automates routine implementation tasks, configuration work, and "
+                        "support queries, the demand for US-based implementation consultants and technical "
+                        "support roles will decline. For a Cloud Security Consultant or engineering candidate, "
+                        "the AI roadmap is a growth signal — platform modernization and AI integration require "
+                        "security, compliance, and infrastructure investment. For a professional services "
+                        "candidate, it is a medium-term displacement signal requiring skills evolution toward "
+                        "AI-adjacent delivery capabilities."
+                    ),
+                    "government_and_enterprise_contracts": (
+                        "Dayforce's contract win velocity in 2024-2025 has been strong. Highlighted wins include: "
+                        "the Government of Canada (one of the largest HCM deployments in Canadian public sector history), "
+                        "a global food supplier covering 9,800 employees, a US government services contractor "
+                        "covering 5,000 employees across four countries, and a multinational clothing brand "
+                        "supporting 37,000 employees globally. These contracts are not pipeline — they are "
+                        "signed and in implementation, directly driving near-term headcount demand in delivery, "
+                        "global payroll, and customer success. Q1 2025 sales growth was described by the CFO "
+                        "as building on a strong Q4 2024, reinforcing pipeline momentum. For candidates in "
+                        "implementation and delivery roles, contract win velocity is the most important "
+                        "near-term hiring driver — and Dayforce's current velocity is strong."
+                    ),
+                    "divestitures_and_business_exits": (
+                        "No divestitures or business line exits have been announced or completed by Dayforce "
+                        "in the past 24 months. All core product lines — HCM, payroll, workforce management, "
+                        "talent, and learning — remain active and receiving investment. The 2025 restructuring "
+                        "was a workforce reallocation, not a product or business exit. The one strategic "
+                        "contraction signal is the de facto exit from US-based implementation services as "
+                        "offshore outsourcing reduces domestic delivery headcount — but this has not been "
+                        "formalized as a divestiture or announced unit closure. Candidates joining Dayforce's "
+                        "product, engineering, AI, or international teams face no near-term divestiture risk. "
+                        "Candidates joining US-based professional services should monitor the offshore "
+                        "outsourcing trend as a structural headcount risk over 12-24 months."
+                    ),
+                },
             },
         }
 
@@ -398,6 +557,32 @@ class SynthesisAgent:
           sentiment trends.
         - 1–4: High attrition, poor sentiment, sustained layoffs, uncompetitive compensation,
           or active labor disputes.
+
+        COMPANY DIRECTION (1–10):
+        - Consider: Forward guidance trajectory (raised, maintained, or withdrawn), CEO strategic
+          narrative credibility (concrete commitments vs. aspirational language), analyst pressure
+          points and unresolved risks, investor day long-term targets, capital investment deployment,
+          hiring signal composition, strategic partnerships and M&A activity, new product momentum,
+          geographic and market expansion backed by signed contracts, AI and technology roadmap
+          implications for the role, significant contract wins, and divestiture risk to the
+          candidate's target team.
+        - 8–10: Company has a clear, credible, and well-funded strategic direction with raised or
+          maintained guidance, active investment in growth areas, concrete hiring surges in relevant
+          functions, and no material divestitures or stagnation signals. CEO narrative is backed by
+          specific commitments and analyst confidence is high. The role being evaluated sits inside
+          a growth vector, not a cost center.
+        - 5–7: Company has a discernible direction but at least one material uncertainty undermines
+          confidence. Examples include: guidance maintained but with flagged headwinds; M&A activity
+          creating integration turbulence; expansion plans announced but not yet backed by signed
+          contracts; AI roadmap that augments the role rather than displacing it but with unclear
+          timeline; or a mix of growth signals in some divisions offset by divestitures or exits
+          in others.
+        - 1–4: Company direction is unclear, stagnant, or actively contracting. Signals include:
+          withdrawn or lowered guidance; no investor day targets in 2+ years; CEO narrative dominated
+          by cost discipline with no growth thesis; hiring freeze or composition limited to backfill
+          only; active divestitures affecting the candidate's target function; AI roadmap explicitly
+          reducing headcount in the role category; or the company is a confirmed acquisition target
+          with no clarity on post-merger structure.
 
         #### Step 2 — Identify Flags
         Classify the most signal-dense findings into three categories:
@@ -476,6 +661,9 @@ class SynthesisAgent:
 
                 ## Workforce Analysis
                 {job_data.get("workforce", {})}
+
+                ## Company Direction Analysis
+                {job_data.get("company_direction", {})}
                 """
 
                 llm_response = await llm_analyzer_tool.run(
