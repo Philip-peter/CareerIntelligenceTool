@@ -10,8 +10,7 @@ root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
-from src.applicant_data import my_applicant_data  # noqa: E402
-from src.nodes import (  # noqa: E402
+from src.agents import (  # noqa: E402
     aggregator,
     company_profile,
     finance,
@@ -25,9 +24,10 @@ from src.nodes import (  # noqa: E402
     synthesis,
     workforce,
 )
+from src.applicant_data import my_applicant_data  # noqa: E402
 from src.state import State  # noqa: E402
-from src.utils.llm_summarizer import LlmSummarizer  # noqa: E402
-from src.utils.tavily import TavilyResearchTool  # noqa: E402
+from src.tools.llm_summarizer import LlmSummarizer  # noqa: E402
+from src.tools.tavily import TavilyResearchTool  # noqa: E402
 
 
 class Workflow:
