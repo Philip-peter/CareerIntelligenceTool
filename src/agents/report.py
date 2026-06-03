@@ -54,6 +54,7 @@ class GenerateReport:
             **Prospect Industry Analysis Score: {recommendation.get("industry_score_prospect", "N/A")}::::Current Industry Analysis Score: {recommendation.get("industry_score_current", "N/A")}**
             **Prospect Financial Analysis Score: {recommendation.get("financial_score_prospect", "N/A")}::::Current Leadership Analysis Score: {recommendation.get("financial_score_current", "N/A")}**
             **Prospect Workforce Analysis Score: {recommendation.get("workforce_score_prospect", "N/A")}::::Current Workforce Analysis Score: {recommendation.get("workforce_score_current", "N/A")}**
+            **Prospect Company Direction Analysis Score: {recommendation.get("company_direction_score_prospect", "N/A")}::::Current Company Direction Analysis Score: {recommendation.get("company_direction_score_current", "N/A")}**
 
             ---
 

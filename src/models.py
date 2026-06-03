@@ -763,6 +763,12 @@ class JobSwitchRecommendationModel(BaseModel):
     workforce_score_current: int = Field(
         description="Workforce health score for current employer, 1-10."
     )
+    company_direction_score_prospect: int = Field(
+        description="Strategic direction score for prospect company, 1-10."
+    )
+    company_direction_score_current: int = Field(
+        description="Strategic direction score for current employer, 1-10."
+    )
     red_flags: list[str] = Field(
         description="Top 3-5 highest-risk findings about the prospect company "
         "that could negatively affect the candidate."
