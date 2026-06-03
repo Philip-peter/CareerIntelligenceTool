@@ -160,6 +160,180 @@ class JobPostingModel(BaseModel):
         coerce_numbers_to_str = True
 
 
+# models for the company direction
+class CompanyDirectionModels(BaseModel):
+    earnings_call_forward_guidance: str = Field(
+        default="No data available",
+        description=(
+            "Summarize the most recent official financial guidance issued by management during earnings calls. "
+            "Focus on revenue targets, margin outlook, and headcount projections that signal whether the "
+            "company is in growth, stabilization, or contraction mode. Translate guidance into workforce "
+            "implications — raised guidance suggests investment and hiring; lowered guidance often precedes "
+            "cost-cutting. "
+            "Examples: Management raised full-year revenue guidance by 8% citing strong pipeline momentum "
+            "(growth signal, likely hiring ahead); Company withdrew full-year guidance citing macro uncertainty "
+            "(high instability signal, hiring freeze probable)."
+        ),
+    )
+    ceo_strategic_narrative: str = Field(
+        default="No data available",
+        description=(
+            "Capture the CEO's most recent prepared remarks from earnings calls or investor presentations. "
+            "Focus on the strategic priorities declared, the problems the CEO acknowledges, and the "
+            "direction being communicated to investors. Distinguish between aspirational language and "
+            "concrete commitments. Relate the narrative to what it means for employees joining this company. "
+            "Examples: CEO declared AI infrastructure as the company's sole investment priority for 2025-2026, "
+            "signaling strong hiring in engineering and product (opportunity signal for technical roles); "
+            "CEO focused entirely on cost discipline and margin recovery with no growth narrative "
+            "(risk signal — joining during a cost-cutting cycle)."
+        ),
+    )
+    analyst_pressure_points: str = Field(
+        default="No data available",
+        description=(
+            "Summarize the key concerns and challenges raised by analysts during earnings call Q&A sessions. "
+            "Analysts ask the questions management avoids in prepared remarks — this section surfaces "
+            "the risks, competitive threats, and execution gaps the CEO had to respond to under pressure. "
+            "Examples: Multiple analysts questioned slowing enterprise renewal rates and management "
+            "deflected with non-specific answers (competitive risk signal); Analysts pressed on "
+            "international expansion costs with CEO providing clear timeline and milestones "
+            "(manageable execution risk, leadership credible)."
+        ),
+    )
+    investor_day_long_term_targets: str = Field(
+        default="No data available",
+        description=(
+            "Extract the multi-year strategic targets and workforce plans declared at the most recent "
+            "investor day or capital markets day. These are the longest-horizon commitments management "
+            "makes publicly and directly indicate where investment, hiring, and growth will be "
+            "concentrated over the next 3-5 years. "
+            "Examples: Company set $10B revenue and $2B FCF targets over 5 years with AI and "
+            "international expansion as primary growth vectors (strong long-term employer stability signal); "
+            "No investor day held in the past 2 years and no long-term targets published "
+            "(low visibility signal — harder to assess career trajectory)."
+        ),
+    )
+    recent_capital_investments: str = Field(
+        default="No data available",
+        description=(
+            "Identify major capital investments made in the past 12-18 months including new facilities, "
+            "R&D spending increases, data center buildouts, and infrastructure commitments. "
+            "Capital deployment is a leading indicator of where headcount and career opportunities "
+            "will emerge — companies invest ahead of hiring. "
+            "Examples: $500M committed to new AI research center with 1,000 planned hires over 3 years "
+            "(strong near-term hiring signal for technical roles); Capex cut by 40% YoY with R&D "
+            "budget frozen (investment contraction signal, limited career growth ahead)."
+        ),
+    )
+    hiring_signals: str = Field(
+        default="No data available",
+        description=(
+            "Assess the types of roles the company has been actively recruiting for in the past "
+            "3-6 months. The composition of open roles is the most honest real-time signal of "
+            "strategic direction — companies hire toward their future, not their past. "
+            "Flag whether hiring is concentrated in growth areas or administrative backfill. "
+            "Examples: Surge in AI engineer, ML platform, and data science postings across all "
+            "levels (AI-first strategy being executed, strong signal for technical career growth); "
+            "Hiring limited to sales and customer success with no product or engineering openings "
+            "(company selling existing product, not building new capabilities)."
+        ),
+    )
+    strategic_alliances_and_partnerships: str = Field(
+        default="No data available",
+        description=(
+            "Document significant partnerships, alliances, and joint ventures announced in the "
+            "past 12-18 months. New partnerships signal which ecosystems the company is aligning "
+            "with and which capabilities it is choosing to build externally rather than internally. "
+            "For a job applicant, this reveals whether the company is expanding its addressable "
+            "market or filling product gaps through partners. "
+            "Examples: Multi-year cloud partnership with Microsoft Azure announced, enabling global "
+            "deployment for enterprise customers (market expansion signal, likely new implementation roles); "
+            "No significant partnerships announced in 2 years (organic-only strategy or stagnation signal)."
+        ),
+    )
+    mergers_and_acquisitions: str = Field(
+        default="No data available",
+        description=(
+            "Document completed and announced acquisitions or mergers in the past 12-24 months. "
+            "Assess what each acquisition signals about strategic direction and flag the integration "
+            "risk for a new hire joining during a post-merger period. Conversely, note if the company "
+            "itself is a rumored or confirmed acquisition target. "
+            "Examples: Acquired two AI startups in 12 months totaling $800M, signaling commitment "
+            "to AI product capabilities (growth signal but integration turbulence likely); "
+            "Company in confirmed strategic review with multiple suitors reported "
+            "(acquisition target signal — high uncertainty for new hires)."
+        ),
+    )
+    new_products_and_ventures: str = Field(
+        default="No data available",
+        description=(
+            "Identify significant new product launches, new business lines, or new market entries "
+            "announced or executed in the past 12-18 months. New ventures reveal where future "
+            "headcount investment will be concentrated and whether the company is expanding "
+            "its value proposition or defending its existing one. "
+            "Examples: Launched an AI-native version of its core platform made generally available "
+            "in Q4 2024, opening a new enterprise customer segment (new role creation signal); "
+            "No new product launches in 18 months, only incremental updates to existing offerings "
+            "(innovation slowdown signal, limited new team formation)."
+        ),
+    )
+    market_and_geographic_expansion: str = Field(
+        default="No data available",
+        description=(
+            "Assess whether the company is actively expanding into new geographic markets or "
+            "customer verticals. Geographic expansion directly creates new office and regional "
+            "headcount needs. Vertical expansion signals new go-to-market and delivery hiring. "
+            "Flag whether the expansion is early-stage and speculative or backed by existing "
+            "contract wins and revenue. "
+            "Examples: Opened new offices in Singapore and Dubai backed by $50M in signed contracts, "
+            "with 200 planned hires in APAC and EMEA over 18 months (concrete expansion signal); "
+            "CEO mentioned APAC expansion in earnings call with no signed contracts or office announced "
+            "(aspirational only — weight lightly)."
+        ),
+    )
+    ai_and_technology_roadmap: str = Field(
+        default="No data available",
+        description=(
+            "Assess the company's publicly stated AI and technology investment direction and "
+            "relate it to role stability and growth opportunity for a prospective employee. "
+            "Distinguish between AI as a product capability being built versus AI being used "
+            "internally to reduce headcount. Flag if the roadmap suggests automation of the "
+            "role category the candidate is considering. "
+            "Examples: Company investing $200M in AI platform engineering with 300 net new "
+            "technical hires planned (AI as growth driver, strong signal for engineering roles); "
+            "CEO stated AI will reduce implementation services headcount by 40% over 3 years "
+            "(direct displacement risk for services and consulting roles)."
+        ),
+    )
+    government_and_enterprise_contracts: str = Field(
+        default="No data available",
+        description=(
+            "Document significant government or large enterprise contract wins in the past "
+            "12-18 months. Large contract wins are the most reliable leading indicator of "
+            "near-term hiring surges — delivery headcount grows within 90 days of a major "
+            "contract award. Flag contract duration and renewal risk as well. "
+            "Examples: Awarded a 5-year $300M federal government contract requiring 500 new "
+            "delivery hires within 12 months (strong near-term hiring signal); "
+            "Lost a major renewal contract representing 15% of revenue with no replacement "
+            "announced (headcount reduction risk in the affected delivery team)."
+        ),
+    )
+    divestitures_and_business_exits: str = Field(
+        default="No data available",
+        description=(
+            "Identify divisions, product lines, or geographic markets the company has exited "
+            "or is in the process of exiting. Divestitures are as directionally important as "
+            "acquisitions — they reveal where the company is pulling investment and headcount. "
+            "A candidate joining a team in a divested or exiting business unit faces elevated "
+            "redundancy risk. "
+            "Examples: Divested its professional services division for $120M, eliminating 800 roles "
+            "and signaling full transition to a product-only model (high risk for services hires, "
+            "strong signal for product engineers); No divestitures in the past 3 years with all "
+            "business units retained and growing (portfolio stability signal)."
+        ),
+    )
+
+
 # models for the research context
 class IndustryContextModels(BaseModel):
     cyclic_or_defensive: str = Field(

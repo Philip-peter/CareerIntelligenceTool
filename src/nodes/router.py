@@ -57,5 +57,6 @@ class Router:
             sends.append(Send("finance_agent", {"job": dispatch_job}))
             sends.append(Send("leadership_agent", {"job": dispatch_job}))
             sends.append(Send("workforce_agent", {"job": dispatch_job}))
+            sends.append(Send("company_direction_agent", {"job": dispatch_job}))
 
         return sends
