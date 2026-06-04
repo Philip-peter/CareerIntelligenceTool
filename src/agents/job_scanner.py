@@ -7,10 +7,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
-# from src.models import TargetJobDetails  # noqa: E402
 from src.models import JobPostingModel  # noqa: E402
-from src.nodes.job_listing import theirstack  # noqa: E402
 from src.state import State  # noqa: E402
+from src.tools.job_search_providers import theirstack  # noqa: E402
 
 
 class JobScanner:
