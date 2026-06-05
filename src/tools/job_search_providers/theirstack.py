@@ -3,11 +3,6 @@ import sys
 
 import httpx
 
-# import requests
-# import urllib3
-
-# urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../../"))
 sys.path.append(root_dir)
@@ -64,16 +59,3 @@ class TheirStack(job_provider_interface.JobProviderInterface):
                     f"Network error occurred while reaching {e.request.url} during 'fetch_jobs'"
                 )
                 # return {}
-
-        # try:
-        #     response = requests.request(
-        #         method="POST",
-        #         url=self.api_url,
-        #         json=payload,
-        #         headers=headers,
-        #         verify=False,
-        #     )
-        #     response.raise_for_status()
-        #     return response.json()
-        # except Exception as e:
-        #     print(f"Encountered error during 'fetch_jobs' operation. \nError: {e}")

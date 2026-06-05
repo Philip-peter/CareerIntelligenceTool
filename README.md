@@ -1,6 +1,6 @@
 # Job Switch Intelligence System
 
-A multi-agent research system that helps job applicants make informed career transition decisions by analyzing a prospect company across five dimensions and comparing it against their current employer.
+A multi-agent research system that helps job applicants make informed career transition decisions by analyzing a prospect company across multiple dimensions and comparing it against their current employer.
 
 ---
 
