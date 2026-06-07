@@ -14,12 +14,11 @@ from src.prompts import strategic_direction_prompts  # noqa: E402
 from src.search_queries import STRATEGIC_DIRECTION_QUERIES  # noqa: E402
 from src.search_queries.registry import render_queries  # noqa: E402
 from src.state import SubAgentState  # noqa: E402
+from src.tools import llm_analyzer_tool, web_research_tool  # noqa: E402
 
 
 class StrategicDirection:
-    async def _run_web_research(
-        self, grounding_data, web_research_tool
-    ) -> Dict[str, Any]:
+    async def _run_web_research(self, grounding_data) -> Dict[str, Any]:
 
         # generate web search query
         working_queries = render_queries(
@@ -55,20 +54,8 @@ class StrategicDirection:
         job_info = dispatch_job["job_data"]
         grounding = dispatch_job["grounding_data"]
 
-        # initiate web search tool
-        web_research_tool = config.get("configurable", {}).get("web_research_tool")
-        if not web_research_tool:
-            raise ValueError("web search tool is not configured")
-
         # run web search (awaiting properly to fix earlier RuntimeWarnings)
-        web_research = await self._run_web_research(
-            grounding_data=grounding, web_research_tool=web_research_tool
-        )
-
-        # initiate llm analysis
-        llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
-        if not llm_analyzer_tool:
-            raise ValueError("llm analyzer tool is not configured")
+        web_research = await self._run_web_research(grounding_data=grounding)
 
         system_prompt = strategic_direction_prompts.STRATEGIC_DIRECTION_SYSTEM_PROMPT
 
@@ -82,10 +69,13 @@ class StrategicDirection:
             output_schema=CompanyDirectionModels,
         )
 
+        # validate pydantic model
+        validated_llm_response = CompanyDirectionModels.model_validate(llm_response)
+
         formatted_results = {
             "job_id": job_info.get("job_id"),
             "agent_type": "company_direction",
-            "data": llm_response.model_dump(),
+            "data": validated_llm_response.model_dump(),
         }
 
         # wrap formatted_result in list for applying reducer in agent_analysis state

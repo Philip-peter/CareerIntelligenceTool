@@ -26,18 +26,16 @@ from src.agents import (  # noqa: E402
 )
 from src.applicant_data import my_applicant_data  # noqa: E402
 from src.state import State  # noqa: E402
-from src.tools.llm_summarizer import LlmSummarizer  # noqa: E402
-from src.tools.tavily import TavilyResearchTool  # noqa: E402
 
 
 class Workflow:
     def __init__(self) -> None:
 
-        # initiate tavily research tool
-        self.tavily_research_tool = TavilyResearchTool()
+        # # initiate tavily research tool
+        # self.tavily_research_tool = TavilyResearchTool()
 
-        # initiate llm summarizer tool
-        self.llm_summarizer_tool = LlmSummarizer()
+        # # initiate llm summarizer tool
+        # self.llm_summarizer_tool = LlmSummarizer()
 
         # initiate nodes
         self.industry_obj = industry.Industry()
@@ -164,8 +162,6 @@ class Workflow:
             {
                 "configurable": {
                     "shared_config": cfg,
-                    "web_research_tool": self.tavily_research_tool,
-                    "llm_summarizer": self.llm_summarizer_tool,
                 }
             },
         )
