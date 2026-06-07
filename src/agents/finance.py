@@ -14,12 +14,11 @@ from src.prompts import finance_prompts  # noqa: E402
 from src.search_queries import FINANCE_QUERIES  # noqa: E402
 from src.search_queries.registry import render_queries  # noqa: E402
 from src.state import SubAgentState  # noqa: E402
+from src.tools import llm_analyzer_tool, web_research_tool  # noqa: E402
 
 
 class FinancialData:
-    async def _run_web_research(
-        self, grounding_data, web_research_tool
-    ) -> Dict[str, Any]:
+    async def _run_web_research(self, grounding_data) -> Dict[str, Any]:
 
         # generate web search query for finance agent from query registry
         working_queries = render_queries(
@@ -51,21 +50,7 @@ class FinancialData:
         job_info = dispatch_job["job_data"]
         grounding = dispatch_job["grounding_data"]
 
-        # tool initialization
-        web_research_tool = config.get("configurable", {}).get("web_research_tool")
-        llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
-
-        # run web search
-        if not web_research_tool:
-            raise ValueError("web search tool is not configured")
-
-        web_research = await self._run_web_research(
-            grounding_data=grounding, web_research_tool=web_research_tool
-        )
-
-        # run llm analysis
-        if not llm_analyzer_tool:
-            raise ValueError("llm analyzer tool is not configured")
+        web_research = await self._run_web_research(grounding_data=grounding)
 
         system_prompt = finance_prompts.FINANCE_SYSTEM_PROMPT
 
@@ -79,10 +64,13 @@ class FinancialData:
             output_schema=FinancialContextModels,
         )
 
+        # validate pydantic model
+        validated_llm_response = FinancialContextModels.model_validate(llm_response)
+
         formatted_results = {
             "job_id": job_info.get("job_id"),
             "agent_type": "finance",
-            "data": llm_response.model_dump(),
+            "data": validated_llm_response.model_dump(),
         }
 
         # wrap formatted_result in list for applying reducer in agent_analysis state
