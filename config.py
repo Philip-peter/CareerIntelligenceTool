@@ -22,6 +22,7 @@ class Config:
         # OpenAI
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
         self.LLM_MAX_RETRIES = 2
+        self.OPENAI_MODEL = "gpt-4o"
 
         # TheirStack
         self.THEIRSTACK_API_URL = "https://api.theirstack.com/v1/jobs/search"
