@@ -1,13 +1,15 @@
 import os
 import sys
-import warnings
-from typing import Optional, Type
 
-# from . import llm_providers
+# ignore Pydantic serializer warnings
+import warnings
+from typing import Type
+
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, SecretStr
 
-# ignore Pydantic serializer warnings
+from . import base_llm
+
 warnings.filterwarnings(
     "ignore", message="Pydantic serializer warnings:", category=UserWarning
 )
@@ -19,30 +21,30 @@ sys.path.append(root_dir)
 from config import cfg  # noqa: E402
 
 
-class LlmSummarizer:
+class Openai_llm(base_llm.Basellm):
     def __init__(self) -> None:
-        api_key = cfg.OPENAI_API_KEY
-        if api_key is None:
+        super().__init__()
+
+        self.model = cfg.OPENAI_MODEL
+        self.api_key = cfg.OPENAI_API_KEY
+        if self.api_key is None:
             raise ValueError("LLM Error: api key is not set in environment variables")
 
         self.llm = ChatOpenAI(
-            model="gpt-4o", api_key=SecretStr(api_key), max_retries=cfg.LLM_MAX_RETRIES
+            model=self.model,
+            api_key=SecretStr(self.api_key),
+            max_retries=cfg.LLM_MAX_RETRIES,
         )
 
-    async def run(
+    async def run_with_schema(
         self,
         system_prompt: str,
         user_prompt: str,
-        output_schema: Optional[Type[BaseModel]],
+        output_schema: Type[BaseModel],
     ):
 
         try:
             messages = [("system", system_prompt), ("user", user_prompt)]
-
-            # return string when output_schema is None
-            if output_schema is None:
-                response = await self.llm.ainvoke(messages)
-                return response.content
 
             # structured llm output
             llm_structured_output = self.llm.with_structured_output(
@@ -57,6 +59,4 @@ class LlmSummarizer:
             return response
         except Exception as e:
             print(f"Encountered Error during LLM Summarization: {e}")
-            if output_schema:
-                return output_schema()
-            return ""
+            return output_schema()
