@@ -9,17 +9,12 @@ sys.path.append(root_dir)
 
 from src.models import JobSwitchRecommendationModel  # noqa: E402
 from src.state import State  # noqa: E402
+from src.tools.llm_providers import llm_tool  # noqa: E402
 
 
 class SynthesisAgent:
     async def synthesize(self, state: State, config: RunnableConfig):
         synthesis_results = []
-
-        # tool initialization
-        llm_analyzer_tool = config.get("configurable", {}).get("llm_summarizer")
-
-        if not llm_analyzer_tool:
-            raise ValueError("llm analyzer tool is not configured")
 
         # simulated current employer
         simulated_current_employer = {
@@ -666,7 +661,7 @@ class SynthesisAgent:
                 {job_data.get("company_direction", {})}
                 """
 
-                llm_response = await llm_analyzer_tool.run(
+                llm_response = await llm_tool.run_with_schema(
                     system_prompt=system_prompt,
                     user_prompt=user_prompt,
                     output_schema=JobSwitchRecommendationModel,
@@ -675,7 +670,7 @@ class SynthesisAgent:
                 synthesis_results.append(
                     {
                         "job_id": job_id,
-                        "current_company_profile": prospect_company_profile,
+                        "current_company_profile": simulated_current_employer,
                         "prospect_company_profile": prospect_company_profile,
                         "recommendation": llm_response.model_dump(),
                     }

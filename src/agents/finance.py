@@ -14,7 +14,8 @@ from src.prompts import finance_prompts  # noqa: E402
 from src.search_queries import FINANCE_QUERIES  # noqa: E402
 from src.search_queries.registry import render_queries  # noqa: E402
 from src.state import SubAgentState  # noqa: E402
-from src.tools import llm_analyzer_tool, web_research_tool  # noqa: E402
+from src.tools import web_research_tool  # noqa: E402
+from src.tools.llm_providers import llm_tool  # noqa: E402
 
 
 class FinancialData:
@@ -58,7 +59,7 @@ class FinancialData:
             grounding=grounding, job_info=job_info, web_research=web_research
         )
 
-        llm_response = await llm_analyzer_tool.run(
+        llm_response = await llm_tool.run_with_schema(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             output_schema=FinancialContextModels,

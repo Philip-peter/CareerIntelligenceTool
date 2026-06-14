@@ -11,9 +11,5 @@ class Basellm(ABC):
         system_prompt: str,
         user_prompt: str,
         output_schema: Type[BaseModel],
-    ) -> Union[BaseModel, Dict[str, Any]]:
-        """
-        Run a llm completion.
-        If output_schema is provided, return a validated Pydantic model.
-        Otherwise return raw string.
-        """
+    ) -> Union[BaseModel, Dict[Any, Any]]:
+        """Invoke llm and return result using pydantic schema"""

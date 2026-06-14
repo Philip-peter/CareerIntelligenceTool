@@ -1,39 +1,24 @@
 import os
 import sys
-
-# ignore Pydantic serializer warnings
-import warnings
 from typing import Type
 
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, SecretStr
 
-from . import base_llm
-
-warnings.filterwarnings(
-    "ignore", message="Pydantic serializer warnings:", category=UserWarning
-)
+from . import basellmprovider
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
-from config import cfg  # noqa: E402
 
-
-class Openai_llm(base_llm.Basellm):
-    def __init__(self) -> None:
+class Open_ai_llm(basellmprovider.Basellm):
+    def __init__(self, model, api_key, max_retries) -> None:
         super().__init__()
-
-        self.model = cfg.OPENAI_MODEL
-        self.api_key = cfg.OPENAI_API_KEY
-        if self.api_key is None:
-            raise ValueError("LLM Error: api key is not set in environment variables")
-
         self.llm = ChatOpenAI(
-            model=self.model,
-            api_key=SecretStr(self.api_key),
-            max_retries=cfg.LLM_MAX_RETRIES,
+            model=model,
+            api_key=SecretStr(api_key),
+            max_retries=max_retries,
         )
 
     async def run_with_schema(
@@ -42,7 +27,9 @@ class Openai_llm(base_llm.Basellm):
         user_prompt: str,
         output_schema: Type[BaseModel],
     ):
-
+        """
+        Invoke llm and return results using pydantic schema, if no response
+        """
         try:
             messages = [("system", system_prompt), ("user", user_prompt)]
 

@@ -19,6 +19,9 @@ class Config:
         self.SERP_API_URL = "https://www.searchapi.io/api/v1/search"
         self.SERP_API_KEY = os.getenv("SERP_API_KEY")
 
+        # Preferred LLM Provider
+        self.PREFERRED_LLM_PROVIDER = "openai"  # openai, anthropic, gemini
+
         # OpenAI
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
         self.LLM_MAX_RETRIES = 2
