@@ -1,6 +1,12 @@
-import asyncio
+import warnings
 
-from src import agent
+warnings.filterwarnings(
+    "ignore", message="PydanticSerializationUnexpectedValue", category=UserWarning
+)
+
+import asyncio  # noqa: E402
+
+from src import agent  # noqa: E402
 
 
 async def main():

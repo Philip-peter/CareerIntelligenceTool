@@ -11,11 +11,11 @@ sys.path.append(root_dir)
 
 from src.models import FinancialContextModels  # noqa: E402
 from src.prompts import finance_prompts  # noqa: E402
-from src.search_queries import FINANCE_QUERIES  # noqa: E402
+from src.search_queries import QUERY_REGISTRY  # noqa: E402
 from src.search_queries.registry import render_queries  # noqa: E402
 from src.state import SubAgentState  # noqa: E402
-from src.tools import web_research_tool  # noqa: E402
 from src.tools.llm_providers import llm_tool  # noqa: E402
+from src.tools.web_search_providers import web_tool  # noqa: E402
 
 
 class FinancialData:
@@ -23,13 +23,14 @@ class FinancialData:
 
         # generate web search query for finance agent from query registry
         working_queries = render_queries(
-            agent="finance", grounding=grounding_data, registry=FINANCE_QUERIES
+            agent="finance", grounding=grounding_data, registry=QUERY_REGISTRY
         )
 
         async def process_query(item: Dict[str, Any]):
+            """Utility function for performing web search for each query"""
             query = item.get("query")
             # search
-            web_search = await web_research_tool.search(query=query, topic="general")
+            web_search = await web_tool.search(query=query, topic="general")
             item["researched_data"] = web_search
             return item
 

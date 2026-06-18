@@ -35,7 +35,7 @@ class GenerateReport:
             **Job Title:** {prospect_company_profile.get("job_title")}
             **Job Link:** {prospect_company_profile.get("job_posting_link")}
             **Job Salary:** {prospect_company_profile.get("job_salary")}
-            **Job Hiring Team:** {"\n".join(prospect_company_profile.get("job_hiring_team", "No data available"))}
+
 
             ---
 
