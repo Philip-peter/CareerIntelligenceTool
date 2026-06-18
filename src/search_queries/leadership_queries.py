@@ -1,6 +1,11 @@
-# queries/leadership_queries.py
+import os
+import sys
 
-from search_queries.registry import QueryEntry
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
+sys.path.append(root_dir)
+
+from src.search_queries.registry import QueryEntry  # noqa: E402
 
 LEADERSHIP_QUERIES: list[QueryEntry] = [
     QueryEntry(

@@ -11,11 +11,11 @@ sys.path.append(root_dir)
 
 from src.models import IndustryContextModels  # noqa: E402
 from src.prompts import industry_prompts  # noqa: E402
-from src.search_queries import INDUSTRY_QUERIES  # noqa: E402
+from src.search_queries import QUERY_REGISTRY  # noqa: E402
 from src.search_queries.registry import render_queries  # noqa: E402
 from src.state import SubAgentState  # noqa: E402
-from src.tools import web_research_tool  # noqa: E402
 from src.tools.llm_providers import llm_tool  # noqa: E402
+from src.tools.web_search_providers import web_tool  # noqa: E402
 
 
 class Industry:
@@ -23,13 +23,13 @@ class Industry:
 
         # generate web search query
         working_queries = render_queries(
-            agent="industry", grounding=grounding_data, registry=INDUSTRY_QUERIES
+            agent="industry", grounding=grounding_data, registry=QUERY_REGISTRY
         )
 
         async def process_query(item: Dict[str, Any]):
             query = item.get("query")
             # search
-            web_search = await web_research_tool.search(query=query, topic="general")
+            web_search = await web_tool.search(query=query, topic="general")
             item["researched_data"] = web_search
             return item
 

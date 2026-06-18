@@ -20,6 +20,7 @@ class QueryEntry:
 
 
 def get_queries_by_agent(agent: str, registry: list[QueryEntry]) -> list[QueryEntry]:
+    """Return a list of queries for an agent filtered from the registry"""
     return [q for q in registry if q.agent == agent and q.status == "active"]
 
 
@@ -30,6 +31,7 @@ def get_query_by_id(query_id: str, registry: list[QueryEntry]) -> Optional[Query
 def render_queries(
     agent: str, grounding: dict, registry: list[QueryEntry]
 ) -> list[dict]:
+    """Return an agents queries in expected format, list of dicts containing topic and query"""
     name = grounding.get("company_name", "")
     domain = grounding.get("company_domain", "")
     industry = grounding.get("company_industry", "")
@@ -38,6 +40,10 @@ def render_queries(
         if domain
         else ""
     )
+
+    # filter agent specific queries from registry
+    queries_by_agent: list[QueryEntry] = get_queries_by_agent(agent, registry)
+
     return [
         {
             "topic": entry.topic,
@@ -47,5 +53,5 @@ def render_queries(
                 industry=industry,
             ),
         }
-        for entry in get_queries_by_agent(agent, registry)
+        for entry in queries_by_agent
     ]
