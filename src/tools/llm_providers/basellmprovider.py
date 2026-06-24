@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Type, Union
+from typing import Type, TypeVar
 
 from pydantic import BaseModel
+
+T = TypeVar("T", bound=BaseModel)
 
 
 class Basellm(ABC):
@@ -10,6 +12,6 @@ class Basellm(ABC):
         self,
         system_prompt: str,
         user_prompt: str,
-        output_schema: Type[BaseModel],
-    ) -> Union[BaseModel, Dict[Any, Any]]:
+        output_schema: Type[T],
+    ) -> T:
         """Invoke llm and return result using pydantic schema"""
