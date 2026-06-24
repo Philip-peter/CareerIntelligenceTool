@@ -13,24 +13,22 @@ Given a job posting and a candidate's current employer, the system runs parallel
 ## Agent Pipeline
 
 ```
-Input: job_posting + current_employer
-        │
-        ▼
-┌───────────────────────────────────────────────────┐
-│              Research Agents (Parallel)            │
-│  Leadership │ Industry │ Workforce │ Finance │ Direction │
-└───────────────────────────────────────────────────┘
-        │
-        ▼
-   Aggregator
-   (groups results by job_id into aggregated_analysis)
-        │
-        ▼
-   Synthesis Agent
-   (scores, flags, compares, recommends)
-        │
-        ▼
-Output: JobSwitchRecommendation
+            Input: job_posting + current_employer
+                          ⬇️
+-------------------------------------------------------------
+│                                                           │
+│                 Research Agents (Parallel)                │
+│  Leadership │ Industry │ Workforce │ Finance │ Direction  │
+│                                                           │
+-------------------------------------------------------------
+                          ⬇️
+                      Aggregator
+    (groups results by job_id into aggregated_analysis)
+                          ⬇️
+                    Synthesis Agent
+          (scores, flags, compares, recommends)
+                          ⬇️
+              Output: JobSwitchRecommendation
 ```
 
 ---
@@ -59,7 +57,6 @@ The synthesis agent produces a `JobSwitchRecommendation` containing:
 - **Recommendation** — one of: `Strong Proceed`, `Lean Proceed`, `Lean Stay`, `Strong Stay`
 - **Confidence Level** — `High`, `Medium`, or `Low` based on data completeness
 - **Deciding Factor** — the single finding that tips the recommendation
-
 
 ---
 
