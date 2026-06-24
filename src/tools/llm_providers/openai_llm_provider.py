@@ -1,11 +1,13 @@
 import os
 import sys
-from typing import Type
+from typing import Dict, Type, TypeVar, Union
 
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, SecretStr
 
 from . import basellmprovider
+
+T = TypeVar("T", bound=BaseModel)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
@@ -25,25 +27,37 @@ class Open_ai_llm(basellmprovider.Basellm):
         self,
         system_prompt: str,
         user_prompt: str,
-        output_schema: Type[BaseModel],
-    ):
+        output_schema: Type[T],
+    ) -> T:
         """
         Invoke llm and return results using pydantic schema, if no response
         """
         try:
-            messages = [("system", system_prompt), ("user", user_prompt)]
+            # inject JSON instruction into downstream system prompt to satisfy OpenAI `json_mode` `with_structured_output` method
+            json_instruction = "\n\nYou must return your response as a valid JSON object matching the requested schema."
+            full_system_prompt = system_prompt + json_instruction
+
+            messages = [("system", full_system_prompt), ("user", user_prompt)]
 
             # structured llm output
             llm_structured_output = self.llm.with_structured_output(
-                schema=output_schema, strict=True, method="json_schema"
+                schema=output_schema, method="json_mode"
             )
+
             response = await llm_structured_output.ainvoke(messages)
 
             # return default schema values if llm returned nothing
-            if not response:
+            if response is None:
                 return output_schema()
 
-            return response
+            # Type Safety
+            if isinstance(response, output_schema):
+                return response
+
+            if isinstance(response, Dict):
+                return output_schema.model_validate(response)
+
+            return output_schema()
         except Exception as e:
             print(f"Encountered Error during LLM Summarization: {e}")
             return output_schema()
