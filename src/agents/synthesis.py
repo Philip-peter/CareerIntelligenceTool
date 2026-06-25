@@ -1,8 +1,6 @@
 import os
 import sys
 
-from langchain_core.runnables import RunnableConfig
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
@@ -13,11 +11,15 @@ from src.prompts import synthesis_prompts  # noqa: E402
 # import simulated analysis data for demo
 from src.simulated_applicant_data import simulated_current_employer  # noqa: E402
 from src.state import State  # noqa: E402
-from src.tools.llm_providers import llm_tool  # noqa: E402
+from src.tools import TOOLS_REGISTRY  # noqa: E402
 
 
 class SynthesisAgent:
-    async def synthesize(self, state: State, config: RunnableConfig):
+    def __init__(self) -> None:
+        # initiate tools
+        self.llm_tool = TOOLS_REGISTRY["llm_tool"]
+
+    async def synthesize(self, state: State):
         synthesis_results = []
 
         # system prompt
@@ -63,7 +65,7 @@ class SynthesisAgent:
                     prospect_employer_analysis=job_data,
                 )
 
-                llm_response = await llm_tool.run_with_schema(
+                llm_response = await self.llm_tool.run_with_schema(
                     system_prompt=system_prompt,
                     user_prompt=user_prompt,
                     output_schema=JobSwitchRecommendationModel,

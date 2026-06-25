@@ -2,14 +2,12 @@ import os
 import sys
 from typing import cast
 
-from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
-from config import cfg  # noqa: E402
 from src.agents import (  # noqa: E402
     aggregator,
     company_profile,
@@ -156,15 +154,5 @@ class Workflow:
             },
         )
 
-        # set runnable config
-        config = cast(
-            RunnableConfig,
-            {
-                "configurable": {
-                    "shared_config": cfg,
-                }
-            },
-        )
-
         # invoke agent
-        return self.agent.ainvoke(input=initial_state, config=config)
+        return self.agent.ainvoke(input=initial_state)

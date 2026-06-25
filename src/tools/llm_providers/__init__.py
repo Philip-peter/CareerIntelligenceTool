@@ -7,5 +7,4 @@ sys.path.append(root_dir)
 
 from src.tools.llm_providers import llm_factory  # noqa: E402
 
-# initialize llm tool
-llm_tool = llm_factory.LlmFactory.create_llm()
+__all__ = ["llm_factory"]
