@@ -14,25 +14,6 @@ class Aggregator:
 
         agent_analysis = state["agent_analysis"]
 
-        """
-        Looks like this:
-            grouped_job_analysis = {
-                "job_001": {
-                    "finance": {"...."},
-                    "leadership": {"...."},
-                    "workforce": {"...."},
-                    ...
-                },
-                "job_002": {
-                    "finance": {"...."},
-                    "leadership": {"...."},
-                    "workforce": {"...."},
-                }
-            }
-
-        Final Result looks like this:
-           "aggregated_analysis": [grouped_job_analysis]
-        """
         for analysis in agent_analysis:
             job_id = analysis["job_id"]
             if job_id not in grouped_job_analysis:
@@ -40,3 +21,24 @@ class Aggregator:
             grouped_job_analysis[job_id][analysis["agent_type"]] = analysis["data"]
 
         return {"aggregated_analysis": [grouped_job_analysis]}
+
+
+"""
+Aggregated example:
+    grouped_job_analysis = {
+        "job_001": {
+            "finance": {"...."},
+            "leadership": {"...."},
+            "workforce": {"...."},
+            ...
+        },
+        "job_002": {
+            "finance": {"...."},
+            "leadership": {"...."},
+            "workforce": {"...."},
+        }
+    }
+
+Final Result looks like this:
+    "aggregated_analysis": [grouped_job_analysis]
+"""

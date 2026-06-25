@@ -3,8 +3,6 @@ import os
 import sys
 from typing import Any, Dict
 
-from langchain_core.runnables import RunnableConfig
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
@@ -14,11 +12,15 @@ from src.prompts import leadership_prompts  # noqa: E402
 from src.search_queries import QUERY_REGISTRY  # noqa: E402
 from src.search_queries.registry import render_queries  # noqa: E402
 from src.state import SubAgentState  # noqa: E402
-from src.tools.llm_providers import llm_tool  # noqa: E402
-from src.tools.web_search_providers import web_tool  # noqa: E402
+from src.tools import TOOLS_REGISTRY  # noqa: E402
 
 
 class Leadership:
+    def __init__(self) -> None:
+        # initiate tools
+        self.web_search_tool = TOOLS_REGISTRY["web_search_tool"]
+        self.llm_tool = TOOLS_REGISTRY["llm_tool"]
+
     async def _run_web_research(self, grounding_data) -> Dict[str, Any]:
 
         # generate web search query
@@ -29,7 +31,7 @@ class Leadership:
         async def process_query(item: Dict[str, Any]):
             query = item.get("query")
             # search
-            web_search = await web_tool.search(query=query, topic="general")
+            web_search = await self.web_search_tool.search(query=query, topic="general")
             item["researched_data"] = web_search
             return item
 
@@ -44,7 +46,7 @@ class Leadership:
 
         return researched_data_by_topic
 
-    async def run_research(self, state: SubAgentState, config: RunnableConfig):
+    async def run_research(self, state: SubAgentState):
 
         # dispatch_job from router agent
         dispatch_job = state["job"]
@@ -61,7 +63,7 @@ class Leadership:
             grounding=grounding, job_info=job_info, web_research=web_research
         )
 
-        llm_response = await llm_tool.run_with_schema(
+        llm_response = await self.llm_tool.run_with_schema(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             output_schema=LeadershipContextModels,

@@ -13,28 +13,31 @@ from . import job_provider_interface  # noqa: E402
 
 
 class TheirStack(job_provider_interface.JobProviderInterface):
-    def __init__(self, user_preferences: dict) -> None:
+    def __init__(self) -> None:
         super().__init__()
+
+        # theirstack credentials
         self.api_key = cfg.THEIRSTACK_API_KEY
         self.api_url = cfg.THEIRSTACK_API_URL
-        self.preferred_jobs = user_preferences.get("preferred_job_roles")
-        self.preferred_location = user_preferences.get("desired_work_location")
-        # self.minimum_salary = user_preferences.get("salary_expectations")
-        self.preferred_job_board = ["linkedin.com"]
-        self.preferred_employment_status = user_preferences.get(
-            "desired_employment_status"
-        )
 
-    async def fetch_jobs(self):
+    async def fetch_jobs(self, user_preferences: dict):
+
+        # initiate user preferences
+        preferred_jobs = user_preferences.get("preferred_job_roles")
+        preferred_location = user_preferences.get("desired_work_location")
+        # self.minimum_salary = user_preferences.get("salary_expectations")
+        preferred_job_board = ["linkedin.com"]
+        preferred_employment_status = user_preferences.get("desired_employment_status")
+
         payload = {
             "page": 0,  # research how to use pagination
             "limit": 1,  # theirstack max limit < -- currently experimental
-            "job_title_or": self.preferred_jobs,
-            "job_country_code_or": self.preferred_location,
+            "job_title_or": preferred_jobs,
+            "job_country_code_or": preferred_location,
             "posted_at_max_age_days": 30,
             # "min_salary_usd": self.minimum_salary,
-            "url_domain_or": self.preferred_job_board,
-            "employment_statuses_or": self.preferred_employment_status,
+            "url_domain_or": preferred_job_board,
+            "employment_statuses_or": preferred_employment_status,
         }
 
         headers = {
