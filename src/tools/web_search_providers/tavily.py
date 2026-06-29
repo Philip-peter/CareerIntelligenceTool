@@ -5,66 +5,41 @@ from typing import Any, Dict, List, Literal, Union
 
 from tavily import AsyncTavilyClient
 
-# from src.tools import web_research_tool
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
 from config import cfg  # noqa: E402
+from src.tools.web_search_providers import basewebsearchprovider  # noqa: E402
 
 
-class TavilyResearchTool:
+class TavilyResearchTool(basewebsearchprovider.BaseWebSearchProvider):
     def __init__(self) -> None:
         # async tavily client
         self.tavily_async_client = AsyncTavilyClient(api_key=cfg.TAVILY_API_KEY)
+
+    async def search(self, query) -> str:
         # set async ratelimit thresold
-        self.async_ratelimit = asyncio.Semaphore(cfg.TAVILY_ASYNC_RATE_LIMIT)
+        search_ratelimit = asyncio.Semaphore(cfg.WEB_SEARCH_RATE_LIMIT)
 
-    async def search(
-        self,
-        query,
-        topic: Literal["news", "general", "finance"] = "general",
-        include_raw_content: bool = False,
-        include_answer: bool = False,
-        search_depth: Literal["basic", "advanced", "fast", "ultra-fast"] = "basic",
-        max_results: int = cfg.TAVILY_SEARCH_MAX_RESULT,
-        # include_domains = None,
-    ):
-
-        async with self.async_ratelimit:
+        # search
+        async with search_ratelimit:
             try:
                 response = await self.tavily_async_client.search(
                     query=query,
-                    search_depth=search_depth,
-                    topic=topic,
-                    include_answer=include_answer,
-                    include_raw_content=include_raw_content,
-                    max_results=max_results,
-                    # include_domains=include_domains,
+                    search_depth="basic",  # options: basic, advanced, fast, ultra-fast
+                    topic="general",  # options: news, general, finance
+                    max_results=cfg.WEB_SEARCH_MAX_RESULT,
                 )
 
-                # filter result based on content relevance score
-                relevant_result = [
-                    res
-                    for res in response["results"]
-                    # if res["score"] >= cfg.TAVILY_CONTENT_RELEVANCE_SCORE
-                ]
-
-                # select response with highest relevant score only if relevant_result is empty
-                if len(relevant_result) == 0:
-                    max_score = 0.0
-                    for res in response["results"]:
-                        if res["score"] >= max_score:
-                            max_score = res["score"]
-                            relevant_result = [res]
-
-                relevant_result = ", ".join([r["content"] for r in relevant_result])
+                relevant_result = ", ".join(
+                    [r.get("content") for r in response["results"]]
+                )
                 return relevant_result
 
             except Exception as e:
-                print(f"Encountered error during taviliy search: {e}")
-                return []
+                print(f"Encountered error during web search: \n[tavily tool] -> {e}")
+                return "No search results"
 
     async def extract(
         self,
