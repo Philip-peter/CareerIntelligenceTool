@@ -8,12 +8,17 @@ load_dotenv()
 class Config:
     def __init__(self) -> None:
 
+        # Global web search parameters
+        self.WEB_SEARCH_RELEVANCE_SCORE = 0.8
+        self.WEB_SEARCH_MAX_RESULT = 3
+        self.WEB_SEARCH_RATE_LIMIT = 3
+
         # Tavily
         self.TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
-        self.TAVILY_SEARCH_MAX_RESULT = 3
         self.TAVILY_CHUNK_SIZE = 5
-        self.TAVILY_SEARCH_CONTENT_RELEVANCE_SCORE = 0.6
-        self.TAVILY_ASYNC_RATE_LIMIT = 3
+
+        # Exa
+        self.EXA_API_KEY = os.getenv("EXA_API_KEY")
 
         # SerpAPI
         self.SERP_API_URL = "https://www.searchapi.io/api/v1/search"

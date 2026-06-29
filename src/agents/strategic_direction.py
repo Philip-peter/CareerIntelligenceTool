@@ -33,7 +33,7 @@ class StrategicDirection:
         async def process_query(item: Dict[str, Any]):
             query = item.get("query")
             # search
-            web_search = await self.web_search_tool.search(query=query, topic="general")
+            web_search = await self.web_search_tool.search(query=query)
             item["researched_data"] = web_search
             return item
 
