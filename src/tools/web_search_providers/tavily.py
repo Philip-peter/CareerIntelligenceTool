@@ -14,11 +14,14 @@ from src.tools.web_search_providers import basewebsearchprovider  # noqa: E402
 
 
 class TavilyResearchTool(basewebsearchprovider.BaseWebSearchProvider):
-    def __init__(self) -> None:
-        # async tavily client
-        self.tavily_async_client = AsyncTavilyClient(api_key=cfg.TAVILY_API_KEY)
+    def __init__(self, api_key) -> None:
+        super().__init__()
 
-    async def search(self, query) -> str:
+        # async tavily client
+        self.tavily_async_client = AsyncTavilyClient(api_key=api_key)
+
+    async def search(self, query: str) -> str:
+
         # set async ratelimit thresold
         search_ratelimit = asyncio.Semaphore(cfg.WEB_SEARCH_RATE_LIMIT)
 

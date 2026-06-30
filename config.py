@@ -12,6 +12,7 @@ class Config:
         self.WEB_SEARCH_RELEVANCE_SCORE = 0.8
         self.WEB_SEARCH_MAX_RESULT = 3
         self.WEB_SEARCH_RATE_LIMIT = 3
+        self.PREFERRED_WEB_SEARCH_PROVIDER = "tavily"
 
         # Tavily
         self.TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
