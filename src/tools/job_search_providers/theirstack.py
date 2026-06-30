@@ -34,7 +34,7 @@ class TheirStack(job_provider_interface.JobProviderInterface):
             "limit": 1,  # theirstack max limit < -- currently experimental
             "job_title_or": preferred_jobs,
             "job_country_code_or": preferred_location,
-            "posted_at_max_age_days": 30,
+            "posted_at_max_age_days": 60,
             # "min_salary_usd": self.minimum_salary,
             "url_domain_or": preferred_job_board,
             "employment_statuses_or": preferred_employment_status,

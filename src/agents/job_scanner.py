@@ -30,7 +30,7 @@ class JobScanner:
             # return empty list
             return {"raw_research": {"job_posting_raw": []}}
 
-        result = recent_jobs.get("data", [])
+        result = recent_jobs.get("data")
         return {"raw_jobs": result}
 
     async def normalize_job(self, state: State):
