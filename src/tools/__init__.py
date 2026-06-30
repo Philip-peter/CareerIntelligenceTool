@@ -7,11 +7,11 @@ sys.path.append(root_dir)
 
 from src.tools.job_search_providers import theirstack  # noqa: E402
 from src.tools.llm_providers import llm_factory  # noqa: E402
-from src.tools.web_search_providers import tavily  # noqa: E402
+from src.tools.web_search_providers import web_tool_factory  # noqa: E402
 
 # initialize tools
 job_search_tool = theirstack.TheirStack()
-web_search_tool = tavily.TavilyResearchTool()
+web_search_tool = web_tool_factory.WebSearchFactory.create_web_tool()
 llm_tool = llm_factory.LlmFactory.create_llm()
 
 # tool registry
@@ -20,5 +20,3 @@ TOOLS_REGISTRY = {
     "web_search_tool": web_search_tool,
     "llm_tool": llm_tool,
 }
-
-# __all__ = ["job_search_tool", "web_search_tool", "llm_tool"]

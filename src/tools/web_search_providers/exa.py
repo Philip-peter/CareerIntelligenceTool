@@ -14,11 +14,11 @@ from src.tools.web_search_providers import basewebsearchprovider  # noqa: E402
 
 
 class ExaWebSearchTool(basewebsearchprovider.BaseWebSearchProvider):
-    def __init__(self) -> None:
+    def __init__(self, api_key) -> None:
         super().__init__()
 
         # initialize exa
-        self.exa_async_client = AsyncExa(api_key=cfg.EXA_API_KEY)
+        self.exa_async_client = AsyncExa(api_key=api_key)
 
     async def search(
         self,
