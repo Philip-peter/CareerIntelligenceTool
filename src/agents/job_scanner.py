@@ -33,9 +33,15 @@ class JobScanner:
         result = recent_jobs.get("data")
         return {"raw_jobs": result}
 
+    async def check_job_results(self, state: State):
+        recent_jobs = state.get("raw_jobs")
+        if not recent_jobs:
+            return "stop_flow"
+        return "continue_to_next_agent"
+
     async def normalize_job(self, state: State):
         list_of_jobs = []
-        recent_jobs = state.get("raw_jobs", [])
+        recent_jobs = state.get("raw_jobs")
 
         if not recent_jobs:
             raise ValueError("No jobs found, halt further processing")

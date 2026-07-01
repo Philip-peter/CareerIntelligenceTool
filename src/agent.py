@@ -29,12 +29,6 @@ from src.state import State  # noqa: E402
 class Workflow:
     def __init__(self) -> None:
 
-        # # initiate tavily research tool
-        # self.tavily_research_tool = TavilyResearchTool()
-
-        # # initiate llm summarizer tool
-        # self.llm_summarizer_tool = LlmSummarizer()
-
         # initiate nodes
         self.industry_obj = industry.Industry()
         self.leadership_obj = leadership.Leadership()
@@ -56,6 +50,10 @@ class Workflow:
         workflow.add_node(
             "job_scanner",
             self.job_scanner_obj.fetch_recent_jobs,
+        )
+        workflow.add_node(
+            "check_job_search_results",
+            self.job_scanner_obj.check_job_results,
         )
         workflow.add_node(
             "normalize_jobs",
@@ -104,7 +102,11 @@ class Workflow:
 
         # add edges
         workflow.add_edge(START, "job_scanner")
-        workflow.add_edge("job_scanner", "normalize_jobs")
+        workflow.add_conditional_edges(
+            "job_scanner",
+            self.job_scanner_obj.check_job_results,
+            {"stop_flow": END, "continue_to_next_agent": "normalize_jobs"},
+        )
         workflow.add_conditional_edges(
             "normalize_jobs",
             self.router_obj.process_jobs,
