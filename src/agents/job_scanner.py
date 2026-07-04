@@ -43,9 +43,6 @@ class JobScanner:
         list_of_jobs = []
         recent_jobs = state.get("raw_jobs")
 
-        if not recent_jobs:
-            raise ValueError("No jobs found, halt further processing")
-
         for job in recent_jobs:
             extracted_jobs_fields = {}
 

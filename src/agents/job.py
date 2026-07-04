@@ -5,7 +5,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(root_dir)
 
-# from src.models import JobRoleContextModels  # noqa: E402
 from src.state import SubAgentState  # noqa: E402
 
 
@@ -18,7 +17,6 @@ class Job:
         # extract job data from supervisor Send payload
         job = dispatch_job["job_data"]
 
-        # TO DO: Need to modify
         job_profile = {
             "job_title": job.get("job_title", "Not Available"),
             "job_posting_link": job.get("job_posting_link", "Not Available"),

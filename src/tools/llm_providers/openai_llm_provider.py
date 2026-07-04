@@ -33,15 +33,11 @@ class Open_ai_llm(basellmprovider.Basellm):
         Invoke llm and return results using pydantic schema, if no response
         """
         try:
-            # inject JSON instruction into downstream system prompt to satisfy OpenAI `json_mode` `with_structured_output` method
-            json_instruction = "\n\nYou must return your response as a valid JSON object matching the requested schema."
-            full_system_prompt = system_prompt + json_instruction
-
-            messages = [("system", full_system_prompt), ("user", user_prompt)]
+            messages = [("system", system_prompt), ("user", user_prompt)]
 
             # structured llm output
             llm_structured_output = self.llm.with_structured_output(
-                schema=output_schema, method="json_mode"
+                schema=output_schema
             )
 
             response = await llm_structured_output.ainvoke(messages)

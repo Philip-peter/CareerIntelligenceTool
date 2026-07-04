@@ -7,8 +7,6 @@ sys.path.append(root_dir)
 
 from src.models import JobSwitchRecommendationModel  # noqa: E402
 from src.prompts import synthesis_prompts  # noqa: E402
-
-# import simulated analysis data for demo
 from src.simulated_applicant_data import simulated_current_employer  # noqa: E402
 from src.state import State  # noqa: E402
 from src.tools import TOOLS_REGISTRY  # noqa: E402
