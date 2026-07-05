@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Dict, Type, TypeVar, Union
+from typing import Dict, Type, TypeVar
 
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, SecretStr
@@ -15,11 +15,12 @@ sys.path.append(root_dir)
 
 
 class Open_ai_llm(basellmprovider.Basellm):
-    def __init__(self, model, api_key, max_retries) -> None:
+    def __init__(self, model, ai_gw_api_key, ai_gw_base_url, max_retries) -> None:
         super().__init__()
         self.llm = ChatOpenAI(
             model=model,
-            api_key=SecretStr(api_key),
+            api_key=SecretStr(ai_gw_api_key),  # LLM Lite Api Key
+            base_url=ai_gw_base_url,  # LLM Lite Api Gateway Base Url
             max_retries=max_retries,
         )
 
