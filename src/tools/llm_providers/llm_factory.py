@@ -32,7 +32,8 @@ class LlmFactory:
             case LlmProvider.OPENAI:
                 return openai_llm_provider.Open_ai_llm(
                     model=model or cfg.OPENAI_MODEL,
-                    api_key=api_key or cfg.OPENAI_API_KEY,
+                    ai_gw_api_key=cfg.LITELLM_MASTER_KEY,
+                    ai_gw_base_url=cfg.LLM_LITE_URL,
                     max_retries=cfg.LLM_MAX_RETRIES,
                 )
             case LlmProvider.GEMINI:

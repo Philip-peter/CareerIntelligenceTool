@@ -37,6 +37,10 @@ class Config:
         self.THEIRSTACK_API_URL = "https://api.theirstack.com/v1/jobs/search"
         self.THEIRSTACK_API_KEY = os.getenv("THEIRSTACK_API_KEY")
 
+        # AI Gateway
+        self.LLM_LITE_URL = "http://localhost:4000"
+        self.LITELLM_MASTER_KEY = os.getenv("LITELLM_MASTER_KEY")
+
 
 # initialize config
 cfg = Config()
